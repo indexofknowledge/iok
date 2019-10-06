@@ -6,6 +6,7 @@ import string
 import logging
 import logging.handlers
 import networkx as nx
+import matplotlib.pyplot as plt
 from networkx.readwrite import json_graph
 from enum import IntEnum
 
@@ -158,8 +159,6 @@ class AwesomeClient():
 
     def write_to_file(self, filename=AWESOME_FILE):
         """Writes awesome-list"""
-        # XXX: random to avoid collision for now, until read impl
-        filename += random_string(5) + '.md'  # XXX: hack to trick md preview
         with open(filename, 'w') as f:
             f.write(self.build_str())
 
@@ -193,5 +192,6 @@ a.build_map()
 print(a.build_str)
 print("printed preivew...")
 a.write_to_file()
-print("write to random file..")
 
+nx.draw(g.graph, with_labels=True)
+plt.savefig("iok.png")
