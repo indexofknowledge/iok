@@ -3,39 +3,12 @@
 import json
 import random
 import string
-import logging
-import logging.handlers
 import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.readwrite import json_graph
 from enum import IntEnum
-
-####################################  LOGGING #################################### 
-
-LOG_FILENAME = 'graph_output.log'
-logger = logging.getLogger("graph-logger")
-logger.setLevel(logging.DEBUG)
-
-# Add the log message handler to the logger
-handler = logging.handlers.RotatingFileHandler(
-              LOG_FILENAME, maxBytes=20, backupCount=5)
-
-logger.addHandler(handler)
-
-####################################  HELPER #################################### 
-
-def random_string(string_length):
-    """Generate a random string with the combination of lowercase and uppercase letters """
-    letters = string.ascii_letters
-    return ''.join(random.choice(letters) for i in range(string_length))
-
-
-####################################  CONFIG #################################### 
-
-FILENAME = 'graph.json'
-AWESOME_FILE = 'awesome-blockchain.md'
-
-####################################  CLASSES #################################### 
+from logger import logger 
+from iok_helpers import *
 
 class NodeType(IntEnum):
     TOPIC = 1
@@ -67,6 +40,11 @@ class KnowledgeGraph:
         data = json_graph.node_link_data(self.graph)
         with open(filename, 'w') as f:
             json.dump(data, f)
+
+    def write_graph(self, filename=IMG_FILE):
+        """For debugging mostly, write graph to png"""
+        nx.draw(self.graph, with_labels=True)
+        plt.savefig(filename)
 
     def read_from_file(self, filename=FILENAME):
         """Reads graph from JSON file in data link format"""
@@ -174,24 +152,3 @@ class AwesomeClient():
     #     filename += random_string(5)
     #     with open(filename, 'w') as f:
     #         json.dump(data, f)
-
-####################################  AD-HOC TESTING #################################### 
-
-try:
-    g = KnowledgeGraph()
-    g.add_topic('math', 'mathematics is everything')
-    g.add_topic('cs', 'computation and stuff')
-    g.add_topic('lightning', 'l2 stuff')
-    g.add_topic('bitcoin', 'p2p cash system', parents=['math', 'cs'], children=['lightning'])
-    print(g.get_graph().nodes)
-except:
-    print("Graph already exists...")
-
-a = AwesomeClient(g)
-a.build_map()
-print(a.build_str)
-print("printed preivew...")
-a.write_to_file()
-
-nx.draw(g.graph, with_labels=True)
-plt.savefig("iok.png")
