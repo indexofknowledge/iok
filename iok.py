@@ -22,8 +22,13 @@ class ResourceType(IntEnum):
 
 class KnowledgeGraph:
 
-    def __init__(self, filename=FILENAME):
+    def __init__(self, filename=FILENAME, debug=False):
         # get from file 
+        if debug:
+            logger.debug("Creating new graph in debug mode...")
+            self.graph = nx.DiGraph()
+            return
+
         try:
             logger.info("Trying to read graph from {}".format(filename))
             self.read_from_file(filename)
@@ -68,23 +73,40 @@ class KnowledgeGraph:
         """Generate a resource name randomly. Don't want to be able to get it directly"""
         return name + '-' + random_string(10)
 
-    def add_description_by_name(self, name: str, desc: str):
+
+    def add_description(self, name: str, desc: str):
         """Adds a description node by name of parent"""
         self.__assert_topic_exists(name, 
-           "Cannot delete, topic {} does not exist".format(name))
+           "Cannot add, topic {} does not exist".format(name))
         desc_name = self.__gen_resource_name(name)
-        self.graph.add_node(desc_name)
-        self.graph.nodes[desc_name]['text'] = desc
-        self.graph.nodes[desc_name]['node_type'] = NodeType.RESOURCE
-        self.graph.nodes[desc_name]['resource_type'] = ResourceType.DESCRIPTION
-        self.graph.add_edge(name, desc_name)
+        self.add_knowledge_node(desc_name, NodeType.RESOURCE, desc, ResourceType.DESCRIPTION)
+        self.graph.add_edge(desc_name, name)
+
+
+    def add_link(self, name, link, type: ResourceType):
+        """Adds a link by name of parent"""
+        self.__assert_topic_exists(name, 
+           "Cannot add, topic {} does not exist".format(name))
+        link_name = self.__gen_resource_name(name)
+        self.add_knowledge_node(link_name, NodeType.RESOURCE, link, type)
+        self.graph.add_edge(link_name, name)
+
+
+    def add_knowledge_node(self, name: str, node_type: NodeType, data=None, resource_type: ResourceType=None):
+        self.graph.add_node(name)
+        node = self.graph.nodes[name]
+        node['node_type'] = node_type
+        if data:
+            node['data'] = data
+        if resource_type:
+            node['resource_type'] = resource_type
+
 
     def add_topic(self, name: str, desc: str, parents=[], children=[]):
         # TODO: decide whether parents/children are topics or resources or both
         self.__assert_topic_exists(name, exists=False,
             err="Cannot add, topic {} already exists".format(name))
-        self.graph.add_node(name)
-        self.graph.nodes[name]['node_type'] = NodeType.TOPIC
+        self.add_knowledge_node(name, NodeType.TOPIC)
         for parent in parents:
             self.__assert_topic_exists(name,
                 "Parent {} does not exist".format(parent))
@@ -93,7 +115,7 @@ class KnowledgeGraph:
             self.__assert_topic_exists(name,
                 "Child {} does not exist".format(child))
             self.graph.add_edge(name, child)
-        self.add_description_by_name(name, desc)
+        self.add_description(name, desc)
 
     def delete_topic(self, name: str):
         self.__assert_topic_exists(name, False, 
@@ -114,25 +136,64 @@ class AwesomeClient():
 
     def build_map(self):
         """Parses the graph and builds a map"""
-        """TODO: we should build this in topological order"""
+        logger.debug("Building map")
         dic = {}  # XXX: throw it into dict so we can sort it later??
-        for name in nx.topological_sort(self.knowledge.graph):
+        for name in list(reversed(list(nx.topological_sort(self.knowledge.graph)))):
             node = self.knowledge.graph.nodes[name]
             if node['node_type'] == NodeType.TOPIC: # if sorted, topics always before resources
                 dic[name] = {'name': name}  # XXX: a placeholder
+                dic[name]['papers'] = []
+                dic[name]['videos'] = []
+                dic[name]['articles'] = []
+                dic[name]['descriptions'] = []
+                logger.debug(f"Added topic to map: {name}")
             else:  # NodeType.RESOURCE
                 # put it in parents
-                for parent in self.knowledge.graph.predecessors(name):
-                    dic[parent]['description'] = node['text']  # XXX: only desc for now
+                logger.debug("Adding resource {}".format(name))
+                for parent in self.knowledge.graph.successors(name):
+                    logger.debug(f"{name} has parent {parent}")
+                    dat = node['data']  # XXX: only desc for now
+                    # articles, papers,
+                    t = node['resource_type']
+                    logger.debug("Building map for type {}".format(t))
+
+                    if t == ResourceType.PAPER:
+                        dic[parent]['papers'].append(dat)
+                        logger.debug("Adding paper")
+                    elif t == ResourceType.VIDEO:
+                        dic[parent]['videos'].append(dat)
+                        logger.debug("Adding video")
+                    elif t == ResourceType.ARTICLE:
+                        dic[parent]['articles'].append(dat)
+                        logger.debug("Adding articles")
+                    elif t == ResourceType.DESCRIPTION:
+                        dic[parent]['descriptions'].append(dat)
+                        logger.debug("Adding description")
+
 
         self.mindmap = dic
         return dic
+
+    def getMarkdownLink(self, link):
+        # TODO: get separate alt text
+        return f'[{link}]({link})\n\n' 
     
     def build_str(self):
         s = ''
         for key in self.mindmap:
             s += '# {}\n\n'.format(key)
-            s += '{}\n\n'.format(self.mindmap[key]['description'])
+            s += '## Description\n\n'
+            for x in self.mindmap[key]['descriptions']:
+                s += f'{x}\n\n'
+            s += '## Papers\n\n'
+            for x in self.mindmap[key]['papers']:
+                s += self.getMarkdownLink(x)
+            s += '## Articles\n\n'
+            for x in self.mindmap[key]['articles']:
+                s += self.getMarkdownLink(x)
+            s += '## Papers\n\n'
+            for x in self.mindmap[key]['videos']:
+                s += self.getMarkdownLink(x)
         return s
 
     def write_to_file(self, filename=AWESOME_FILE):

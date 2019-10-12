@@ -1,16 +1,50 @@
-# cs
+# lightning
 
-computation and stuff
+## Description
 
-# math
+l2 stuff
 
-mathematics is everything
+## Papers
+
+## Articles
+
+## Papers
 
 # bitcoin
 
+## Description
+
 p2p cash system
 
-# lightning
+## Papers
 
-l2 stuff
+[https://bitcoin.org/bitcoin.pdf](https://bitcoin.org/bitcoin.pdf)
+
+## Articles
+
+## Papers
+
+# math
+
+## Description
+
+mathematics is everything
+
+## Papers
+
+## Articles
+
+## Papers
+
+# cs
+
+## Description
+
+computation and stuff
+
+## Papers
+
+## Articles
+
+## Papers
 
