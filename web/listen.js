@@ -13,7 +13,24 @@ var validURL = (str) => {
       '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
       '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
     return !!pattern.test(str);
-  }
+}
+
+var toggleMeta = () => {
+    console.log("TOGGLING META")
+    var resources = cy.nodes('[node_type > 1]')
+    if (resources.length == 0) {
+        console.log("No resources found, can't toggle meta")
+        return
+    }
+    var replacementStyle = "none"
+    if (resources[0].style("display") == "none") {
+        replacementStyle = "element"
+    } 
+    for (var i = 0; i < resources.length; i++) {
+        resources[i].style("display", replacementStyle)
+    }
+}
+
 
 
 /**
@@ -74,24 +91,26 @@ var setNodeData = (node) => {
 
     // set link data
     var ul = document.getElementById('nodelinks');
+    var p = document.getElementById('nodetext')
     ul.innerHTML = '';
+    p.innerHTML = '';
     console.log("Has data")
     for (i = 0; i < neighbors.length; i++) {
         var dataObj = neighbors[i].data()
         if ("data" in dataObj) {  // RESOURCE
-            var li = document.createElement('li');
             data = neighbors[i].data().data
             if (validURL(data)) {
+                var li = document.createElement('li');
                 var a = document.createElement('a');
                 var linkText = document.createTextNode(data);
                 a.appendChild(linkText);
                 a.title = data;
                 a.href = data;
                 li.appendChild(a);
+                ul.appendChild(li);
             } else {
-                li.appendChild(document.createTextNode(data))
+                p.appendChild(document.createTextNode(data))
             }
-            ul.appendChild(li);
         } else {  // TITLE
             console.log("Not listing parent")
         }
