@@ -13,6 +13,7 @@
     <script src="https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js"></script>
     <script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-dagre/1.5.0/cytoscape-dagre.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.5.11/split.min.js"></script>
 
     <!-- Local data file -->
     <script type="text/javascript" language="javascript" src="graph.json"></script> 
@@ -21,28 +22,38 @@
 
   <body>
 
-    <div class="row">
-        <div id="cy" class="split left"></div>
-        <div id="cytext" class="split right">
-          <div class="centered">
-            <h1 id="nodetitle">Index of Knowledge</h3>
-            <h2 id="nodesubtitle">Graph</h5>
-    
-            <div id="nodetext" style="white-space: pre-line">
-                text here
-            </div>
-    
-            <ul id="nodelinks">
-                <li><a href=".">link here</a></li>
-            </ul>
-      
-          </div>
+    <div id="left" class="split split-horizontal">
+        <div id="cy" class="split content">
         </div>
     </div>
-
+    <div id="right" class="split split-horizontal">
+        <div id="cytext" class="split text content">
+            <div>
+                <h1 id="nodetitle">Index of Knowledge</h3>
+                <h2 id="nodesubtitle">Graph</h5>
+        
+                <div id="nodetext">
+                    text here
+                </div>
+        
+                <ul id="nodelinks">
+                    <li><a href=".">link here</a></li>
+                </ul>
+          
+              </div>
+            </div>
+        </div>
+    </div>
+    
   </body>
 
-  <script src="iok.js"></script>
+  <script>
+    Split(['#left', '#right'], {
+        gutterSize: 8,
+        cursor: 'col-resize'
+    })
+  </script>
 
+  <script src="iok.js"></script>
 
 </html>
