@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import hashlib
 import json
 import random
 import string
@@ -16,6 +17,10 @@ def random_string(string_length):
     letters = string.ascii_letters
     return ''.join(random.choice(letters) for i in range(string_length))
 
+def encrypt_string(hash_string):
+    """TODO: enable encrypt node before push"""
+    sha_signature = hashlib.sha256(hash_string.encode()).hexdigest()
+    return sha_signature
 
 ####################################  CONFIG #################################### 
 
