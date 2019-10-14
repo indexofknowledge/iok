@@ -1,3 +1,4 @@
+console.log("IoK init")
 var graphData = 'fakedata'
 
 function readTextFile(file, callback) {
@@ -16,7 +17,7 @@ readTextFile("../graph.json", function(text){
     graphData = JSON.parse(text);
     // change the data format to what cytoscape wants
     var nodes = []
-    for (var i = 0; i < graphData.nodes.length; i++){
+    for (var i = 0; i < graphData.nodes.length; i++) {
         nodes[i] = {"data": graphData.nodes[i]}
     }
     console.log(nodes)
@@ -44,7 +45,6 @@ readTextFile("../graph.json", function(text){
             'content': 'data(id)'
           }
         },
-
         {
           selector: 'edge',
           style: {
@@ -54,6 +54,16 @@ readTextFile("../graph.json", function(text){
             'target-arrow-color': '#9dbaea',
             'curve-style': 'bezier'
           }
+        },
+        {
+          selector: '.highlighted',
+          style: {
+            'background-color': '#75b5aa',
+            'line-color': '#75b5aa',
+            'target-arrow-color': '#75b5aa',
+            'transition-property': 'background-color, line-color, target-arrow-color',
+            'transition-duration': '0.5s'
+          }
         }
       ],
 
@@ -62,4 +72,9 @@ readTextFile("../graph.json", function(text){
         edges: edges
       }
     });
+
+    // LISTEN
+    cy.on('tap', 'node', handleNodeTap);
+    console.log('Add node tap listener')
+
 });
