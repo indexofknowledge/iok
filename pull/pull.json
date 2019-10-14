@@ -1,6 +1,6 @@
 {
-    "title": "Amazing new feature",
-    "body": "Please pull these awesome changes in!",
-    "head": "new-feature",
+    "title": "[IoK Update] NAME",
+    "body": "BODY",
+    "head": "USER:BRANCH",
     "base": "master"
-  }
+}
