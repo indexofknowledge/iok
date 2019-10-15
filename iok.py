@@ -179,7 +179,11 @@ class AwesomeClient():
 
     def get_link(self, link):
         # TODO: get separate alt text
-        return f'[{link}]({link})\n\n' 
+        return f'* [{link}]({link})\n\n' 
+
+    def get_toc_link(self, title):
+        """Generate link that references title on the same doc"""
+        return f'* [{title}](#{title})\n\n'
 
     def get_h(self, s: str, level=1):
         """Generates markdown string for header of variable level"""
@@ -190,9 +194,11 @@ class AwesomeClient():
         return f'{s}\n\n'
 
     def build_str(self):
+        head = ''
+        head += self.get_h('Index of Knowledge')
+        head += self.get_s(DESCRIPTION)
+
         s = ''
-        s += self.get_h('Index of Knowledge')
-        s += self.get_s(DESCRIPTION)
         for key in self.mindmap:
             s += self.get_h(key, level=2)
             s += self.get_h('Description', level=3)
@@ -209,7 +215,12 @@ class AwesomeClient():
                 s += self.get_link(x)
 
         # TODO: write a ToC
-        return s
+        toc = ''
+        toc += self.get_h('Table of Contents', level=2)
+        for key in self.mindmap:
+            toc += self.get_toc_link(key)
+
+        return head + toc + s
 
     def write_to_file(self, filename=AWESOME_FILE):
         """Writes awesome-list"""
