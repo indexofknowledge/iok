@@ -179,11 +179,11 @@ class AwesomeClient():
 
     def get_link(self, link):
         # TODO: get separate alt text
-        return f'* [{link}]({link})\n\n' 
+        return f'* [{link}]({link})\n' 
 
     def get_toc_link(self, title):
         """Generate link that references title on the same doc"""
-        return f'* [{title}](#{title})\n\n'
+        return f'* [{title}](#{title})\n'
 
     def get_h(self, s: str, level=1):
         """Generates markdown string for header of variable level"""
@@ -207,18 +207,22 @@ class AwesomeClient():
             s += self.get_h('Papers', level=3)
             for x in self.mindmap[key]['papers']:
                 s += self.get_link(x)
+                s += '\n'
             s += self.get_h('Articles', level=3)
             for x in self.mindmap[key]['articles']:
                 s += self.get_link(x)
+                s += '\n'
             s += self.get_h('Videos', level=3)
             for x in self.mindmap[key]['videos']:
                 s += self.get_link(x)
+                s += '\n'
 
         # TODO: write a ToC
         toc = ''
         toc += self.get_h('Table of Contents', level=2)
         for key in self.mindmap:
             toc += self.get_toc_link(key)
+        toc += '\n'
 
         return head + toc + s
 

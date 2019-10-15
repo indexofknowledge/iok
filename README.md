@@ -5,11 +5,8 @@ Index of Knowledge (IoK) is a curated collection of resources for blockchain, gr
 ## Table of Contents
 
 * [lightning](#lightning)
-
 * [bitcoin](#bitcoin)
-
 * [math](#math)
-
 * [cs](#cs)
 
 ## lightning
