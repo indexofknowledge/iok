@@ -23,6 +23,8 @@ class ResourceType(IntEnum):
     VIDEO = 3
     PAPER = 4
 
+LINK_TYPES = [ResourceType.ARTICLE, ResourceType.VIDEO, ResourceType.PAPER]
+
 class KnowledgeGraph:
 
     def __init__(self, filename=FILENAME, debug=False):
@@ -86,12 +88,16 @@ class KnowledgeGraph:
         self.graph.add_edge(desc_name, name)
 
 
-    def add_link(self, name, link, type: ResourceType):
+    def add_link(self, name, text, link, type: ResourceType):
         """Adds a link by name of parent"""
         self.__assert_topic_exists(name, 
            "Cannot add, topic {} does not exist".format(name))
         link_name = self.__gen_resource_name(name)
-        self.add_knowledge_node(link_name, NodeType.RESOURCE, link, type)
+        dat = {
+            "text": text,
+            "link": link
+        }
+        self.add_knowledge_node(link_name, NodeType.RESOURCE, dat, type)
         self.graph.add_edge(link_name, name)
 
 
@@ -99,10 +105,10 @@ class KnowledgeGraph:
         self.graph.add_node(name)
         node = self.graph.nodes[name]
         node['node_type'] = node_type
-        if data:
-            node['data'] = data
         if resource_type:
             node['resource_type'] = resource_type
+        if data:
+            node['data'] = data
 
 
     def add_topic(self, name: str, desc: str, parents=[], children=[]):
@@ -177,9 +183,11 @@ class AwesomeClient():
         self.mindmap = dic
         return dic
 
-    def get_link(self, link):
+    def get_link(self, dat):
         # TODO: get separate alt text
-        return f'* [{link}]({link})\n' 
+        text = dat['text']
+        link = dat['link']
+        return f'* [{text}]({link})\n' 
 
     def get_toc_link(self, title):
         """Generate link that references title on the same doc"""

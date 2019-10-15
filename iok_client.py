@@ -16,7 +16,7 @@ try:
     g.add_topic('cs', 'computation and stuff')
     g.add_topic('lightning', 'l2 stuff')
     g.add_topic('bitcoin', 'p2p cash system', parents=['math', 'cs'], children=['lightning'])
-    g.add_link('bitcoin', 'https://bitcoin.org/bitcoin.pdf', ResourceType.PAPER)
+    g.add_link('bitcoin', 'Bitcoin whitepaper', 'https://bitcoin.org/bitcoin.pdf', ResourceType.PAPER)
     g.write_to_file()
     print(g.get_graph().nodes)
 except:

@@ -29,7 +29,7 @@ p2p cash system
 
 ### Papers
 
-* [https://bitcoin.org/bitcoin.pdf](https://bitcoin.org/bitcoin.pdf)
+* [Bitcoin whitepaper](https://bitcoin.org/bitcoin.pdf)
 
 ### Articles
 
