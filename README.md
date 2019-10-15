@@ -1,13 +1,54 @@
 # Index of Knowledge
 
-Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency. From reading through the list of resources for a topic and its dependencies, a user should be fully informed and caught up with the current cutting edge.
+Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency. Currently working to support graph visualization and awesome-list clients. Developers see [dev docs](./DEV.md)
 
-Currently working to support graph visualization and awesome-list clients.
+## lightning
 
-## USAGE
+### Description
 
-To debug, run a local webserver to serve the current directory. This allows the web interface to grab the generated json.
+l2 stuff
 
-```
-python3 -m http.server
-```
+### Papers
+
+### Articles
+
+### Videos
+
+## bitcoin
+
+### Description
+
+p2p cash system
+
+### Papers
+
+[https://bitcoin.org/bitcoin.pdf](https://bitcoin.org/bitcoin.pdf)
+
+### Articles
+
+### Videos
+
+## math
+
+### Description
+
+mathematics is everything
+
+### Papers
+
+### Articles
+
+### Videos
+
+## cs
+
+### Description
+
+computation and stuff
+
+### Papers
+
+### Articles
+
+### Videos
+

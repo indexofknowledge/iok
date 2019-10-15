@@ -10,6 +10,9 @@ from enum import IntEnum
 from logger import logger 
 from iok_helpers import *
 
+# TODO: make this multiline nicer
+DESCRIPTION = "Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency. Currently working to support graph visualization and awesome-list clients. Developers see [dev docs](./DEV.md)"
+
 class NodeType(IntEnum):
     TOPIC = 1
     RESOURCE = 2
@@ -174,26 +177,38 @@ class AwesomeClient():
         self.mindmap = dic
         return dic
 
-    def getMarkdownLink(self, link):
+    def get_link(self, link):
         # TODO: get separate alt text
         return f'[{link}]({link})\n\n' 
-    
+
+    def get_h(self, s: str, level=1):
+        """Generates markdown string for header of variable level"""
+        return '#' * level + ' ' + s + '\n\n'
+
+    def get_s(self, s: str):
+        """Generate markdown string for single line of text"""
+        return f'{s}\n\n'
+
     def build_str(self):
         s = ''
+        s += self.get_h('Index of Knowledge')
+        s += self.get_s(DESCRIPTION)
         for key in self.mindmap:
-            s += '# {}\n\n'.format(key)
-            s += '## Description\n\n'
+            s += self.get_h(key, level=2)
+            s += self.get_h('Description', level=3)
             for x in self.mindmap[key]['descriptions']:
-                s += f'{x}\n\n'
-            s += '## Papers\n\n'
+                s += self.get_s(x)
+            s += self.get_h('Papers', level=3)
             for x in self.mindmap[key]['papers']:
-                s += self.getMarkdownLink(x)
-            s += '## Articles\n\n'
+                s += self.get_link(x)
+            s += self.get_h('Articles', level=3)
             for x in self.mindmap[key]['articles']:
-                s += self.getMarkdownLink(x)
-            s += '## Papers\n\n'
+                s += self.get_link(x)
+            s += self.get_h('Videos', level=3)
             for x in self.mindmap[key]['videos']:
-                s += self.getMarkdownLink(x)
+                s += self.get_link(x)
+
+        # TODO: write a ToC
         return s
 
     def write_to_file(self, filename=AWESOME_FILE):

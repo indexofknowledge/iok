@@ -25,7 +25,7 @@ def encrypt_string(hash_string):
 ####################################  CONFIG #################################### 
 
 FILENAME = 'graph.json'
-AWESOME_FILE = 'awesome-blockchain.md'
+AWESOME_FILE = 'README.md'
 IMG_FILE = 'iok.png'
 
 ####################################  CLASSES #################################### 
