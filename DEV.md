@@ -2,6 +2,11 @@
 
 This is a separate markdown file since we want to display the awesome-list as the main README.
 
+## Notes
+
+* IoK node schema isn't too complicated now, so don't want to implement JSON encoders and classes. We can do everything in python dicts for now. Also want to allow anyone to invent their own schemas and up to the client to decide how to display (incorrect or fail safe up to them)
+* Want to store meta schema somewhere though for ease of dev
+
 ## Python backend 
 
 We write a simple parser that constructs a networkx digraph (optionally via existing graph `graph.json`) and provides methods for manipulation and serialization of the graph.
