@@ -1,0 +1,28 @@
+<!DOCTYPE>
+
+<html>
+
+  <head>
+    <title>IoK PR</title>
+
+  </head>
+
+  <body>
+    <h1>IoK PR</h1>
+    <script type="text/javascript">
+      var myHeaders = new Headers();
+      myHeaders.append('Access-Control-Allow-Origin','*');
+
+      // TODO: set up oath and redirect stuff on Github 
+
+      fetch("https://github.com/login/oauth/authorize", {'mode': 'no-cors'
+      }).then(function (response) {
+          console.log(response)
+          return response
+      }).then(function (json) {
+          console.log(json)
+      });
+    </script>
+  </body>
+
+</html>
