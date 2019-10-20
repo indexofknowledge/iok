@@ -7,7 +7,7 @@
 
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
    
-    <link type="text/css" rel="stylesheet" href="iok.css"/>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/iok.css') }}"/>
 
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
     <script src="https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js"></script>
@@ -63,7 +63,7 @@
     })
   </script>
 
-  <script src="iok.js"></script>
-  <script src="listen.js"></script>
+  <script src="{{ url_for('static', filename='js/iok.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/listen.js') }}"></script>
 
 </html>

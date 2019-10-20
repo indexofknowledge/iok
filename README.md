@@ -5,8 +5,9 @@ Index of Knowledge (IoK) is a curated collection of resources for blockchain, gr
 ## Table of Contents
 
 * [lightning](#lightning)
+* [ethereum](#ethereum)
 * [bitcoin](#bitcoin)
-* [Consensus](#Consensus)
+* [consensus](#consensus)
 * [math](#math)
 * [cs](#cs)
 
@@ -15,6 +16,18 @@ Index of Knowledge (IoK) is a curated collection of resources for blockchain, gr
 ### Description
 
 l2 stuff
+
+### Papers
+
+### Articles
+
+### Videos
+
+## ethereum
+
+### Description
+
+world computer
 
 ### Papers
 
@@ -36,7 +49,7 @@ p2p cash system
 
 ### Videos
 
-## Consensus
+## consensus
 
 ### Description
 
@@ -44,7 +57,7 @@ Reaching agreement
 
 ### Papers
 
-* [HotStuff: BFT Consensus in the Lens of Blockchain](https://arxiv.org/pdf/1803.05069.pdf)
+* [HotStuff: BFT consensus in the Lens of Blockchain](https://arxiv.org/pdf/1803.05069.pdf)
 
 ### Articles
 

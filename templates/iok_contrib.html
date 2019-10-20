@@ -1,0 +1,75 @@
+<!DOCTYPE>
+
+<html>
+
+  <head>
+    <title>IoK PR</title>
+
+  </head>
+
+  <body>
+    <h1>IoK PR</h1>
+
+    <form action="{{ url_for('handle_data') }}" method="post">
+        <p>Please select node type:</p>
+        <div>
+          <!-- TODO: get the actual enums? -->
+          <input type="radio" id="nodeType1"
+           name="nodeType" value="1">
+          <label for="nodeType1">Topic</label>
+          <input type="radio" id="nodeType2"
+           name="nodeType" value="2">
+          <label for="nodeType2">Resource</label>
+        </div>
+        <div>
+          <!-- TODO: get the actual enums? -->
+          <input type="radio" id="resourceType1"
+           name="resourceType" value="1">
+          <label for="resourceType1">Description</label>
+          <input type="radio" id="resourceType2"
+           name="resourceType" value="2">
+          <label for="resourceType2">Article</label>
+          <input type="radio" id="resourceType3"
+           name="resourceType" value="3">
+          <label for="resourceType2">Video</label>
+          <input type="radio" id="resourceType4"
+           name="resourceType" value="4">
+          <label for="resourceType2">Paper</label>
+        </div>
+        <div>
+          <h2>Add Topic</h2>
+          Topic name: <input type="text" name="topicName" value="bitcoin"><br>
+          Topic description: <input type="text" name="topicDescription" value="p2p cash"><br>
+          Parents (space delim): <input type="text" name="parents" value="p2p cash"><br>
+          Children (space delim): <input type="text" name="children" value="p2p cash"><br> <br>
+        </div>
+
+        <div>
+          <h2>Add Resource</h2>
+          Topic name: <input type="text" name="resourceName" value="bitcoin"><br>
+          Description (if applicable): <input type="text" name="resourceDescription" value="p2p cash"><br>
+          Title: <input type="text" name="resourceTitle" value="bitcoin whitepaper"><br>
+          Link: <input type="text" name="resourceLink" value="https://bitcoin.org/bitcoin.pdf"><br> <br>
+        </div>
+        <input type="submit">
+
+
+    </form>
+
+    <!-- <script type="text/javascript">
+      var myHeaders = new Headers();
+      myHeaders.append('Access-Control-Allow-Origin','*');
+
+      // TODO: set up oath and redirect stuff on Github 
+
+      fetch("https://github.com/login/oauth/authorize", {'mode': 'no-cors'
+      }).then(function (response) {
+          console.log(response)
+          return response
+      }).then(function (json) {
+          console.log(json)
+      });
+    </script> -->
+  </body>
+
+</html>
