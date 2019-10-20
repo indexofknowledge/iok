@@ -90,29 +90,34 @@ var setNodeData = (node) => {
     // }
 
     // set link data
-    var ul = document.getElementById('nodelinks');
-    var p = document.getElementById('nodetext')
-    ul.innerHTML = '';
-    p.innerHTML = '';
+    var ulNodeLinks = document.getElementById('nodelinks');
+    var ulNodeDeps = document.getElementById('nodedeps')
+    var pNodeText = document.getElementById('nodetext')
+    ulNodeLinks.innerHTML = '';
+    ulNodeDeps.innerHTML = '';
+    pNodeText.innerHTML = '';
     console.log("Has data")
     for (i = 0; i < neighbors.length; i++) {
         var dataObj = neighbors[i].data()
-        if ("data" in dataObj) {  // RESOURCE
+        if (dataObj.node_type == 1) { // topic is dep
+            var li = document.createElement('li');
+            var depText = document.createTextNode(dataObj.id)
+            li.appendChild(depText)
+            ulNodeDeps.appendChild(li)
+        } else if (dataObj.node_type == 2) { // resource
             data = neighbors[i].data().data
-            if (validURL(data)) {
+            if (dataObj.resource_type == 1) { // desc
+                pNodeText.appendChild(document.createTextNode(data))
+            } else { // link type
                 var li = document.createElement('li');
                 var a = document.createElement('a');
-                var linkText = document.createTextNode(data);
+                var linkText = document.createTextNode(data.text);
                 a.appendChild(linkText);
-                a.title = data;
-                a.href = data;
+                a.title = data.text;
+                a.href = data.link;
                 li.appendChild(a);
-                ul.appendChild(li);
-            } else {
-                p.appendChild(document.createTextNode(data))
+                ulNodeLinks.appendChild(li);
             }
-        } else {  // TITLE
-            console.log("Not listing parent")
         }
     }
 }
