@@ -11,7 +11,7 @@ from logger import logger
 from iok_helpers import *
 
 # TODO: make this multiline nicer
-DESCRIPTION = "Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency. Currently working to support graph visualization and awesome-list clients. Developers see [dev docs](./DEV.md)"
+DESCRIPTION = "The Decentralized Index of Knowledge (DIoK) is a curated collection of resources for blockchain, grouped by topic and ordered by pedagogical dependency. We store data as a graph, allowing programmatic creation of front-ends such as interactive graph visualizations as well as awesome-lists. Users can contribute to the DIoK by using a web-based tool which will fork the IoK, generate corresponding graph data, and make a PR to sync to our copy. For now we’re bootstrapping off of GitHub, but the goal is to integrate with IPFS via a graph database plugin and also layer a reputation system on top to allow users to rate resources. Developers see [dev docs](./DEV.md)"
 
 class NodeType(IntEnum):
     TOPIC = 1

@@ -35,7 +35,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # run flask
-export FLASK_APP=app.py
+export FLASK_APP=main.py
 flask run
 ```
 

@@ -13,7 +13,7 @@ function readTextFile(file, callback) {
     rawFile.send(null);
 }
 
-readTextFile("static/graph.json", function(text){
+readTextFile("/static/graph.json", function(text){
     graphData = JSON.parse(text);
     // change the data format to what cytoscape wants
     var nodes = []
