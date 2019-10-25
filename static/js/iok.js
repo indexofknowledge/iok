@@ -56,11 +56,27 @@ readTextFile("/static/graph.json", function(text){
           }
         },
         {
+          selector: '.selected',
+          style: {
+            'background-color': '#E8747C'
+          } 
+        },
+        {
           selector: '.highlighted',
           style: {
             'background-color': '#75b5aa',
             'line-color': '#75b5aa',
             'target-arrow-color': '#75b5aa',
+            'transition-property': 'background-color, line-color, target-arrow-color',
+            'transition-duration': '0.5s'
+          }
+        },
+        {
+          selector: '.altHighlighted',
+          style: {
+            'background-color': '#E8747C',
+            'line-color': '#E8747C',
+            'target-arrow-color': '#E8747C',
             'transition-property': 'background-color, line-color, target-arrow-color',
             'transition-duration': '0.5s'
           }
