@@ -36,13 +36,13 @@ var notRootFilter = ( el ) => {
 
 var lastRoot = null; // dummy
 var drawDependency = (node) => {
-    console.log("drawDependency")
+    // console.log("drawDependency")
     clearHighlighted();
     lastRoot = node;
     hasCycle = false;
     var graph = calcDepNaive(node, cy.collection());
-    console.log("deps...")
-    console.log(graph)
+    // console.log("deps...")
+    // console.log(graph)
     if (hasCycle) {
         graph.filter(notRootFilter).forEach(setAltHighlighted);
     } else {
@@ -79,7 +79,7 @@ var calcDepNaive = (root, dep) => {
 }
 
 var handleNodeTap = (evt) => {
-    console.log('Node tapped')
+    // console.log('Node tapped')
     var node = evt.target;
     setHighlighted(node);
     setNodeData(node);
@@ -97,10 +97,10 @@ var validURL = (str) => {
 }
 
 var toggleMeta = () => {
-    console.log("TOGGLING META")
+    // console.log("TOGGLING META")
     var resources = cy.nodes('[node_type > 1]')
     if (resources.length == 0) {
-        console.log("No resources found, can't toggle meta")
+        // console.log("No resources found, can't toggle meta")
         return
     }
     var replacementStyle = "none"
@@ -118,7 +118,7 @@ var toggleMeta = () => {
  * @param {*} node 
  */
 var setNodeData = (node) => {
-    console.log("setNodeData")
+    // console.log("setNodeData")
     document.getElementById('nodetitle').innerText = node.data('id');
     if (node.data('subtitle')) {
         document.getElementById('nodesubtitle').innerText = node.data('subtitle');

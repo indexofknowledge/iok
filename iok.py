@@ -7,7 +7,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.readwrite import json_graph
 from enum import IntEnum
-from logger import logger 
+# from logging import logging 
+import logging
 from iok_helpers import *
 
 # TODO: make this multiline nicer
@@ -30,18 +31,18 @@ class KnowledgeGraph:
     def __init__(self, filename=FILENAME, debug=False):
         # get from file 
         if debug:
-            logger.debug("Creating new graph in debug mode...")
+            logging.debug("Creating new graph in debug mode...")
             self.graph = nx.DiGraph()
             return
 
         try:
-            logger.info("Trying to read graph from {}".format(filename))
+            logging.info("Trying to read graph from {}".format(filename))
             self.read_from_file(filename)
         except Exception as e:
-            logger.info("Failed to read from {}".format(filename))
-            logger.debug(e)
+            logging.info("Failed to read from {}".format(filename))
+            logging.debug(e)
             self.graph = nx.DiGraph()
-            logger.info("Creating a new graph")
+            logging.info("Creating a new graph")
         # create new one if not
 
     def write_to_file(self, filename=FILENAME):
@@ -145,7 +146,7 @@ class AwesomeClient():
 
     def build_map(self):
         """Parses the graph and builds a map"""
-        logger.debug("Building map")
+        logging.debug("Building map")
         dic = {}  # XXX: throw it into dict so we can sort it later??
         for name in list(reversed(list(nx.topological_sort(self.knowledge.graph)))):
             node = self.knowledge.graph.nodes[name]
@@ -155,29 +156,29 @@ class AwesomeClient():
                 dic[name]['videos'] = []
                 dic[name]['articles'] = []
                 dic[name]['descriptions'] = []
-                logger.debug(f"Added topic to map: {name}")
+                logging.debug(f"Added topic to map: {name}")
             else:  # NodeType.RESOURCE
                 # put it in parents
-                logger.debug("Adding resource {}".format(name))
+                logging.debug("Adding resource {}".format(name))
                 for parent in self.knowledge.graph.successors(name):
-                    logger.debug(f"{name} has parent {parent}")
+                    logging.debug(f"{name} has parent {parent}")
                     dat = node['data']  # XXX: only desc for now
                     # articles, papers,
                     t = node['resource_type']
-                    logger.debug("Building map for type {}".format(t))
+                    logging.debug("Building map for type {}".format(t))
 
                     if t == ResourceType.PAPER:
                         dic[parent]['papers'].append(dat)
-                        logger.debug("Adding paper")
+                        logging.debug("Adding paper")
                     elif t == ResourceType.VIDEO:
                         dic[parent]['videos'].append(dat)
-                        logger.debug("Adding video")
+                        logging.debug("Adding video")
                     elif t == ResourceType.ARTICLE:
                         dic[parent]['articles'].append(dat)
-                        logger.debug("Adding articles")
+                        logging.debug("Adding articles")
                     elif t == ResourceType.DESCRIPTION:
                         dic[parent]['descriptions'].append(dat)
-                        logger.debug("Adding description")
+                        logging.debug("Adding description")
 
 
         self.mindmap = dic

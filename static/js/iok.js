@@ -20,12 +20,12 @@ readTextFile("/static/graph.json", function(text){
     for (var i = 0; i < graphData.nodes.length; i++) {
         nodes[i] = {"data": graphData.nodes[i]}
     }
-    console.log(nodes)
+    // console.log(nodes)
     var edges = []
     for (var i = 0; i < graphData.links.length; i++) {
         edges[i] = {"data": graphData.links[i]}
     }
-    console.log(edges)
+    // console.log(edges)
 
     var cy = window.cy = cytoscape({
       container: document.getElementById('cy'),
@@ -36,7 +36,6 @@ readTextFile("/static/graph.json", function(text){
       layout: {
         name: 'dagre'
       },
-
       style: [
         {
           selector: 'node',
@@ -91,6 +90,6 @@ readTextFile("/static/graph.json", function(text){
 
     // LISTEN
     cy.on('tap', 'node', handleNodeTap);
-    console.log('Add node tap listener')
+    // console.log('Add node tap listener')
 
 });

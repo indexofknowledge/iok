@@ -1,4 +1,5 @@
 .vscode
+.env
 output.log
 graph_output.log*
 __pycache__/

@@ -3,18 +3,24 @@
 <html>
 
   <head>
-    <title>cytoscape-dagre.js demo</title>
+    <title>Index of Knowledge</title>
 
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
    
     <link type="text/css" rel="stylesheet" href="/static/css/iok.css"/>
+
+     <!-- Compiled and minified CSS -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+     <!-- Compiled and minified JavaScript -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+             
 
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
     <script src="https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js"></script>
     <script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-dagre/1.5.0/cytoscape-dagre.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.5.11/split.min.js"></script>
-
   </head>
 
   <body>
@@ -26,35 +32,39 @@
     <div id="right" class="split split-horizontal">
         <div id="cytext" class="split text content">
             <div>
-                <h1>Index of Knowledge</h3>
-                <h2 id="nodetitle">Overview</h5>
+                <h2>Index of Knowledge</h2>
+                <h3 id="nodetitle">Overview</h3>
         
                 <div>
-                  <h3>Description</h3>
+                  <h5>Description</h5>
                   <p id="nodetext">
-                      placeholder text
+                    Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency.
                   </p>
                 </div>
         
                 <div>
                   <!-- TODO: granularity about link/resource type -->
-                  <h3>Links</h3>
+                  <h5>Links</h5>
                   <ul id="nodelinks">
-                      <li><a href=".">placeholder link</a></li>
+                      <li><a href=".">Resource links appear here!</a></li>
                   </ul>
                 </div>
 
                 <div>
                   <!-- TODO: granularity about link/resource type -->
-                  <h3>Dependencies</h3>
+                  <h5>Dependencies</h5>
                   <ul id="nodedeps">
                       <li>placeholder dep</li>
                   </ul>
                 </div>
 
                 <div>
-                  <h3>Misc IoK</h3>
+                  <h5>Misc IoK</h5>
                   <button onclick="toggleMeta()">Toggle meta graph</button>
+                  <a href="./login">
+                    <button>Contribute</button>
+                  </a>
+                 <button onclick="cy.fit()">Recenter graph</button>
                 </div>
           
               </div>
@@ -67,7 +77,8 @@
   <script>
     Split(['#left', '#right'], {
         gutterSize: 8,
-        cursor: 'col-resize'
+        cursor: 'col-resize',
+        // onDragEnd: sizes => cy.fit()  // TODO: this is pretty glitchy
     })
   </script>
 
