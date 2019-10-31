@@ -40,8 +40,8 @@ def main():
     document = service.documents().get(documentId=DOCUMENT_ID).execute()
 
     print('The title of the document is: {}'.format(document.get('title')))
-    print(document.get('body'))
-
+    with open('iok_cache_body.txt', 'w') as f:
+        f.write(document.get('body'))
 
 if __name__ == '__main__':
     main()
