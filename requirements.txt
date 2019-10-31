@@ -1,3 +1,4 @@
+cachetools==3.1.1
 certifi==2019.9.11
 chardet==3.0.4
 Click==7.0
@@ -5,7 +6,12 @@ cycler==0.10.0
 decorator==4.4.0
 Flask==1.1.1
 GitHub-Flask==3.2.0
+google-api-python-client==1.7.11
+google-auth==1.6.3
+google-auth-httplib2==0.0.3
+google-auth-oauthlib==0.4.1
 gunicorn==19.9.0
+httplib2==0.14.0
 idna==2.8
 itsdangerous==1.1.0
 Jinja2==2.10.3
@@ -14,11 +20,17 @@ MarkupSafe==1.1.1
 matplotlib==3.1.1
 networkx==2.4
 numpy==1.17.3
+oauthlib==3.1.0
+pyasn1==0.4.7
+pyasn1-modules==0.2.7
 pyparsing==2.4.2
 python-dateutil==2.8.0
 python-dotenv==0.10.3
 requests==2.22.0
+requests-oauthlib==1.2.0
+rsa==4.0
 six==1.12.0
+uritemplate==3.0.0
 urllib3==1.25.6
 uWSGI==2.0.18
 Werkzeug==0.16.0

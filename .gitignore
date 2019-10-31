@@ -4,3 +4,5 @@ output.log
 graph_output.log*
 __pycache__/
 venv/
+credentials.json
+token.pickle
