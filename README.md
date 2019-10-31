@@ -1,6 +1,6 @@
 # Index of Knowledge
 
-Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency. Currently working to support graph visualization and awesome-list clients. Developers see [dev docs](./DEV.md)
+Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency. Currently working to support graph visualization and awesome-list clients. Developers see [dev docs](./README-dev.md)
 
 ## Table of Contents
 
