@@ -9,21 +9,117 @@
    
     <link type="text/css" rel="stylesheet" href="/static/css/iok.css"/>
 
-     <!-- Compiled and minified CSS -->
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
-     <!-- Compiled and minified JavaScript -->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-             
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+                
 
     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
     <script src="https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js"></script>
     <script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-dagre/1.5.0/cytoscape-dagre.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.5.11/split.min.js"></script>
+
+    <script type="text/javascript">
+      var displayTopicResource = () => {
+          if (document.getElementById('nodeType1').checked) {
+              document.getElementById('addTopic').style.display = 'block';
+              document.getElementById('addResource').style.display = 'none';
+              document.getElementById('selectResource').style.display = 'none';
+          } else if (document.getElementById('nodeType2').checked) {
+              document.getElementById('addTopic').style.display = 'none';
+              document.getElementById('addResource').style.display = 'block';
+              document.getElementById('selectResource').style.display = 'block'
+              if (document.getElementById('resourceType1').checked) {
+                document.getElementById('addDescription').style.display = 'block';
+                document.getElementById('addTitleLink').style.display = 'none';
+              } else {
+                document.getElementById('addDescription').style.display = 'none';
+                document.getElementById('addTitleLink').style.display = 'block';
+              }
+          }
+      }
+      </script>
   </head>
 
   <body>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">IoK PR</h4>
+          </div>
+
+          <div class="modal-body">
+            <form action="{{ url_for('handle_data') }}" method="post">
+                <p>Please select node type:</p>
+                <div id="selectTopic" onclick="displayTopicResource()">
+                  <!-- TODO: get the actual enums? -->
+                  <input type="radio" id="nodeType1"
+                  name="nodeType" value="1">
+                  <label for="nodeType1">Topic</label>
+                  <input type="radio" id="nodeType2"
+                  name="nodeType" value="2">
+                  <label for="nodeType2">Resource</label>
+                </div>
+                <div id="selectResource" onclick="displayTopicResource()">
+                  <!-- TODO: get the actual enums? -->
+                  <input type="radio" id="resourceType1"
+                  name="resourceType" value="1">
+                  <label for="resourceType1">Description</label>
+                  <input type="radio" id="resourceType2"
+                  name="resourceType" value="2">
+                  <label for="resourceType2">Article</label>
+                  <input type="radio" id="resourceType3"
+                  name="resourceType" value="3">
+                  <label for="resourceType2">Video</label>
+                  <input type="radio" id="resourceType4"
+                  name="resourceType" value="4">
+                  <label for="resourceType2">Paper</label>
+                </div>
+                <div id="addTopic">
+                  <h4>Add Topic</h4>
+                  Topic name: <input type="text" name="topicName" value=""><br>
+                  Topic description: <input type="text" name="topicDescription" value=""><br>
+                  Parents (space delim): <input type="text" name="parents" value=""><br>
+                  Children (space delim): <input type="text" name="children" value=""><br> <br>
+                </div>
+
+                <div id="addResource">
+                  <h4>Add Resource</h4>
+                    <div id="adddTopic" class="autocomplete">
+                      Topic name: <input name="resourceName" value="">
+                    </div>
+                  <div id="addDescription">
+                    Description: <input type="text" name="resourceDescription" value="">
+                  </div>
+                  <div id="addTitleLink">
+                    Title: <input type="text" name="resourceTitle" value=""><br>
+                    Link: <input type="text" name="resourceLink" value="">
+                  </div>
+                </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <input type="submit" class="btn btn-default" data-dismiss="modal">
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
     <div id="left" class="split split-horizontal">
         <div id="cy" class="split content">
@@ -60,11 +156,18 @@
 
                 <div>
                   <h5>Misc IoK</h5>
-                  <button onclick="toggleMeta()">Toggle meta graph</button>
-                  <a href="./login">
-                    <button>Contribute</button>
-                  </a>
-                 <button onclick="cy.fit()">Recenter graph</button>
+                  <button class="btn btn-info btn-lg" onclick="toggleMeta()">Toggle meta graph</button>
+                  <button class="btn btn-info btn-lg" onclick="cy.fit()">Recenter graph</button>
+             
+                  {% if contribute_mode %}
+                    <!-- Trigger the modal with a button -->
+                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
+                  {% else %}
+                    <a href="./login">
+                      <button class="btn btn-info btn-lg">Authenticate</button>
+                    </a>
+                  {% endif %}
+                  
                 </div>
           
               </div>
@@ -84,5 +187,12 @@
 
   <script src="/static/js/iok.js"></script>
   <script src="/static/js/listen.js"></script>
+  <script src="/static/js/autocomplete.js"></script>
+
+  <script>
+    var countries = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Central Arfrican Republic","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cuba","Curacao","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauro","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","North Korea","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia","Turkey","Turkmenistan","Turks &amp; Caicos","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States of America","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"];
+
+      autocomplete(document.getElementById("parents"), countries);
+  </script>
 
 </html>

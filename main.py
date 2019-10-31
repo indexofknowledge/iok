@@ -52,7 +52,7 @@ def login():
 def contribute(oauth_token):
     if oauth_token is None:
         return redirect(url_for('login'))
-    return render_template('iok_contrib.html')
+    return render_template('iok.html', contribute_mode=True)
 
 @app.route('/graph')
 def get_graph():
