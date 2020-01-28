@@ -5,6 +5,7 @@ import Split from 'react-split'
 
 import NavBar from './NavBar'
 import IokGraph from './IokGraph'
+import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME } from './constants'
 import './styles/SignedIn.css'
 
@@ -82,7 +83,7 @@ class SignedIn extends Component {
             gutterStyle={function(dimension, gutterSize) { // override somehow
               return {
                   'width': '8px',
-                  'height': '1000px',
+                  'height': '90vh',
                 }
             }}
             minSize={100}
@@ -94,13 +95,14 @@ class SignedIn extends Component {
             direction="horizontal"
             cursor="col-resize"
         >
+            {/* first split */}
             <div className="split split-horizontal">
-              <div className="graph-parent">
-                <IokGraph className="split content"></IokGraph>
-              </div>
+              <IokGraph className="split content"></IokGraph>
             </div>
+
+            {/* second split */}
             <div className="split split-horizontal">
-                <p className="split content">HELLO1</p> 
+              <IokText className="split content"></IokText>
             </div>
         </Split>
       </div>

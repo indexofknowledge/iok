@@ -1,7 +1,8 @@
-.graph {
+.iok-text {
     height: 90vh;
     width: 100%;
     margin: 0%;
+    background-color: blueviolet;
     /* position: absolute;
     left: 0;
     top: 0;
