@@ -1,0 +1,50 @@
+html,
+body {
+    height: 100%;
+    margin: 0%;
+}
+
+body {
+    box-sizing: border-box;
+    background-color: #F6F6F6;
+}
+
+.split {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.content {
+    background-color: #fff;
+    height: 100%;
+    width: 100%;
+}
+
+.text {
+  padding: 5%;
+  background-color: #F6F6F6;
+}
+
+.gutter {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-color: black;
+}
+
+.gutter.gutter-horizontal {
+    cursor: col-resize;
+}
+
+.gutter.gutter-vertical {
+    cursor: row-resize;
+}
+
+.split.split-horizontal,
+.gutter.gutter-horizontal {
+    height: 100%;
+    float: left;
+}
