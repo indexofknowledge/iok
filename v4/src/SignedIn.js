@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import { UserSession } from 'blockstack'
 import Split from 'react-split'
 
@@ -8,6 +8,8 @@ import IokGraph from './IokGraph'
 import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME } from './constants'
 import './styles/SignedIn.css'
+
+import { RegisterCy, registerNodeTap, recenterCy, toggleMeta } from './listen'
 
 class SignedIn extends Component {
 
@@ -26,9 +28,8 @@ class SignedIn extends Component {
     this.loadGraph = this.loadGraph.bind(this)
     this.saveGraph = this.saveGraph.bind(this)
     this.signOut = this.signOut.bind(this)
-  }
 
-  componentWillMount() {
+    // only want to do this once
     console.log("Loading data from Gaia...")
     this.loadGraph()
   }
@@ -40,11 +41,14 @@ class SignedIn extends Component {
       if(content) {
         const graph = JSON.parse(content)
         console.log('Loaded data:', graph)
-
-        // graph has dummy default style. get rid of it
+        // graph has dummy default values. get rid of it
         if (!graph.style || graph.style.length <= 1) {
           graph.style = null
         }
+        if (!graph.elements || graph.elements.length < 1) {
+          graph.elements = null
+        }
+
         this.setState({
           graphElements: graph.elements, 
           graphStyles: graph.style, 
@@ -108,12 +112,20 @@ class SignedIn extends Component {
                 styles={this.state.graphStyles}
                 saveGraph={this.saveGraph} 
                 key={this.state.graphElements}
+                cyRegCallback={(c) => {
+                  RegisterCy(c);
+                  registerNodeTap();
+                }}
               />
             </div>
 
             {/* second split */}
             <div className="split split-horizontal">
-              <IokText className="split content"></IokText>
+              <IokText 
+                className="split content"
+                onRecenterClick={recenterCy}
+                onMetaClick={toggleMeta}
+              />
             </div>
         </Split>
       </div>

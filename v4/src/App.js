@@ -10,9 +10,8 @@ class App extends Component {
   constructor() {
     super()
     this.userSession = new UserSession()
-  }
 
-  componentWillMount() {
+    // moved from deprecated
     const session = this.userSession
     if(!session.isUserSignedIn() && session.isSignInPending()) {
       session.handlePendingSignIn()

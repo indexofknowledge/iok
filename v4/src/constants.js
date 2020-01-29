@@ -8,40 +8,162 @@ export const IOKS = []
 
 export const DEFL_GRAPH_ELEMENTS = {
     nodes: [
-      { data: { id: 'n0' } },
-      { data: { id: 'n1' } },
-      { data: { id: 'n2' } },
-      { data: { id: 'n3' } },
-      { data: { id: 'n4' } },
-      { data: { id: 'n5' } },
-      { data: { id: 'n6' } },
-      { data: { id: 'n7' } },
-      { data: { id: 'n8' } },
-      { data: { id: 'n9' } },
-      { data: { id: 'n10' } },
-      { data: { id: 'n11' } },
-      { data: { id: 'n12' } },
-      { data: { id: 'n13' } },
-      { data: { id: 'n14' } },
-      { data: { id: 'n15' } },
-      { data: { id: 'n16' } }
+      {
+        node_type: 1,
+        id: "math"
+      },
+      {
+        node_type: 2,
+        resource_type: 1,
+        data: "mathematics is everything",
+        id: "math-SxerygqAlP"
+      },
+      {
+        node_type: 1,
+        id: "computer science"
+      },
+      {
+        node_type: 2,
+        resource_type: 1,
+        data: "computation and stuff",
+        id: "computer science-XbIEkFXLeK"
+      },
+      {
+        node_type: 1,
+        id: "lightning"
+      },
+      {
+        node_type: 2,
+        resource_type: 1,
+        data: "l2 stuff",
+        id: "lightning-tInnovoGad"
+      },
+      {
+        node_type: 1,
+        id: "bitcoin"
+      },
+      {
+        node_type: 2,
+        resource_type: 1,
+        data: "p2p cash system",
+        id: "bitcoin-xuRUTzrbxp"
+      },
+      {
+        node_type: 2,
+        resource_type: 4,
+        data: {
+          text: "Bitcoin whitepaper",
+          link: "https://bitcoin.org/bitcoin.pdf"
+        },
+        id: "bitcoin-CPLBbVvBQn"
+      },
+      {
+        node_type: 1,
+        id: "consensus"
+      },
+      {
+        node_type: 2,
+        resource_type: 1,
+        data: "Reaching agreement",
+        id: "consensus-xoQEedvZlT"
+      },
+      {
+        node_type: 2,
+        resource_type: 4,
+        data: {
+          text: "HotStuff: BFT consensus in the Lens of Blockchain",
+          link: "https://arxiv.org/pdf/1803.05069.pdf"
+        },
+        id: "consensus-qrRDufajjA"
+      },
+      {
+        node_type: 1,
+        id: "ethereum"
+      },
+      {
+        node_type: 2,
+        resource_type: 1,
+        data: "world computer",
+        id: "ethereum-dCPDaweKhB"
+      },
+      {
+        node_type: 2,
+        resource_type: 2,
+        data: {
+          text: "How Bitcoin Works in 5 Minutes (Technical)",
+          link: "https://www.youtube.com/watch?v=l9jOJk30eQs"
+        },
+        id: "bitcoin-nOZtIZERDi"
+      }
     ],
-    edges: [
-      { data: { source: 'n0', target: 'n1' } },
-      { data: { source: 'n1', target: 'n2' } },
-      { data: { source: 'n1', target: 'n3' } },
-      { data: { source: 'n4', target: 'n5' } },
-      { data: { source: 'n4', target: 'n6' } },
-      { data: { source: 'n6', target: 'n7' } },
-      { data: { source: 'n6', target: 'n8' } },
-      { data: { source: 'n8', target: 'n9' } },
-      { data: { source: 'n8', target: 'n10' } },
-      { data: { source: 'n11', target: 'n12' } },
-      { data: { source: 'n12', target: 'n13' } },
-      { data: { source: 'n13', target: 'n14' } },
-      { data: { source: 'n13', target: 'n15' } },
+    links: [
+      {
+        source: "math",
+        target: "bitcoin"
+      },
+      {
+        source: "math",
+        target: "consensus"
+      },
+      {
+        source: "math-SxerygqAlP",
+        target: "math"
+      },
+      {
+        source: "computer science",
+        target: "bitcoin"
+      },
+      {
+        source: "computer science",
+        target: "consensus"
+      },
+      {
+        source: "computer science-XbIEkFXLeK",
+        target: "computer science"
+      },
+      {
+        source: "lightning-tInnovoGad",
+        target: "lightning"
+      },
+      {
+        source: "bitcoin",
+        target: "lightning"
+      },
+      {
+        source: "bitcoin",
+        target: "ethereum"
+      },
+      {
+        source: "bitcoin-xuRUTzrbxp",
+        target: "bitcoin"
+      },
+      {
+        source: "bitcoin-CPLBbVvBQn",
+        target: "bitcoin"
+      },
+      {
+        source: "consensus",
+        target: "bitcoin"
+      },
+      {
+        source: "consensus-xoQEedvZlT",
+        target: "consensus"
+      },
+      {
+        source: "consensus-qrRDufajjA",
+        target: "consensus"
+      },
+      {
+        source: "ethereum-dCPDaweKhB",
+        target: "ethereum"
+      },
+      {
+        source: "bitcoin-nOZtIZERDi",
+        target: "bitcoin"
+      }
     ]
   }
+
 
 export const DEFL_GRAPH_STYLE = [
     {

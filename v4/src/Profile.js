@@ -44,7 +44,7 @@ export default class Profile extends Component {
     );
   }
 
-  componentWillMount() {
+  componentDidUpdate() {
     const { userSession } = this.props;
     this.setState({
       person: new Person(userSession.loadUserData().profile),

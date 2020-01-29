@@ -1,8 +1,9 @@
 .iok-text {
+    padding: 10%;
     height: 90vh;
     width: 100%;
     margin: 0%;
-    background-color: blueviolet;
+    background-color: gray;
     /* position: absolute;
     left: 0;
     top: 0;

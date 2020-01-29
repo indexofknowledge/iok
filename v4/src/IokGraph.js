@@ -17,12 +17,15 @@ export default class IokGraph extends Component {
     this.saveGraph = this.props.saveGraph
     this.elements = this.props.elements ? this.props.elements : DEFL_GRAPH_ELEMENTS
     this.styles = this.props.styles ? this.props.styles : DEFL_GRAPH_STYLE
-    this.state = {
-      cyLoaded: false,
-      cy: null
-    }
+    this.cy = null
+    this.cyRegCallback = this.props.cyRegCallback
+    // !!! FOR DEBUGGING ONLY !!!
+    // this.saveGraph({ elements: this.elements, style: this.styles })
   }
 
+  handleNodeTap() {
+    console.log("TAPPED NODE")
+  }
 
   render() {
     return (
@@ -31,6 +34,11 @@ export default class IokGraph extends Component {
         elements={CytoscapeComponent.normalizeElements(this.elements)} 
         stylesheet={this.styles}
         layout={layout} 
+        cy={(cy) => { 
+          this.cy = cy;
+          this.cyRegCallback(cy);
+          // this.cy.on('tap', 'node', this.handleNodeTap);
+        }}
       /> 
     );
   }
