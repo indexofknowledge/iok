@@ -15,46 +15,53 @@ class SignedIn extends Component {
     super(props)
     this.userSession = new UserSession({ appConfig })
     this.state = {
-      me: {},
-      savingMe: false,
-      savingKingdown: false,
-      redirectToMe: false
+      graphElements: [], // tricky
+      graphStyles: {},
+      savingGraph: false,
+      gotGraph: false,
       //selectedAnimal: false,
       //selectedTerritory: false
     }
 
-    this.loadMe = this.loadMe.bind(this)
-    this.saveMe = this.saveMe.bind(this)
+    this.loadGraph = this.loadGraph.bind(this)
+    this.saveGraph = this.saveGraph.bind(this)
     this.signOut = this.signOut.bind(this)
   }
 
   componentWillMount() {
-    this.loadMe()
+    console.log("Loading data from Gaia...")
+    this.loadGraph()
   }
 
-  loadMe() {
+  loadGraph() {
     const options = { decrypt: false }
     this.userSession.getFile(GRAPH_FILENAME, options)
     .then((content) => {
       if(content) {
-        const me = JSON.parse(content)
-        console.log('Loaded data:', me)
-        this.setState({me, redirectToMe: false})
+        const graph = JSON.parse(content)
+        console.log('Loaded data:', graph)
+
+        // graph has dummy default style. get rid of it
+        if (!graph.style || graph.style.length <= 1) {
+          graph.style = null
+        }
+        this.setState({
+          graphElements: graph.elements, 
+          graphStyles: graph.style, 
+          gotGraph: true
+        })
       } else {
-        console.error('Failed to load data')
-        const me = {val: "val123"}
-        this.saveMe(me)
-        this.setState({me, redirectToMe: true})
+        alert('Failed to get graph data...')
       }
     })
   }
 
-  saveMe(me) {
-    this.setState({me, savingMe: true})
+  saveGraph(graph) {
+    this.setState({graph, savingGraph: true})
     const options = { encrypt: false }
-    this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(me), options)
+    this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(graph), options)
     .finally(() => {
-      this.setState({savingMe: false, redirectToMe: false})
+      this.setState({savingGraph: false, gotGraph: false})
     })
   }
 
@@ -66,8 +73,6 @@ class SignedIn extends Component {
 
   render() {
     const username = this.userSession.loadUserData().username
-    const me = this.state.me
-    const redirectToMe = this.state.redirectToMe
 
     if(window.location.pathname === '/') {
       return (
@@ -97,7 +102,13 @@ class SignedIn extends Component {
         >
             {/* first split */}
             <div className="split split-horizontal">
-              <IokGraph className="split content"></IokGraph>
+              <IokGraph 
+                className="split content"
+                elements={this.state.graphElements} 
+                styles={this.state.graphStyles}
+                saveGraph={this.saveGraph} 
+                key={this.state.graphElements}
+              />
             </div>
 
             {/* second split */}
