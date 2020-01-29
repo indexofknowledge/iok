@@ -9,6 +9,11 @@ export var registerCy = (c) => {
     console.log("Registered cy", c)
 }
 
+// returns registered cy
+export var getCy = () => {
+    return cy
+}
+
 // simple wrapper to allow users to swap out what happens on click
 export var registerNodeTap = (onclick) => {
     cy.on('tap', 'node', onclick)
@@ -25,6 +30,22 @@ export var highlightNodeDepsOnClick = (evt) => {
 
 export var recenterCy = () => {
     cy.fit()
+}
+
+export var regroupCy = () => {
+    var layout = cy.layout({
+        name: 'cola',
+        padding: 150
+    });
+    layout.run();
+}
+
+export var dagify = () => {
+    var layout = cy.layout({
+        name: 'dagre',
+        padding: 150
+    });
+    layout.run();
 }
 
 export var toggleMeta = () => {
@@ -116,15 +137,15 @@ var calcDepNaive = (root, dep) => {
     return dep
 }
 
-var validURL = (str) => {
-    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-    return !!pattern.test(str);
-}
+// var validURL = (str) => {
+//     var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+//       '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+//       '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+//       '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+//       '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+//       '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+//     return !!pattern.test(str);
+// }
 
 /**
  * Set node data to HMTL

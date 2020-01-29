@@ -7,6 +7,8 @@ export default class IokText extends Component {
     super(props)
     this.onMetaClick = this.props.onMetaClick ? this.props.onMetaClick : () => console.log("Meta Clicked")
     this.onRecenterClick = this.props.onRecenterClick ? this.props.onRecenterClick : () => console.log("Recenter Clicked")
+    this.onRegroupClick = this.props.onRegroupClick
+    this.onDagifyClick = this.props.onDagifyClick
     this.onSaveClick = this.props.onSaveClick
     this.onDeleteClick = this.props.onDeleteClick
   }
@@ -43,9 +45,11 @@ export default class IokText extends Component {
                 <div>
                   <h5>Misc IoK</h5>
                   <button className="btn btn-info btn-lg" onClick={this.onMetaClick}>Toggle meta graph</button>
-                  <button className="btn btn-info btn-lg" onClick={this.onRecenterClick}>Recenter graph</button>
-                  <button className="btn btn-info btn-lg" onClick={this.onSaveClick}>Save graph</button>
-                  <button className="btn btn-info btn-lg" onClick={this.onDeleteClick}>Delete graph</button>
+                  <button className="btn btn-info btn-lg" onClick={this.onRecenterClick}>Recenter</button>
+                  <button className="btn btn-info btn-lg" onClick={this.onRegroupClick}>Regroup</button>
+                  <button className="btn btn-info btn-lg" onClick={this.onDagifyClick}>Dagify</button>
+                  <button className="btn btn-info btn-lg" onClick={this.onSaveClick}>Save</button>
+                  <button className="btn btn-info btn-lg" onClick={this.onDeleteClick}>Delete</button>
                 </div>
             </div>
         </div>

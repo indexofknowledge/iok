@@ -9,7 +9,9 @@ import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
 import './styles/SignedIn.css'
 
-import { registerCy, registerNodeTap, recenterCy, toggleMeta, highlightNodeDepsOnClick } from './listen'
+import { registerCy, getCy, registerNodeTap, dagify, recenterCy, regroupCy, toggleMeta, highlightNodeDepsOnClick } from './listen'
+
+const TAG = 'SignedIn'
 
 class SignedIn extends Component {
 
@@ -18,8 +20,8 @@ class SignedIn extends Component {
     this.userSession = new UserSession({ appConfig })
     this.state = {
       // tricky with how react detects change, so store graph as eles and styles
-      graphElements: [], 
-      graphStyles: {},
+      graphElements: DEFL_GRAPH_ELEMENTS, 
+      graphStyles: DEFL_GRAPH_STYLE,
       savingGraph: false,
       gotGraph: false,
       //selectedAnimal: false,
@@ -32,7 +34,7 @@ class SignedIn extends Component {
     this.signOut = this.signOut.bind(this)
 
     // only want to do this once
-    console.log("Loading data from Gaia...")
+    console.log(TAG, "Loading data from Gaia...")
     this.loadGraph()
   }
 
@@ -40,15 +42,15 @@ class SignedIn extends Component {
     const options = { decrypt: false }
     this.userSession.getFile(GRAPH_FILENAME, options)
     .then((content) => {
-      if(content) {
+      if(content && content.length > 0) {
         const graph = JSON.parse(content)
-        console.log('Loaded data:', graph)
+        console.log(TAG, 'Loaded data:', graph)
         // graph has dummy default values. get rid of it
         if (!graph.style || graph.style.length <= 1) {
-          graph.style = null
+          graph.style = DEFL_GRAPH_STYLE
         }
         if (!graph.elements || graph.elements.length < 1) {
-          graph.elements = null
+          graph.elements = DEFL_GRAPH_ELEMENTS
         }
 
         this.setState({
@@ -57,6 +59,7 @@ class SignedIn extends Component {
           gotGraph: true
         })
       } else {
+        console.log(TAG, 'Failed to get graph data...')
         alert('Failed to get graph data...')
         this.setState({
           graphElements: DEFL_GRAPH_ELEMENTS,
@@ -68,13 +71,15 @@ class SignedIn extends Component {
   }
 
   saveGraph() {
-    this.setState({savingGraph: true})
+    // this.setState({savingGraph: true})
     const options = { encrypt: false }
-    var graph = {elements: this.state.graphElements, style: this.state.graphStyles}
-    console.log("SAVING...", graph)
+    var cy = getCy()
+    var graph = cy.json()
+    // var graph = {elements: this.state.graphElements, style: this.state.graphStyles}
+    console.log(TAG, "SAVING...", graph)
     this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(graph), options)
     .finally(() => {
-      this.setState({savingGraph: false})
+      // this.setState({savingGraph: false})
     })
   }
 
@@ -145,6 +150,8 @@ class SignedIn extends Component {
               <IokText 
                 className="split content"
                 onRecenterClick={recenterCy}
+                onRegroupClick={regroupCy}
+                onDagifyClick={dagify}
                 onMetaClick={toggleMeta}
                 onSaveClick={this.saveGraph}
                 onDeleteClick={this.deleteGraph}

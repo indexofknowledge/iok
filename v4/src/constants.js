@@ -229,7 +229,7 @@ export const DEFL_GRAPH_ELEMENTS = {
 
 export const DEFL_GRAPH_STYLE = [
     {
-      selector: 'node',
+      selector: 'node[id]',
       style: {
         'background-color': '#11479e',
         'content': 'data(id)'
@@ -269,6 +269,56 @@ export const DEFL_GRAPH_STYLE = [
         'target-arrow-color': '#E8747C',
         'transition-property': 'background-color, line-color, target-arrow-color',
         'transition-duration': '0.5s'
+      }
+    },
+
+    // BEGIN EH STYLING
+  
+    {
+      selector: '.eh-handle',
+      style: {
+        'background-color': 'red',
+        'width': 12,
+        'height': 12,
+        'shape': 'ellipse',
+        'overlay-opacity': 0,
+        'border-width': 12, // makes the handle easier to hit
+        'border-opacity': 0
+      }
+    },
+    {
+      selector: '.eh-hover',
+      style: {
+        'background-color': 'red'
+      }
+    },
+    {
+      selector: '.eh-source',
+      style: {
+        'border-width': 2,
+        'border-color': 'red'
+      }
+    },
+    {
+      selector: '.eh-target',
+      style: {
+        'border-width': 2,
+        'border-color': 'red'
+      }
+    },
+    {
+      selector: '.eh-preview, .eh-ghost-edge',
+      style: {
+        'background-color': 'red',
+        'line-color': 'red',
+        'target-arrow-color': 'red',
+        'source-arrow-color': 'red'
+      }
+    },
+    {
+      selector: '.eh-ghost-edge.eh-preview-active',
+      style: {
+        'opacity': 0
       }
     }
   ]

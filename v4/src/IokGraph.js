@@ -1,21 +1,28 @@
 import React, { Component } from 'react';
 import Cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
+import cola from 'cytoscape-cola'
+import edgehandles from 'cytoscape-edgehandles'
 import CytoscapeComponent from 'react-cytoscapejs';
 
-import { DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
+import { regroupCy } from './listen'
+
 import './styles/IokGraph.css'
 
+Cytoscape.use(cola)
 Cytoscape.use(dagre)
+Cytoscape.use(edgehandles)
 
-const layout = { name: 'dagre' };
+const layout = { name: 'cola' };
+
+const TAG = 'IokGraph'
 
 export default class IokGraph extends Component {
 
   constructor(props) {
     super(props)
     this.saveGraph = this.props.saveGraph
-    console.log("GOT:", this.props.elements)
+    console.log(TAG, "constructing:", this.props.elements)
     // this.elements = this._isNotEmpty(this.props.elements) ? this.props.elements : DEFL_GRAPH_ELEMENTS
     // this.styles = this._isNotEmpty(this.props.styles) ? this.props.styles : DEFL_GRAPH_STYLE
     this.elements = this.props.elements
@@ -31,7 +38,20 @@ export default class IokGraph extends Component {
   }
 
   handleNodeTap() {
-    console.log("TAPPED NODE")
+    console.log(TAG, "TAPPED NODE")
+  }
+
+  registerEdgeHandles(cy) {
+    var eh = cy.edgehandles({preview: false});
+    eh.enableDrawMode()
+    cy.on('ehcomplete', (event, sourceNode, targetNode, addedEles) => {
+      // let { position } = event;
+      console.log(TAG, "Added edge...")
+      console.log(TAG, "source:", sourceNode)
+      console.log(TAG, "target:", targetNode)
+      console.log(TAG, "eles:", cy.elements().length)
+      // console.log(TAG, cy.nodes().length)
+    });
   }
 
   render() {
@@ -42,10 +62,22 @@ export default class IokGraph extends Component {
         stylesheet={this.styles}
         layout={layout} 
         cy={(cy) => { 
+          if (this.cy) {
+            this.cy.elements().remove()
+            console.log(TAG, "REMOVED DATA... RESET!")
+            console.log(TAG, this.elements)
+            this.cy.json({
+              elements: this.elements,
+              style: this.styles,
+              layout: layout
+            })
+          }
           this.cy = cy;
           this.cyRegCallback(cy);
-          cy.fit(); // for now...
-          // this.cy.on('tap', 'node', this.handleNodeTap);
+          this.registerEdgeHandles(cy);
+          return new Promise(() => {
+            regroupCy()
+          })
         }}
       /> 
     );
