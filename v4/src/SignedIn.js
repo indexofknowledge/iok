@@ -6,7 +6,7 @@ import Split from 'react-split'
 import NavBar from './NavBar'
 import IokGraph from './IokGraph'
 import IokText from './IokText'
-import { appConfig, GRAPH_FILENAME } from './constants'
+import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
 import './styles/SignedIn.css'
 
 import { registerCy, registerNodeTap, recenterCy, toggleMeta, highlightNodeDepsOnClick } from './listen'
@@ -17,7 +17,8 @@ class SignedIn extends Component {
     super(props)
     this.userSession = new UserSession({ appConfig })
     this.state = {
-      graphElements: [], // tricky
+      // tricky with how react detects change, so store graph as eles and styles
+      graphElements: [], 
       graphStyles: {},
       savingGraph: false,
       gotGraph: false,
@@ -27,6 +28,7 @@ class SignedIn extends Component {
 
     this.loadGraph = this.loadGraph.bind(this)
     this.saveGraph = this.saveGraph.bind(this)
+    this.deleteGraph = this.deleteGraph.bind(this)
     this.signOut = this.signOut.bind(this)
 
     // only want to do this once
@@ -56,16 +58,35 @@ class SignedIn extends Component {
         })
       } else {
         alert('Failed to get graph data...')
+        this.setState({
+          graphElements: DEFL_GRAPH_ELEMENTS,
+          graphStyles: DEFL_GRAPH_STYLE,
+          gotGraph: false
+        })
       }
     })
   }
 
-  saveGraph(graph) {
-    this.setState({graph, savingGraph: true})
+  saveGraph() {
+    this.setState({savingGraph: true})
     const options = { encrypt: false }
+    var graph = {elements: this.state.graphElements, style: this.state.graphStyles}
+    console.log("SAVING...", graph)
     this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(graph), options)
     .finally(() => {
-      this.setState({savingGraph: false, gotGraph: false})
+      this.setState({savingGraph: false})
+    })
+  }
+
+  // a cheap delete func based off save empty
+  deleteGraph() {
+    this.userSession.deleteFile(GRAPH_FILENAME)
+    .finally(() => {
+      alert("Graph deleted! Showing default")
+      this.setState({
+        graphElements: DEFL_GRAPH_ELEMENTS,
+        graphStyles: DEFL_GRAPH_STYLE,
+        gotGraph: false})
     })
   }
 
@@ -125,6 +146,8 @@ class SignedIn extends Component {
                 className="split content"
                 onRecenterClick={recenterCy}
                 onMetaClick={toggleMeta}
+                onSaveClick={this.saveGraph}
+                onDeleteClick={this.deleteGraph}
               />
             </div>
         </Split>

@@ -7,6 +7,8 @@ export default class IokText extends Component {
     super(props)
     this.onMetaClick = this.props.onMetaClick ? this.props.onMetaClick : () => console.log("Meta Clicked")
     this.onRecenterClick = this.props.onRecenterClick ? this.props.onRecenterClick : () => console.log("Recenter Clicked")
+    this.onSaveClick = this.props.onSaveClick
+    this.onDeleteClick = this.props.onDeleteClick
   }
 
   render() {
@@ -42,6 +44,8 @@ export default class IokText extends Component {
                   <h5>Misc IoK</h5>
                   <button className="btn btn-info btn-lg" onClick={this.onMetaClick}>Toggle meta graph</button>
                   <button className="btn btn-info btn-lg" onClick={this.onRecenterClick}>Recenter graph</button>
+                  <button className="btn btn-info btn-lg" onClick={this.onSaveClick}>Save graph</button>
+                  <button className="btn btn-info btn-lg" onClick={this.onDeleteClick}>Delete graph</button>
                 </div>
             </div>
         </div>

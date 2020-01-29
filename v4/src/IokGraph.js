@@ -16,8 +16,10 @@ export default class IokGraph extends Component {
     super(props)
     this.saveGraph = this.props.saveGraph
     console.log("GOT:", this.props.elements)
-    this.elements = this._isNotEmpty(this.props.elements) ? this.props.elements : DEFL_GRAPH_ELEMENTS
-    this.styles = this._isNotEmpty(this.props.styles) ? this.props.styles : DEFL_GRAPH_STYLE
+    // this.elements = this._isNotEmpty(this.props.elements) ? this.props.elements : DEFL_GRAPH_ELEMENTS
+    // this.styles = this._isNotEmpty(this.props.styles) ? this.props.styles : DEFL_GRAPH_STYLE
+    this.elements = this.props.elements
+    this.styles = this.props.styles
     this.cy = null
     this.cyRegCallback = this.props.cyRegCallback
     // !!! FOR DEBUGGING ONLY !!!
