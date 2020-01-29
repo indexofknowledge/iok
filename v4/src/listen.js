@@ -34,19 +34,13 @@ export var recenterCy = () => {
 
 export var regroupCy = () => {
     var layout = cy.layout({
-        name: 'cola',
+        name: 'dagre',
+        animate: true,
         padding: 150
     });
     layout.run();
 }
 
-export var dagify = () => {
-    var layout = cy.layout({
-        name: 'dagre',
-        padding: 150
-    });
-    layout.run();
-}
 
 export var toggleMeta = () => {
     // console.log("TOGGLING META")

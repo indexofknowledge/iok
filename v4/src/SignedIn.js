@@ -9,7 +9,7 @@ import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
 import './styles/SignedIn.css'
 
-import { registerCy, getCy, registerNodeTap, dagify, recenterCy, regroupCy, toggleMeta, highlightNodeDepsOnClick } from './listen'
+import { registerCy, getCy, registerNodeTap, recenterCy, regroupCy, toggleMeta, highlightNodeDepsOnClick } from './listen'
 
 const TAG = 'SignedIn'
 
@@ -151,7 +151,6 @@ class SignedIn extends Component {
                 className="split content"
                 onRecenterClick={recenterCy}
                 onRegroupClick={regroupCy}
-                onDagifyClick={dagify}
                 onMetaClick={toggleMeta}
                 onSaveClick={this.saveGraph}
                 onDeleteClick={this.deleteGraph}

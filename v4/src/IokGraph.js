@@ -13,7 +13,7 @@ Cytoscape.use(cola)
 Cytoscape.use(dagre)
 Cytoscape.use(edgehandles)
 
-const layout = { name: 'cola' };
+const layout = { name: 'dagre', animate: true };
 
 const TAG = 'IokGraph'
 
