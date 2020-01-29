@@ -9,7 +9,7 @@ import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
 import './styles/SignedIn.css'
 
-import { registerCy, getCy, registerNodeTap, recenterCy, regroupCy, toggleMeta, highlightNodeDepsOnClick } from './listen'
+import { registerCy, getCy, registerNodeTap, recenterCy, regroupCy, toggleDrawMode, toggleMeta, highlightNodeDepsOnClick } from './listen'
 
 const TAG = 'SignedIn'
 
@@ -71,7 +71,7 @@ class SignedIn extends Component {
   }
 
   saveGraph() {
-    // this.setState({savingGraph: true})
+    this.setState({savingGraph: true})
     const options = { encrypt: false }
     var cy = getCy()
     var graph = cy.json()
@@ -79,7 +79,7 @@ class SignedIn extends Component {
     console.log(TAG, "SAVING...", graph)
     this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(graph), options)
     .finally(() => {
-      // this.setState({savingGraph: false})
+      this.setState({savingGraph: false})
     })
   }
 
@@ -149,11 +149,11 @@ class SignedIn extends Component {
             <div className="split split-horizontal">
               <IokText 
                 className="split content"
-                onRecenterClick={recenterCy}
                 onRegroupClick={regroupCy}
                 onMetaClick={toggleMeta}
                 onSaveClick={this.saveGraph}
                 onDeleteClick={this.deleteGraph}
+                onDrawClick={toggleDrawMode}
               />
             </div>
         </Split>

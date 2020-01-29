@@ -5,11 +5,14 @@ export default class IokText extends Component {
 
   constructor(props) {
     super(props)
-    this.onMetaClick = this.props.onMetaClick ? this.props.onMetaClick : () => console.log("Meta Clicked")
-    this.onRecenterClick = this.props.onRecenterClick ? this.props.onRecenterClick : () => console.log("Recenter Clicked")
+    this.onMetaClick = this.props.onMetaClick 
     this.onRegroupClick = this.props.onRegroupClick
     this.onSaveClick = this.props.onSaveClick
     this.onDeleteClick = this.props.onDeleteClick
+    this.onDrawClick = this.props.onDrawClick
+    this.state = {
+      drawEnabled: false
+    }
   }
 
   render() {
@@ -44,10 +47,21 @@ export default class IokText extends Component {
                 <div>
                   <h5>Misc IoK</h5>
                   <button className="btn btn-info btn-lg" onClick={this.onMetaClick}>Toggle meta graph</button>
-                  <button className="btn btn-info btn-lg" onClick={this.onRecenterClick}>Recenter</button>
                   <button className="btn btn-info btn-lg" onClick={this.onRegroupClick}>Regroup</button>
                   <button className="btn btn-info btn-lg" onClick={this.onSaveClick}>Save</button>
                   <button className="btn btn-info btn-lg" onClick={this.onDeleteClick}>Delete</button>
+                  <button 
+                    className="btn btn-info btn-lg" 
+                    onClick={
+                      () => {
+                        this.onDrawClick(); 
+                        this.setState({drawEnabled: !this.state.drawEnabled});
+                        return
+                      }
+                    }
+                  >
+                    Draw {this.state.drawEnabled ? 'off' : 'on'}
+                  </button>
                 </div>
             </div>
         </div>

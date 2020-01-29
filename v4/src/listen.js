@@ -1,12 +1,47 @@
 // Mostly imported from old IoKv3...
 // Ugly code inbound
 
+var TAG = 'listen'
+
 var cy = null
+var eh = null
+var drawOn = false
 
 // TODO: enforce that this is called before anything else is called...
 export var registerCy = (c) => {
     cy = c
     console.log("Registered cy", c)
+}
+
+export var registerEdgeHandles = (cy) => {
+    eh = cy.edgehandles({
+      preview: true,
+      noEdgeEventsInDraw: true,
+      snap: true,
+      handleNodes: 'node' // fake this for now
+    });
+    eh.disableDrawMode()
+    eh.disable()
+    cy.on('ehcomplete', (event, sourceNode, targetNode, addedEles) => {
+      // let { position } = event;
+      console.log(TAG, "Added edge...")
+      console.log(TAG, "source:", sourceNode)
+      console.log(TAG, "target:", targetNode)
+      console.log(TAG, "eles:", cy.elements().length)
+      // console.log(TAG, cy.nodes().length)
+    });
+}
+
+export var toggleDrawMode = () => {
+    if (drawOn) {
+        eh.disableDrawMode()
+        eh.disable()
+        drawOn = false
+    } else {
+        eh.enable()
+        eh.enableDrawMode()
+        drawOn = true
+    }
 }
 
 // returns registered cy
@@ -36,9 +71,12 @@ export var regroupCy = () => {
     var layout = cy.layout({
         name: 'dagre',
         animate: true,
-        padding: 150
+        padding: 10
     });
     layout.run();
+    return new Promise(() => { // give it some time
+        recenterCy()
+    })
 }
 
 

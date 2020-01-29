@@ -5,7 +5,7 @@ import cola from 'cytoscape-cola'
 import edgehandles from 'cytoscape-edgehandles'
 import CytoscapeComponent from 'react-cytoscapejs';
 
-import { regroupCy } from './listen'
+import { regroupCy, registerEdgeHandles } from './listen'
 
 import './styles/IokGraph.css'
 
@@ -41,19 +41,6 @@ export default class IokGraph extends Component {
     console.log(TAG, "TAPPED NODE")
   }
 
-  registerEdgeHandles(cy) {
-    var eh = cy.edgehandles({preview: false});
-    eh.enableDrawMode()
-    cy.on('ehcomplete', (event, sourceNode, targetNode, addedEles) => {
-      // let { position } = event;
-      console.log(TAG, "Added edge...")
-      console.log(TAG, "source:", sourceNode)
-      console.log(TAG, "target:", targetNode)
-      console.log(TAG, "eles:", cy.elements().length)
-      // console.log(TAG, cy.nodes().length)
-    });
-  }
-
   render() {
     return (
       <CytoscapeComponent 
@@ -72,9 +59,11 @@ export default class IokGraph extends Component {
               layout: layout
             })
           }
+          if (!this.cy) { // TODO: hacky.... only run this the first time 
+            registerEdgeHandles(cy);
+          }
           this.cy = cy;
           this.cyRegCallback(cy);
-          this.registerEdgeHandles(cy);
           return new Promise(() => {
             regroupCy()
           })
