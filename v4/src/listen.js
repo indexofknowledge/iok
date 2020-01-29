@@ -1,14 +1,26 @@
-var selectedNode 
+// Mostly imported from old IoKv3...
+// Ugly code inbound
+
 var cy = null
 
 // TODO: enforce that this is called before anything else is called...
-export var RegisterCy = (c) => {
+export var registerCy = (c) => {
     cy = c
     console.log("Registered cy", c)
 }
 
-export var registerNodeTap = () => {
-    cy.on('tap', 'node', _handleNodeTap)
+// simple wrapper to allow users to swap out what happens on click
+export var registerNodeTap = (onclick) => {
+    cy.on('tap', 'node', onclick)
+}
+
+// TODO: offer alternatives..?
+export var highlightNodeDepsOnClick = (evt) => {
+    // console.log('Node tapped')
+    var node = evt.target;
+    setHighlighted(node);
+    setNodeData(node);
+    drawDependency(node);
 }
 
 export var recenterCy = () => {
@@ -18,25 +30,17 @@ export var recenterCy = () => {
 export var toggleMeta = () => {
     // console.log("TOGGLING META")
     var resources = cy.nodes('[node_type > 1]')
-    if (resources.length == 0) {
+    if (resources.length === 0) {
         // console.log("No resources found, can't toggle meta")
         return
     }
     var replacementStyle = "none"
-    if (resources[0].style("display") == "none") {
+    if (resources[0].style("display") === "none") {
         replacementStyle = "element"
     } 
     for (var i = 0; i < resources.length; i++) {
         resources[i].style("display", replacementStyle)
     }
-}
-
-var _handleNodeTap = (evt) => {
-    // console.log('Node tapped')
-    var node = evt.target;
-    setHighlighted(node);
-    setNodeData(node);
-    drawDependency(node);
 }
 
 var removeHighlighted = ( el ) => {
@@ -57,11 +61,6 @@ var setAltHighlighted = async ( el ) => {
     el.addClass('altHighlighted');
 }
 
-var unselect = async ( el ) => {
-    el.removeClass('selected');
-    el.unselect();
-}
-
 var clearHighlighted = () => {
     cy.nodes().forEach(removeHighlighted);
     cy.edges().forEach(removeHighlighted);
@@ -70,7 +69,7 @@ var clearHighlighted = () => {
 }
 
 var notRootFilter = ( el ) => {
-    return el != lastRoot;
+    return el !== lastRoot;
 }
 
 var lastRoot = null; // dummy
@@ -93,7 +92,7 @@ var drawDependency = (node) => {
 // recursively get dependencies
 var hasCycle = false; 
 var calcDepNaive = (root, dep) => {
-    if (root == null) {
+    if (root === null) {
         return cy.collection()
     }
     dep = dep.add(root);
@@ -111,7 +110,7 @@ var calcDepNaive = (root, dep) => {
         alert("Oh no! We have a dependency cycle...")
     }
     
-    if (numNewParents == 0) {
+    if (numNewParents === 0) {
         return dep
     }
     return dep
@@ -130,6 +129,7 @@ var validURL = (str) => {
 /**
  * Set node data to HMTL
  * TODO: get cy neighbors
+ * TODO: CLEAN THIS UP!!!
  * @param {*} node 
  */
 var setNodeData = (node) => {
@@ -145,21 +145,26 @@ var setNodeData = (node) => {
     ulNodeLinks.innerHTML = '';
     ulNodeDeps.innerHTML = '';
     pNodeText.innerHTML = '';
+    var li = null;
+    var depText = null;
+    var a = null;
+    var data = null;
+    var linkText = null;
     for (var i = 0; i < neighbors.length; i++) {
         var dataObj = neighbors[i].data()
-        if (dataObj.node_type == 1) { // topic is dep
-            var li = document.createElement('li');
-            var depText = document.createTextNode(dataObj.id)
+        if (dataObj.node_type === 1) { // topic is dep
+            li = document.createElement('li');
+            depText = document.createTextNode(dataObj.id)
             li.appendChild(depText)
             ulNodeDeps.appendChild(li)
-        } else if (dataObj.node_type == 2) { // resource
-            var data = neighbors[i].data().data
-            if (dataObj.resource_type == 1) { // desc
+        } else if (dataObj.node_type === 2) { // resource
+            data = neighbors[i].data().data
+            if (dataObj.resource_type === 1) { // desc
                 pNodeText.appendChild(document.createTextNode(data))
             } else { // link type
-                var li = document.createElement('li');
-                var a = document.createElement('a');
-                var linkText = document.createTextNode(data.text);
+                li = document.createElement('li');
+                a = document.createElement('a');
+                linkText = document.createTextNode(data.text);
                 a.appendChild(linkText);
                 a.title = data.text;
                 a.href = data.link;

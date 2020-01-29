@@ -15,12 +15,17 @@ export default class IokGraph extends Component {
   constructor(props) {
     super(props)
     this.saveGraph = this.props.saveGraph
-    this.elements = this.props.elements ? this.props.elements : DEFL_GRAPH_ELEMENTS
-    this.styles = this.props.styles ? this.props.styles : DEFL_GRAPH_STYLE
+    console.log("GOT:", this.props.elements)
+    this.elements = this._isNotEmpty(this.props.elements) ? this.props.elements : DEFL_GRAPH_ELEMENTS
+    this.styles = this._isNotEmpty(this.props.styles) ? this.props.styles : DEFL_GRAPH_STYLE
     this.cy = null
     this.cyRegCallback = this.props.cyRegCallback
     // !!! FOR DEBUGGING ONLY !!!
     // this.saveGraph({ elements: this.elements, style: this.styles })
+  }
+
+  _isNotEmpty(obj) {
+    return obj && obj.length > 0
   }
 
   handleNodeTap() {
@@ -37,6 +42,7 @@ export default class IokGraph extends Component {
         cy={(cy) => { 
           this.cy = cy;
           this.cyRegCallback(cy);
+          cy.fit(); // for now...
           // this.cy.on('tap', 'node', this.handleNodeTap);
         }}
       /> 

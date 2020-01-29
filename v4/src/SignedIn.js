@@ -9,7 +9,7 @@ import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME } from './constants'
 import './styles/SignedIn.css'
 
-import { RegisterCy, registerNodeTap, recenterCy, toggleMeta } from './listen'
+import { registerCy, registerNodeTap, recenterCy, toggleMeta, highlightNodeDepsOnClick } from './listen'
 
 class SignedIn extends Component {
 
@@ -113,8 +113,8 @@ class SignedIn extends Component {
                 saveGraph={this.saveGraph} 
                 key={this.state.graphElements}
                 cyRegCallback={(c) => {
-                  RegisterCy(c);
-                  registerNodeTap();
+                  registerCy(c);
+                  registerNodeTap(highlightNodeDepsOnClick);
                 }}
               />
             </div>
