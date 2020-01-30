@@ -9,10 +9,10 @@ import edgehandles from 'cytoscape-edgehandles'
 
 import NavBar from './NavBar'
 import IokText from './IokText'
-import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE, DEFL_CY_OPTS } from './constants'
+import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
 import './styles/SignedIn.css'
 
-import { registerCy, getCy, registerNodeTap, recenterCy, regroupCy, toggleDrawMode, toggleMeta, highlightNodeDepsOnClick, getDefaultCyOpts, registerEdgeHandles } from './listen'
+import { regroupCy } from './listen'
 
 const TAG = 'SignedIn'
 
@@ -44,7 +44,8 @@ class SignedIn extends Component {
         container: document.getElementById("cy"),
         layout: { 
           name: 'dagre', 
-          // animate: true 
+          animate: true,
+          padding: 10
         }
       }),
     })
@@ -66,6 +67,8 @@ class SignedIn extends Component {
         this.state.cy.json(graph) // edit local cy in place
         this.setState({ gotGraph: true }) // induce a re-render with state change
 
+        regroupCy(this.state.cy)
+
       } else {
         alert('Failed to get graph data...')
         this.state.cy.json({
@@ -75,6 +78,9 @@ class SignedIn extends Component {
 
         // TODO might need to indicate that this is default, and re-fetch...
         this.setState({ gotGraph: true }) // induce a re-render with state change
+
+        regroupCy(this.state.cy)
+
       }
     })
   }
