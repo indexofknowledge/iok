@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './styles/IokText.css'
 
-import { regroupCy, toggleDrawMode, toggleMeta, registerEdgeHandles, addNode } from './listen'
+import { regroupCy, toggleDrawMode, toggleMeta, addNode } from './listen'
 
 export default class IokText extends Component {
 
@@ -17,19 +17,12 @@ export default class IokText extends Component {
 
     this.state = {
       drawEnabled: false,
-      registeredEh: false
     }
   }
 
   static getDerivedStateFromProps(props, state) {
-    var reh = false
-    if (props.cy && !state.registeredEh) { // only register once since we recycle cy instances
-      registerEdgeHandles(props.cy)
-      reh = true
-    }
     return { // TODO: figure out why this is called twice
       cy: props.cy,
-      registeredEh: reh
     }
   }
 

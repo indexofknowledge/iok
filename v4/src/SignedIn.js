@@ -12,7 +12,7 @@ import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
 import './styles/SignedIn.css'
 
-import { regroupCy, registerNodeTap, highlightNodeDepsOnClick } from './listen'
+import { regroupCy, registerNodeTap, highlightNodeDepsOnClick, registerEdgeHandles } from './listen'
 
 const TAG = 'SignedIn'
 
@@ -48,7 +48,10 @@ class SignedIn extends Component {
           padding: 10
         }
       }),
-    })
+    }, () => {
+      registerNodeTap(this.state.cy)
+      registerEdgeHandles(this.state.cy)
+    }) // trace...
     this.loadGraph()
   }
 
@@ -84,9 +87,8 @@ class SignedIn extends Component {
         // this.setState({ gotGraph: true }) // induce a re-render with state change
 
       }
-      console.log("Cy currently", this.state.cy.elements())
+      console.log("Cy currently size", this.state.cy.elements().length)
       regroupCy(this.state.cy)
-      registerNodeTap(this.state.cy) // trace...
       this.setState({ gotGraph: true }) // induce a re-render with state change
 
     })
