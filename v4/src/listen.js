@@ -3,9 +3,20 @@
 
 var TAG = 'listen'
 
+// some ugly state ugh...
 var cy = null
 var eh = null
 var drawOn = false
+
+export var getDefaultCyOpts = (th) => {
+    return {
+        container: th.refs["cy"],
+        layout: { 
+            name: 'dagre', 
+            animate: true 
+        }
+    }
+  }
 
 // TODO: enforce that this is called before anything else is called...
 export var registerCy = (c) => {
@@ -63,11 +74,11 @@ export var highlightNodeDepsOnClick = (evt) => {
     drawDependency(node);
 }
 
-export var recenterCy = () => {
+export var recenterCy = (cy) => {
     cy.fit()
 }
 
-export var regroupCy = () => {
+export var regroupCy = (cy) => {
     var layout = cy.layout({
         name: 'dagre',
         animate: true,
@@ -75,12 +86,12 @@ export var regroupCy = () => {
     });
     layout.run();
     return new Promise(() => { // give it some time
-        recenterCy()
+        recenterCy(cy)
     })
 }
 
 
-export var toggleMeta = () => {
+export var toggleMeta = (cy) => {
     // console.log("TOGGLING META")
     var resources = cy.nodes('[node_type > 1]')
     if (resources.length === 0) {

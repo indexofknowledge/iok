@@ -1,18 +1,47 @@
 import React, { Component } from 'react';
 import './styles/IokText.css'
 
+import { registerCy, getCy, registerNodeTap, recenterCy, regroupCy, toggleDrawMode, toggleMeta, highlightNodeDepsOnClick, getDefaultCyOpts, registerEdgeHandles } from './listen'
+
 export default class IokText extends Component {
 
   constructor(props) {
     super(props)
-    this.onMetaClick = this.props.onMetaClick 
-    this.onRegroupClick = this.props.onRegroupClick
     this.onSaveClick = this.props.onSaveClick
     this.onDeleteClick = this.props.onDeleteClick
-    this.onDrawClick = this.props.onDrawClick
+
+    this.onMetaClick = this.onMetaClick.bind(this)
+    this.onRegroupClick = this.onRegroupClick.bind(this)
+    this.onDrawClick = this.onDrawClick.bind(this)
+
     this.state = {
-      drawEnabled: false
+      drawEnabled: false,
+      registeredEh: false
     }
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    var reh = false
+    if (props.cy && !state.registeredEh) { // only register once since we recycle cy instances
+      registerEdgeHandles(props.cy)
+      reh = true
+    }
+    return { // TODO: figure out why this is called twice
+      cy: props.cy,
+      registeredEh: reh
+    }
+  }
+
+  onMetaClick() {
+    toggleMeta(this.state.cy)
+  }
+
+  onRegroupClick() {
+    regroupCy(this.state.cy)
+  }
+
+  onDrawClick() {
+    toggleDrawMode()
   }
 
   render() {

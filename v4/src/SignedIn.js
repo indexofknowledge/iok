@@ -3,15 +3,21 @@ import { Redirect } from 'react-router-dom'
 import { UserSession } from 'blockstack'
 import Split from 'react-split'
 
+import Cytoscape from 'cytoscape';
+import dagre from 'cytoscape-dagre';
+import edgehandles from 'cytoscape-edgehandles'
+
 import NavBar from './NavBar'
-import IokGraph from './IokGraph'
 import IokText from './IokText'
-import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
+import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE, DEFL_CY_OPTS } from './constants'
 import './styles/SignedIn.css'
 
-import { registerCy, getCy, registerNodeTap, recenterCy, regroupCy, toggleDrawMode, toggleMeta, highlightNodeDepsOnClick } from './listen'
+import { registerCy, getCy, registerNodeTap, recenterCy, regroupCy, toggleDrawMode, toggleMeta, highlightNodeDepsOnClick, getDefaultCyOpts, registerEdgeHandles } from './listen'
 
 const TAG = 'SignedIn'
+
+Cytoscape.use(dagre)
+Cytoscape.use(edgehandles)
 
 class SignedIn extends Component {
 
@@ -19,79 +25,89 @@ class SignedIn extends Component {
     super(props)
     this.userSession = new UserSession({ appConfig })
     this.state = {
-      // tricky with how react detects change, so store graph as eles and styles
-      graphElements: DEFL_GRAPH_ELEMENTS, 
-      graphStyles: DEFL_GRAPH_STYLE,
       savingGraph: false,
       gotGraph: false,
-      //selectedAnimal: false,
-      //selectedTerritory: false
     }
 
     this.loadGraph = this.loadGraph.bind(this)
     this.saveGraph = this.saveGraph.bind(this)
     this.deleteGraph = this.deleteGraph.bind(this)
     this.signOut = this.signOut.bind(this)
+  }
 
-    // only want to do this once
-    console.log(TAG, "Loading data from Gaia...")
+  // since we're creating the cytoscape div in this component,
+  // only create the cy instance (and load data into it) after
+  // we've rendered 
+  componentDidMount() {
+    this.setState({
+      cy: Cytoscape({
+        container: document.getElementById("cy"),
+        layout: { 
+          name: 'dagre', 
+          // animate: true 
+        }
+      }),
+    })
     this.loadGraph()
   }
 
+  /**
+   * Load cy instance from Gaia into local state
+   */
   loadGraph() {
+    console.log(TAG, "Loading data from Gaia...")
     const options = { decrypt: false }
     this.userSession.getFile(GRAPH_FILENAME, options)
     .then((content) => {
       if(content && content.length > 0) {
         const graph = JSON.parse(content)
         console.log(TAG, 'Loaded data:', graph)
-        // graph has dummy default values. get rid of it
-        if (!graph.style || graph.style.length <= 1) {
-          graph.style = DEFL_GRAPH_STYLE
-        }
-        if (!graph.elements || graph.elements.length < 1) {
-          graph.elements = DEFL_GRAPH_ELEMENTS
-        }
 
-        this.setState({
-          graphElements: graph.elements, 
-          graphStyles: graph.style, 
-          gotGraph: true
-        })
+        this.state.cy.json(graph) // edit local cy in place
+        this.setState({ gotGraph: true }) // induce a re-render with state change
+
       } else {
-        console.log(TAG, 'Failed to get graph data...')
         alert('Failed to get graph data...')
-        this.setState({
-          graphElements: DEFL_GRAPH_ELEMENTS,
-          graphStyles: DEFL_GRAPH_STYLE,
-          gotGraph: false
+        this.state.cy.json({
+          elements: DEFL_GRAPH_ELEMENTS,
+          style: DEFL_GRAPH_STYLE
         })
+
+        // TODO might need to indicate that this is default, and re-fetch...
+        this.setState({ gotGraph: true }) // induce a re-render with state change
       }
     })
   }
 
+  /**
+   * Save local cy instance to Gaia as json
+   */
   saveGraph() {
-    this.setState({savingGraph: true})
+    // this.setState({savingGraph: true}) // XXX: might not need this to rerender
     const options = { encrypt: false }
-    var cy = getCy()
-    var graph = cy.json()
+    var graph = this.state.cy.json()
     // var graph = {elements: this.state.graphElements, style: this.state.graphStyles}
     console.log(TAG, "SAVING...", graph)
     this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(graph), options)
     .finally(() => {
-      this.setState({savingGraph: false})
+      // this.setState({savingGraph: false})
     })
   }
 
-  // a cheap delete func based off save empty
+  /**
+   * a cheap delete func based off save empty
+   */
   deleteGraph() {
     this.userSession.deleteFile(GRAPH_FILENAME)
     .finally(() => {
       alert("Graph deleted! Showing default")
+      this.state.cy.json({
+        elements: DEFL_GRAPH_ELEMENTS,
+        style: DEFL_GRAPH_STYLE
+      })
       this.setState({
-        graphElements: DEFL_GRAPH_ELEMENTS,
-        graphStyles: DEFL_GRAPH_STYLE,
-        gotGraph: false})
+        gotGraph: false // XXX: need another flag prob...
+      })
     })
   }
 
@@ -132,28 +148,16 @@ class SignedIn extends Component {
         >
             {/* first split */}
             <div className="split split-horizontal">
-              <IokGraph 
-                className="split content"
-                elements={this.state.graphElements} 
-                styles={this.state.graphStyles}
-                saveGraph={this.saveGraph} 
-                key={this.state.graphElements}
-                cyRegCallback={(c) => {
-                  registerCy(c);
-                  registerNodeTap(highlightNodeDepsOnClick);
-                }}
-              />
+              <div className="split content" id="cy"/>
             </div>
 
             {/* second split */}
             <div className="split split-horizontal">
               <IokText 
                 className="split content"
-                onRegroupClick={regroupCy}
-                onMetaClick={toggleMeta}
+                cy={this.state.cy}
                 onSaveClick={this.saveGraph}
                 onDeleteClick={this.deleteGraph}
-                onDrawClick={toggleDrawMode}
               />
             </div>
         </Split>
