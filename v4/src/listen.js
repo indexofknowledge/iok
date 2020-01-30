@@ -8,6 +8,18 @@ var cy = null
 var eh = null
 var drawOn = false
 
+/**
+ * 
+ * @param {*} cy 
+ * @param {*} data including node_type, id, and name
+ */
+export var addNode = (cy, data) => {
+    cy.add({
+        group: "nodes",
+        data: data
+    })
+}
+
 export var registerEdgeHandles = (cy) => {
     eh = cy.edgehandles({
       preview: true,

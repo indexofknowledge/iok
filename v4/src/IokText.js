@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './styles/IokText.css'
 
-import { regroupCy, toggleDrawMode, toggleMeta, registerEdgeHandles } from './listen'
+import { regroupCy, toggleDrawMode, toggleMeta, registerEdgeHandles, addNode } from './listen'
 
 export default class IokText extends Component {
 
@@ -13,6 +13,7 @@ export default class IokText extends Component {
     this.onMetaClick = this.onMetaClick.bind(this)
     this.onRegroupClick = this.onRegroupClick.bind(this)
     this.onDrawClick = this.onDrawClick.bind(this)
+    this.onAddClick = this.onAddClick.bind(this)
 
     this.state = {
       drawEnabled: false,
@@ -42,6 +43,16 @@ export default class IokText extends Component {
 
   onDrawClick() {
     toggleDrawMode()
+  }
+
+  onAddClick() {
+    var rand = String(Math.ceil(Math.random() * 1000000))
+    var data = {
+      id: rand,
+      node_type: 1,
+      name: rand
+    }
+    addNode(this.state.cy, data)
   }
 
   render() {
@@ -91,6 +102,7 @@ export default class IokText extends Component {
                   >
                     Draw {this.state.drawEnabled ? 'off' : 'on'}
                   </button>
+                  <button className="btn btn-info btn-lg" onClick={this.onAddClick}>ADD TEST</button>
                 </div>
             </div>
         </div>
