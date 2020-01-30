@@ -8,22 +8,6 @@ var cy = null
 var eh = null
 var drawOn = false
 
-export var getDefaultCyOpts = (th) => {
-    return {
-        container: th.refs["cy"],
-        layout: { 
-            name: 'dagre', 
-            animate: true 
-        }
-    }
-  }
-
-// TODO: enforce that this is called before anything else is called...
-export var registerCy = (c) => {
-    cy = c
-    console.log("Registered cy", c)
-}
-
 export var registerEdgeHandles = (cy) => {
     eh = cy.edgehandles({
       preview: true,
@@ -61,8 +45,13 @@ export var getCy = () => {
 }
 
 // simple wrapper to allow users to swap out what happens on click
-export var registerNodeTap = (onclick) => {
-    cy.on('tap', 'node', onclick)
+export var registerNodeTap = (cy) => {
+    cy.on('tap', 'node', (evt) => {
+        var node = evt.target;
+        setHighlighted(node);
+        setNodeData(node);
+        drawDependency(cy, node);
+    })
 }
 
 // TODO: offer alternatives..?
@@ -71,7 +60,7 @@ export var highlightNodeDepsOnClick = (evt) => {
     var node = evt.target;
     setHighlighted(node);
     setNodeData(node);
-    drawDependency(node);
+    drawDependency(cy, node);
 }
 
 export var recenterCy = (cy) => {
@@ -125,7 +114,7 @@ var setAltHighlighted = async ( el ) => {
     el.addClass('altHighlighted');
 }
 
-var clearHighlighted = () => {
+var clearHighlighted = (cy) => {
     cy.nodes().forEach(removeHighlighted);
     cy.edges().forEach(removeHighlighted);
     cy.nodes().forEach(unselect);
@@ -137,9 +126,9 @@ var notRootFilter = ( el ) => {
 }
 
 var lastRoot = null; // dummy
-var drawDependency = (node) => {
+var drawDependency = (cy, node) => {
     // console.log("drawDependency")
-    clearHighlighted();
+    clearHighlighted(cy);
     lastRoot = node;
     hasCycle = false;
     var graph = calcDepNaive(node, cy.collection());

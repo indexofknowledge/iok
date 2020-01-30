@@ -6,12 +6,16 @@ export const GRAPH_FILENAME = 'graph.json'
 
 export const IOKS = []
 
+// TODO: change all the id's since cytoscape will crash if collision
+// TODO: change all id's to hashes
+// TODO: add names and id to everything
 export const DEFL_GRAPH_ELEMENTS = {
   "nodes": [
     {
       "data": {
         "node_type": 1,
-        "id": "math"
+        "id": "math",
+        "name": "math"
       }
     },
     {
@@ -19,13 +23,15 @@ export const DEFL_GRAPH_ELEMENTS = {
         "node_type": 2,
         "resource_type": 1,
         "data": "mathematics is everything",
-        "id": "math-SxerygqAlP"
+        "id": "math-SxerygqAlP",
+        "name": "math-SxerygqAlP"
       }
     },
     {
       "data": {
         "node_type": 1,
-        "id": "computer science"
+        "id": "computer science",
+        "name": "computer science"
       }
     },
     {
@@ -33,13 +39,15 @@ export const DEFL_GRAPH_ELEMENTS = {
         "node_type": 2,
         "resource_type": 1,
         "data": "computation and stuff",
-        "id": "computer science-XbIEkFXLeK"
+        "id": "computer science-XbIEkFXLeK",
+        "name": "computer science-XbIEkFXLeK"
       }
     },
     {
       "data": {
         "node_type": 1,
-        "id": "lightning"
+        "id": "lightning",
+        "name": "lightning"
       }
     },
     {
@@ -47,13 +55,15 @@ export const DEFL_GRAPH_ELEMENTS = {
         "node_type": 2,
         "resource_type": 1,
         "data": "l2 stuff",
-        "id": "lightning-tInnovoGad"
+        "id": "lightning-tInnovoGad",
+        "name": "lightning-tInnovoGad"
       }
     },
     {
       "data": {
         "node_type": 1,
-        "id": "bitcoin"
+        "id": "bitcoin",
+        "name": "bitcoin"
       }
     },
     {
@@ -61,7 +71,8 @@ export const DEFL_GRAPH_ELEMENTS = {
         "node_type": 2,
         "resource_type": 1,
         "data": "p2p cash system",
-        "id": "bitcoin-xuRUTzrbxp"
+        "id": "bitcoin-xuRUTzrbxp",
+        "name": "bitcoin-xuRUTzrbxp"
       }
     },
     {
@@ -72,13 +83,15 @@ export const DEFL_GRAPH_ELEMENTS = {
           "text": "Bitcoin whitepaper",
           "link": "https://bitcoin.org/bitcoin.pdf"
         },
-        "id": "bitcoin-CPLBbVvBQn"
+        "id": "bitcoin-CPLBbVvBQn",
+        "name": "bitcoin-CPLBbVvBQn"
       }
     },
     {
       "data": {
         "node_type": 1,
-        "id": "consensus"
+        "id": "consensus",
+        "name": "consensus"
       }
     },
     {
@@ -86,7 +99,8 @@ export const DEFL_GRAPH_ELEMENTS = {
         "node_type": 2,
         "resource_type": 1,
         "data": "Reaching agreement",
-        "id": "consensus-xoQEedvZlT"
+        "id": "consensus-xoQEedvZlT",
+        "name": "consensus-xoQEedvZlT"
       }
     },
     {
@@ -97,13 +111,15 @@ export const DEFL_GRAPH_ELEMENTS = {
           "text": "HotStuff: BFT consensus in the Lens of Blockchain",
           "link": "https://arxiv.org/pdf/1803.05069.pdf"
         },
-        "id": "consensus-qrRDufajjA"
+        "id": "consensus-qrRDufajjA",
+        "name": "consensus-qrRDufajjA"
       }
     },
     {
       "data": {
         "node_type": 1,
-        "id": "ethereum"
+        "id": "ethereum",
+        "name": "ethereum"
       }
     },
     {
@@ -111,7 +127,8 @@ export const DEFL_GRAPH_ELEMENTS = {
         "node_type": 2,
         "resource_type": 1,
         "data": "world computer",
-        "id": "ethereum-dCPDaweKhB"
+        "id": "ethereum-dCPDaweKhB",
+        "name": "ethereum-dCPDaweKhB"
       }
     },
     {
@@ -122,103 +139,120 @@ export const DEFL_GRAPH_ELEMENTS = {
           "text": "How Bitcoin Works in 5 Minutes (Technical)",
           "link": "https://www.youtube.com/watch?v=l9jOJk30eQs"
         },
-        "id": "bitcoin-nOZtIZERDi"
+        "id": "bitcoin-nOZtIZERDi",
+        "name": "bitcoin-nOZtIZERDi"
       }
     }
   ],
   "edges": [
     {
       "data": {
+        "id": "abc1",
         "source": "math",
         "target": "bitcoin"
       }
     },
     {
       "data": {
+        "id": "abc2",
         "source": "math",
         "target": "consensus"
       }
     },
     {
       "data": {
+        "id": "abc3",
         "source": "math-SxerygqAlP",
         "target": "math"
       }
     },
     {
       "data": {
+        "id": "abc4",
         "source": "computer science",
         "target": "bitcoin"
       }
     },
     {
       "data": {
+        "id": "abc444",
         "source": "computer science",
         "target": "consensus"
       }
     },
     {
       "data": {
+        "id": "abc5",
         "source": "computer science-XbIEkFXLeK",
         "target": "computer science"
       }
     },
     {
       "data": {
+        "id": "abc6",
         "source": "lightning-tInnovoGad",
         "target": "lightning"
       }
     },
     {
       "data": {
+        "id": "abc7",
         "source": "bitcoin",
         "target": "lightning"
       }
     },
     {
       "data": {
+        "id": "abc8",
         "source": "bitcoin",
         "target": "ethereum"
       }
     },
     {
       "data": {
+        "id": "abc9",
         "source": "bitcoin-xuRUTzrbxp",
         "target": "bitcoin"
       }
     },
     {
       "data": {
+        "id": "abc10",
         "source": "bitcoin-CPLBbVvBQn",
         "target": "bitcoin"
       }
     },
     {
       "data": {
+        "id": "abc11",
         "source": "consensus",
         "target": "bitcoin"
       }
     },
     {
       "data": {
+        "id": "abc12",
         "source": "consensus-xoQEedvZlT",
         "target": "consensus"
       }
     },
     {
       "data": {
+        "id": "abc13",
         "source": "consensus-qrRDufajjA",
         "target": "consensus"
       }
     },
     {
       "data": {
+        "id": "abc14",
         "source": "ethereum-dCPDaweKhB",
         "target": "ethereum"
       }
     },
     {
       "data": {
+        "id": "abc15",
         "source": "bitcoin-nOZtIZERDi",
         "target": "bitcoin"
       }
@@ -229,10 +263,10 @@ export const DEFL_GRAPH_ELEMENTS = {
 
 export const DEFL_GRAPH_STYLE = [
     {
-      selector: 'node[id]',
+      selector: 'node[name]',
       style: {
         'background-color': '#11479e',
-        'content': 'data(id)'
+        'content': 'data(name)'
       }
     },
     {

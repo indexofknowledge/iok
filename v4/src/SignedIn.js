@@ -12,7 +12,7 @@ import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
 import './styles/SignedIn.css'
 
-import { regroupCy } from './listen'
+import { regroupCy, registerNodeTap, highlightNodeDepsOnClick } from './listen'
 
 const TAG = 'SignedIn'
 
@@ -52,6 +52,13 @@ class SignedIn extends Component {
     this.loadGraph()
   }
 
+  // /**
+  //  * Setup some stuff about the group assuming that we have cy
+  //  */
+  // setupGraph() {
+
+  // }
+
   /**
    * Load cy instance from Gaia into local state
    */
@@ -65,9 +72,6 @@ class SignedIn extends Component {
         console.log(TAG, 'Loaded data:', graph)
 
         this.state.cy.json(graph) // edit local cy in place
-        this.setState({ gotGraph: true }) // induce a re-render with state change
-
-        regroupCy(this.state.cy)
 
       } else {
         alert('Failed to get graph data...')
@@ -77,11 +81,14 @@ class SignedIn extends Component {
         })
 
         // TODO might need to indicate that this is default, and re-fetch...
-        this.setState({ gotGraph: true }) // induce a re-render with state change
-
-        regroupCy(this.state.cy)
+        // this.setState({ gotGraph: true }) // induce a re-render with state change
 
       }
+      console.log("Cy currently", this.state.cy.elements())
+      regroupCy(this.state.cy)
+      registerNodeTap(this.state.cy) // trace...
+      this.setState({ gotGraph: true }) // induce a re-render with state change
+
     })
   }
 

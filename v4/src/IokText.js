@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './styles/IokText.css'
 
-import { registerCy, getCy, registerNodeTap, recenterCy, regroupCy, toggleDrawMode, toggleMeta, highlightNodeDepsOnClick, getDefaultCyOpts, registerEdgeHandles } from './listen'
+import { regroupCy, toggleDrawMode, toggleMeta, registerEdgeHandles } from './listen'
 
 export default class IokText extends Component {
 
