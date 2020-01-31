@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AddNodeModal from './AddNodeModal'
+import { sha256 } from 'js-sha256'
 
 import './styles/IokText.css'
 
@@ -16,6 +17,7 @@ export default class IokText extends Component {
     this.onRegroupClick = this.onRegroupClick.bind(this)
     this.onDrawClick = this.onDrawClick.bind(this)
     this.onAddClick = this.onAddClick.bind(this)
+    this.addNodeToCy = this.addNodeToCy.bind(this)
 
     this.state = {
       drawEnabled: false,
@@ -43,10 +45,22 @@ export default class IokText extends Component {
   onAddClick() {
     var rand = String(Math.ceil(Math.random() * 1000000))
     var data = {
-      id: rand,
       node_type: 1,
-      name: rand
+      name: 'rand-'.concat(rand)
     }
+    this.addNodeToCy(data)
+  }
+
+  /**
+   * Adds node to cy with the given data
+   * NOTE: Don't give me an id!
+   * @param {*} data 
+   */
+  addNodeToCy(data) {
+    var hash = sha256.create();
+    hash.update(JSON.stringify(data))
+    data = {...data, id: hash.hex()}
+    console.log('DATA', data)
     addNode(this.state.cy, data)
   }
 
@@ -55,7 +69,7 @@ export default class IokText extends Component {
       <div>
         <div id="cytext" className="iok-text">
             <div>
-                <AddNodeModal/>
+                <AddNodeModal addNode={this.addNodeToCy}/>
                 <h2>Index of Knowledge</h2>
                 <h3 id="nodetitle">Overview</h3>
         

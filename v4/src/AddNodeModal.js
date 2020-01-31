@@ -10,9 +10,12 @@ export default class AddNodeModal extends Component {
       isOpen: false,
       isResource: false, // XXX: maybe do this with nodeTypes
       isTopic: false,
+      topicName: ''
     }
+    this.addNode = this.props.addNode
     this.toggleModal = this.toggleModal.bind(this)
     this.handleClose = this.handleClose.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
 	}
 	
 	toggleModal = event => {
@@ -21,6 +24,11 @@ export default class AddNodeModal extends Component {
   }
   
   handleClose() {
+    this.toggleModal()
+  }
+
+  handleSubmit() {
+    this.addNode({'id': "AAAAAAAAA"})
     this.toggleModal()
   }
 
@@ -35,10 +43,10 @@ export default class AddNodeModal extends Component {
           <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={this.handleClose}>
-              Close
+              Cancel
             </Button>
-            <Button variant="primary" onClick={this.handleClose}>
-              Save Changes
+            <Button variant="primary" onClick={this.handleSubmit}>
+              Add node
             </Button>
           </Modal.Footer>
         </Modal>
