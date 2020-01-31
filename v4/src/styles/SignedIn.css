@@ -8,6 +8,11 @@
     position:relative;
 }
 
+.hidden-msg {
+    padding: 10px;
+    position: absolute;
+}
+
 /* ugly for debugging :) */
 .graph-parent {
     height: 100%;
@@ -25,7 +30,6 @@
     position:relative;
     margin-top: 5rem;
     box-sizing: border-box;
-    background-color: #F6F6F6;
 }
 
 .split {
@@ -37,14 +41,13 @@
 }
 
 .content {
-    background-color: #fff;
     height: 100%;
     width: 100%;
 }
 
 .text {
   padding: 5%;
-  background-color: #F6F6F6;
+  /* background-color: #F6F6F6; */
 }
 
 .gutter {
@@ -67,4 +70,8 @@
 .gutter.gutter-horizontal {
     height: 1000px;
     float: left;
+}
+
+.split.split-horizontal.cy {
+    background-color: white;
 }

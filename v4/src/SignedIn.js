@@ -145,24 +145,21 @@ class SignedIn extends Component {
       <div className="SignedIn">
         <NavBar className="nav-parent" username={username} signOut={this.signOut}/>
         <Split className="split-parent" 
-            sizes={[75, 25]}
+            sizes={[60, 40]}
             gutterStyle={function(dimension, gutterSize) { // override somehow
               return {
                   'width': '8px',
                   'height': '90vh',
+                  'background-color': 'rgb(33, 31, 109)'
                 }
             }}
-            minSize={100}
-            expandToMin={false}
-            gutterSize={10}
             gutterAlign="center"
-            snapOffset={30}
-            dragInterval={1}
             direction="horizontal"
             cursor="col-resize"
         >
             {/* first split */}
             <div className="split split-horizontal">
+              <p className="hidden-msg">p.s. refresh if the graph doesn't load</p>
               <div className="split content" id="cy"/>
             </div>
 

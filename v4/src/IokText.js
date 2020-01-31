@@ -69,9 +69,12 @@ export default class IokText extends Component {
       <div>
         <div id="cytext" className="iok-text">
             <div>
-                <AddNodeModal addNode={this.addNodeToCy}/>
-                <h2>Index of Knowledge</h2>
-                <h3 id="nodetitle">Overview</h3>
+                <h2 id="nodetitle">Overview</h2>
+
+                {/* used mainly to display info text to user */}
+                <h4 id="nodesubtitle"></h4>
+
+                <hr className="hr-sep"></hr>
         
                 <div>
                   <h5>Description(s)</h5>
@@ -94,10 +97,15 @@ export default class IokText extends Component {
                   </ul>
                 </div>
 
+                <hr className="hr-sep"></hr>
+
                 <div>
                   <h5>Misc IoK</h5>
                   <button className="btn btn-info btn-lg" onClick={this.onMetaClick}>Toggle meta graph</button>
                   <button className="btn btn-info btn-lg" onClick={this.onRegroupClick}>Regroup</button>
+
+                  <h5>Edit</h5>
+                  <AddNodeModal addNode={this.addNodeToCy}/>
                   <button className="btn btn-info btn-lg" onClick={this.onSaveClick}>Save</button>
                   <button className="btn btn-info btn-lg" onClick={this.onDeleteClick}>Delete</button>
                   <button 
@@ -110,7 +118,7 @@ export default class IokText extends Component {
                       }
                     }
                   >
-                    Draw {this.state.drawEnabled ? 'off' : 'on'}
+                    Turn {this.state.drawEnabled ? 'off' : 'on'} edge drawing
                   </button>
                   <button className="btn btn-info btn-lg" onClick={this.onAddClick}>ADD TEST</button>
                 </div>

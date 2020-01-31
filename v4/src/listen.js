@@ -199,11 +199,11 @@ var calcDepNaive = (root, dep) => {
  */
 var setNodeData = (node) => {
     // console.log("setNodeData")
-    document.getElementById('nodetitle').innerText = node.data('id');
-    if (node.data('subtitle')) {
-        document.getElementById('nodesubtitle').innerText = node.data('subtitle');
+    if (node.data('name')) {
+        document.getElementById('nodetitle').innerText = node.data('name') + '\n' + node.data('id');
+    } else {
+        document.getElementById('nodetitle').innerText = node.data('id');
     }
-    var neighbors = node.incomers((el) => el.isNode())
     var ulNodeLinks = document.getElementById('nodelinks');
     var ulNodeDeps = document.getElementById('nodedeps')
     var ulNodeDescs = document.getElementById('nodedescs')
@@ -215,6 +215,16 @@ var setNodeData = (node) => {
     var a = null;
     var data = null;
     var linkText = null;
+
+    // get each dependency for traversal
+    var neighbors = node.incomers((el) => el.isNode())
+
+    // XXX: HACK!! If it's a resource, just make it it's own neighbor so we can display
+    if (node.data('node_type') !== 1) {
+        neighbors = [node]
+        document.getElementById('nodesubtitle').innerText = 'Resource node. Displaying own contents';
+    }
+
     for (var i = 0; i < neighbors.length; i++) {
         var dataObj = neighbors[i].data()
         if (dataObj.node_type === 1) { // topic is dep

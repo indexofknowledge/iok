@@ -67,14 +67,14 @@ export default class AddNodeModal extends Component {
   render() {
     return (
       <div>
-        <Button className="btn btn-primary" onClick={this.toggleModal}>Open Modal</Button>
+        <Button className="btn btn-primary" onClick={this.toggleModal}>Add node</Button>
         <Modal show={this.state.isOpen} onHide={this.toggleModal}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>Add Node</Modal.Title>
           </Modal.Header>
 
             <Modal.Body>
-              <Form.Label>Node Type</Form.Label>
+              <Form.Label>Node type</Form.Label>
               <Form.Group>
                 <Form.Check type="radio" name="radioNodeType" label="Topic" onClick={() => this.setState({nodeType: 1})} />
                 <Form.Check type="radio" name="radioNodeType" label="Resource" onClick={() => this.setState({nodeType: 2})} />

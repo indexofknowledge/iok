@@ -3,9 +3,13 @@
     height: 90vh;
     width: 100%;
     margin: 0%;
-    background-color: gray;
     /* position: absolute;
     left: 0;
     top: 0;
     z-index: 999; */
+}
+
+.hr-sep {
+    /* since width not supported in html5 */
+    border-top: 4px solid black;
 }
