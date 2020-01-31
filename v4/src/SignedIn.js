@@ -24,9 +24,18 @@ class SignedIn extends Component {
   constructor(props) {
     super(props)
     this.userSession = new UserSession({ appConfig })
+    var username = this.userSession.loadUserData().username
+    var splits = window.location.pathname.split('/')
+    var loadUsername = username
+    if (splits.length === 2 && splits[1]) {
+      loadUsername = splits[1]
+    }
+
     this.state = {
       savingGraph: false,
       gotGraph: false,
+      username: username,
+      loadUsername: loadUsername
     }
 
     this.loadGraph = this.loadGraph.bind(this)
@@ -65,8 +74,8 @@ class SignedIn extends Component {
    * Load cy instance from Gaia into local state
    */
   loadGraph() {
-    console.log(TAG, "Loading data from Gaia...")
-    const options = { decrypt: false }
+    console.log(TAG, "Loading", this.state.loadUsername, "'s data")
+    const options = { decrypt: false, username: this.state.loadUsername }
     this.userSession.getFile(GRAPH_FILENAME, options)
     .then((content) => {
       if(content && content.length > 0) {
@@ -131,17 +140,9 @@ class SignedIn extends Component {
   }
 
   render() {
-    const username = this.userSession.loadUserData().username
-
-    if(window.location.pathname === '/') {
-      return (
-        <Redirect to={`/iok/${username}`} />
-      )
-    }
-
     return (
       <div className="SignedIn">
-        <NavBar className="nav-parent" username={username} signOut={this.signOut}/>
+        <NavBar className="nav-parent" username={this.state.username} loadName={this.state.loadUsername} signOut={this.signOut}/>
         <Split className="split-parent" 
             sizes={[60, 40]}
             gutterStyle={function(dimension, gutterSize) { // override somehow

@@ -10,7 +10,9 @@ class App extends Component {
   constructor() {
     super()
     this.userSession = new UserSession()
+  }
 
+  componentDidMount() {
     // moved from deprecated
     const session = this.userSession
     if(!session.isUserSignedIn() && session.isSignInPending()) {
@@ -19,7 +21,7 @@ class App extends Component {
         if(!userData.username) {
           throw new Error('This app requires a username.')
         }
-        window.location = `/iok/${userData.username}`
+        window.location.href = userData.username;
       })
     }
   }

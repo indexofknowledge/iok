@@ -6,15 +6,17 @@ class NavBar extends Component {
 
   render() {
     const username = this.props.username
+    const loadUsername = this.props.loadName
     return (
 <nav className="navbar navbar-expand-md navbar-dark bg-blue fixed-top">
-<Link className="navbar-brand" to="/">Index of Knowledge</Link>
+<Link className="navbar-brand" to={username}>Index of Knowledge</Link>
 
 <ul className="navbar-nav mr-auto">
   <li className="nav-item">
-    <Link className="nav-link" to='/me'>{username}</Link>
+    {/* <Link className="nav-link" to='/me'>{username}</Link> */}
   </li>
 </ul>
+  <p className="navbar-nav mr-auto">Viewing {loadUsername}'s IoK, logged in as {username}</p>
 <button
   className="btn btn-primary"
   onClick={this.props.signOut.bind(this)}
