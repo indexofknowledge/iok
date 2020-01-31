@@ -9,6 +9,10 @@
     z-index: 999; */
 }
 
+.breaking{    
+    word-wrap: break-word;
+}
+
 .edit-div {
     padding-top: 10px;
 }
@@ -19,18 +23,18 @@
 }
 
 .btn.btn-info.btn-lg.btn-save {
-    background-color: #75b5aa;
-    border-color: #75b5aa
+    background-color: #75b5aa !important;
+    border-color: #75b5aa !important;
 }
 
 .btn.btn-info.btn-lg.btn-util {
-    background-color: #a9a8a8; 
-    border-color: #a9a8a8;
+    background-color: #a9a8a8 !important; 
+    border-color: #a9a8a8 !important;
 }
 
 .btn.btn-info.btn-lg.btn-delete {
-    background-color: #E8747C;
-    border-color: #E8747C;
+    background-color: #E8747C !important;
+    border-color: #E8747C !important;
 }
 
 .btn.btn-info.btn-lg.btn-save:hover, 

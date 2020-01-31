@@ -204,12 +204,14 @@ export var validURL = (str) => {
  * @param {*} node 
  */
 var setNodeData = (node) => {
-    // console.log("setNodeData")
+
+    // write some basic name and ID 
     if (node.data('name')) {
-        document.getElementById('nodetitle').innerText = node.data('name') + '\n' + node.data('id');
-    } else {
-        document.getElementById('nodetitle').innerText = node.data('id');
+        document.getElementById('nodetitle').innerText = node.data('name')
     }
+    document.getElementById('nodeid').innerText = node.data('id')
+
+
     var ulNodeLinks = document.getElementById('nodelinks');
     var ulNodeDeps = document.getElementById('nodedeps')
     var ulNodeDescs = document.getElementById('nodedescs')

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AddNodeModal from './AddNodeModal'
+import { Button, Modal } from 'react-bootstrap'
 import { sha256 } from 'js-sha256'
 
 import './styles/IokText.css'
@@ -18,9 +19,13 @@ export default class IokText extends Component {
     this.onDrawClick = this.onDrawClick.bind(this)
     this.onAddClick = this.onAddClick.bind(this)
     this.addNodeToCy = this.addNodeToCy.bind(this)
+    this.toggleDeleteModal = this.toggleDeleteModal.bind(this)
+    this.toggleSaveModal = this.toggleSaveModal.bind(this)
 
     this.state = {
       drawEnabled: false,
+      showDeleteModal: false,
+      showSaveModal: false
     }
   }
 
@@ -51,6 +56,14 @@ export default class IokText extends Component {
     this.addNodeToCy(data)
   }
 
+  toggleDeleteModal() {
+    this.setState({ showDeleteModal: !this.state.showDeleteModal })
+  }
+
+  toggleSaveModal() {
+    this.setState({ showSaveModal: !this.state.showSaveModal })
+  }
+
   /**
    * Adds node to cy with the given data
    * NOTE: Don't give me an id!
@@ -71,11 +84,41 @@ export default class IokText extends Component {
   render() {
     return (
       <div>
+
+        <Modal className="Modal" show={this.state.showDeleteModal} onHide={this.toggleDeleteModal}>
+          <Modal.Header>
+            <Modal.Title>Delete your IoK?</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            This will delete all your IoK data from your Blockstack data locker.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button className={"btn btn-info btn-lg btn-delete"} onClick={() => {this.onDeleteClick(); this.toggleDeleteModal()}}>
+              Delete
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal className="Modal" show={this.state.showSaveModal} onHide={this.toggleSaveModal}>
+          <Modal.Header>
+            <Modal.Title>Save your IoK?</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            This will save your IoK data to your Blockstack data locker, potentially overwriting previous versions. 
+          </Modal.Body>
+          <Modal.Footer>
+            <Button className={"btn btn-info btn-lg btn-save"} onClick={() => {this.onSaveClick(); this.toggleSaveModal()}}>
+              Save
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
         <div id="cytext" className="iok-text">
             <div>
-                <h2 id="nodetitle">Overview</h2>
+                <h2 className="breaking" id="nodetitle">Overview</h2>
 
                 {/* used mainly to display info text to user */}
+                <p className="breaking" id="nodeid"></p>
                 <p id="nodesubtitle"></p>
 
                 <hr className="hr-sep"></hr>
@@ -113,8 +156,8 @@ export default class IokText extends Component {
                   <div className="edit-div">
                     <h5>Edit</h5>
                     <AddNodeModal addNode={this.addNodeToCy}/>
-                    <button className="btn btn-info btn-lg btn-save" onClick={this.onSaveClick}>Save</button>
-                    <button className="btn btn-info btn-lg btn-delete" onClick={this.onDeleteClick}>Delete</button>
+                    <button className="btn btn-info btn-lg btn-save" onClick={this.toggleSaveModal}>Save</button>
+                    <button className="btn btn-info btn-lg btn-delete" onClick={this.toggleDeleteModal}>Delete</button>
                     <button 
                       className="btn btn-info btn-lg btn-util" 
                       onClick={

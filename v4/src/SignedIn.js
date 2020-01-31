@@ -129,14 +129,15 @@ class SignedIn extends Component {
   deleteGraph() {
     this.userSession.deleteFile(GRAPH_FILENAME)
     .finally(() => {
-      alert("Graph deleted! Showing default")
       this.state.cy.json({
-        elements: DEFL_GRAPH_ELEMENTS,
+        elements: [],
         style: DEFL_GRAPH_STYLE
       })
       this.setState({
-        graphLoaded: false // XXX: need another flag prob...
+        graphLoaded: false,
+        unableToLoadGraph: true
       })
+      this.loadGraph()
     })
   }
 
@@ -166,7 +167,7 @@ class SignedIn extends Component {
     return (
       <div className="SignedIn">
 
-        <Modal className="Modal" show={!this.state.graphLoaded}>
+        <Modal className="Modal" show={!this.state.graphLoaded && !this.state.unableToLoadGraph}>
           <Modal.Header>
             <Modal.Title>Loading graph from blockstack</Modal.Title>
           </Modal.Header>
@@ -174,7 +175,7 @@ class SignedIn extends Component {
           </Modal.Footer>
         </Modal>
 
-        <Modal className="Modal" show={this.state.unableToLoadGraph}>
+        <Modal className="Modal" show={this.state.unableToLoadGraph} onHide={this.loadEmptyGraph}>
           <Modal.Header>
             <Modal.Title>Unable to fetch graph</Modal.Title>
           </Modal.Header>
