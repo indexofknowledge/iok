@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap'
 
+import { validURL } from './listen'
+
 import './styles/AddNodeModal.css'
 
 export default class AddNodeModal extends Component {
@@ -39,22 +41,33 @@ export default class AddNodeModal extends Component {
 
     // get the topic name, or don't have the key
     if (nodeType === 0) {
-      alert("Must have node type!")
+      alert("Missing node type")
       return
     } else if (nodeType === 1) {
       if (this.state.topicName.length === 0) {
-        alert("Invalid topic name!")
+        alert("Missing topic name")
         return
       }
       var data = { name: this.state.topicName }
     } else { // nodeType === 2 aka Resource
       if (this.state.resourceType === 0) {
-        alert("Invalid resource type!")
+        alert("Missing resource type")
         return
       }
       var data = {
         resource_type: this.state.resourceType,
         data: this.state.resourceData
+      }
+      if (this.state.resourceType > 1) { // check the link
+        if (!this.state.resourceData.text || this.state.resourceData.text.length === 0) {
+          alert("Missing resource text")
+          return
+        }
+        var valid = validURL(this.state.resourceData.link)
+        if (!valid) {
+          alert("Invalid URL")
+          return
+        }
       }
     }
 
