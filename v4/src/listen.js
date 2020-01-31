@@ -14,10 +14,14 @@ var drawOn = false
  * @param {*} data including node_type, id, and name
  */
 export var addNode = (cy, data) => {
-    cy.add({
-        group: "nodes",
-        data: data
-    })
+    try {
+        cy.add({
+            group: "nodes",
+            data: data
+        })
+    } catch (err) {
+        alert("Failed to add node. Check for ID collisions")
+    }
 }
 
 export var registerEdgeHandles = (cy) => {

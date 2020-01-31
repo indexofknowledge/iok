@@ -101,7 +101,7 @@ export default class IokText extends Component {
 
                 <div>
                   <h5>Misc IoK</h5>
-                  <button className="btn btn-info btn-lg" onClick={this.onMetaClick}>Toggle meta graph</button>
+                  <button className="btn btn-info btn-lg" onClick={this.onMetaClick}>Toggle meta-graph</button>
                   <button className="btn btn-info btn-lg" onClick={this.onRegroupClick}>Regroup</button>
 
                   <h5>Edit</h5>
@@ -118,9 +118,9 @@ export default class IokText extends Component {
                       }
                     }
                   >
-                    Turn {this.state.drawEnabled ? 'off' : 'on'} edge drawing
+                    Turn {this.state.drawEnabled ? 'OFF' : 'ON'} edge drawing
                   </button>
-                  <button className="btn btn-info btn-lg" onClick={this.onAddClick}>ADD TEST</button>
+                  {/* <button className="btn btn-info btn-lg" onClick={this.onAddClick}>ADD TEST</button> */}
                 </div>
             </div>
         </div>
