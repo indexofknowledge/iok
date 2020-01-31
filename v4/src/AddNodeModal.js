@@ -67,7 +67,7 @@ export default class AddNodeModal extends Component {
   render() {
     return (
       <div>
-        <Button className="btn btn-primary" onClick={this.toggleModal}>Add node</Button>
+        <Button className="btn btn-info btn-lg" onClick={this.toggleModal}>Add node</Button>
         <Modal show={this.state.isOpen} onHide={this.toggleModal}>
           <Modal.Header closeButton>
             <Modal.Title>Add Node</Modal.Title>

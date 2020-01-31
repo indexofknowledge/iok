@@ -13,3 +13,13 @@
     /* since width not supported in html5 */
     border-top: 4px solid black;
 }
+
+.btn.btn-info.btn-lg.btn-save {
+    background-color: green;
+    border-color: green
+}
+
+.btn.btn-info.btn-lg.btn-delete {
+    background-color: red;
+    border-color: red;
+}

@@ -106,8 +106,8 @@ export default class IokText extends Component {
 
                   <h5>Edit</h5>
                   <AddNodeModal addNode={this.addNodeToCy}/>
-                  <button className="btn btn-info btn-lg" onClick={this.onSaveClick}>Save</button>
-                  <button className="btn btn-info btn-lg" onClick={this.onDeleteClick}>Delete</button>
+                  <button className="btn btn-info btn-lg btn-save" onClick={this.onSaveClick}>Save</button>
+                  <button className="btn btn-info btn-lg btn-delete" onClick={this.onDeleteClick}>Delete</button>
                   <button 
                     className="btn btn-info btn-lg" 
                     onClick={
