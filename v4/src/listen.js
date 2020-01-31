@@ -219,7 +219,7 @@ var setNodeData = (node) => {
         var dataObj = neighbors[i].data()
         if (dataObj.node_type === 1) { // topic is dep
             li = document.createElement('li');
-            depText = document.createTextNode(dataObj.id)
+            depText = document.createTextNode(dataObj.name)
             li.appendChild(depText)
             ulNodeDeps.appendChild(li)
         } else if (dataObj.node_type === 2) { // resource
