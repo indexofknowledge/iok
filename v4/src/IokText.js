@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import AddNodeModal from './AddNodeModal'
+
 import './styles/IokText.css'
 
 import { regroupCy, toggleDrawMode, toggleMeta, addNode } from './listen'
@@ -53,6 +55,7 @@ export default class IokText extends Component {
       <div>
         <div id="cytext" className="iok-text">
             <div>
+                <AddNodeModal/>
                 <h2>Index of Knowledge</h2>
                 <h3 id="nodetitle">Overview</h3>
         

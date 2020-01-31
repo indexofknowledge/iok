@@ -1,0 +1,14 @@
+.Modal {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    right: 30%;
+    bottom: 30%;
+    z-index: 10000;
+    background-color: papayawhip !important;
+    opacity: 1;
+}
+
+.modal-wrapper {
+
+}
