@@ -47,13 +47,12 @@
 
 .text {
   padding: 5%;
-  /* background-color: #F6F6F6; */
 }
 
 .gutter {
     background-repeat: no-repeat;
     background-position: 50%;
-    background-color: black;
+    background-color: #f8be35;
     height: 1000px;
 }
 
@@ -68,8 +67,8 @@
 
 .split.split-horizontal,
 .gutter.gutter-horizontal {
-    height: 1000px;
     float: left;
+    background-color: #4a4d5d;
 }
 
 .split.split-horizontal.cy {

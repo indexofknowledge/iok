@@ -264,14 +264,14 @@ export const DEFL_GRAPH_STYLE = [
     {
       selector: 'node[name]',
       style: {
-        'background-color': '#11479e',
+        'background-color': '#f8be35',
         'label': 'data(name)'
       }
     },
     {
       selector: 'node[^name]',
       style: {
-        'background-color': '#11479e',
+        'background-color': '#f8be35',
         'label': 'data(id)'
       }
     },
@@ -280,8 +280,8 @@ export const DEFL_GRAPH_STYLE = [
       style: {
         'width': 4,
         'target-arrow-shape': 'triangle',
-        'line-color': '#9dbaea',
-        'target-arrow-color': '#9dbaea',
+        'line-color': '#FFE6A9',
+        'target-arrow-color': '#FFE6A9',
         'curve-style': 'bezier'
       }
     },

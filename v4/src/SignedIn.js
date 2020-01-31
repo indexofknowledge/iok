@@ -150,7 +150,7 @@ class SignedIn extends Component {
               return {
                   'width': '8px',
                   'height': '90vh',
-                  'background-color': 'rgb(33, 31, 109)'
+                  'background-color': '#18191c'
                 }
             }}
             gutterAlign="center"

@@ -8,19 +8,19 @@ html, body {
 }
 
 .badge-primary {
-  background-color: rgb(33, 31, 109);
+  background-color: #f8be35 !important;
   padding-top: 8px;
 }
 
 .btn-primary {
   color: #FFFFFF;
-  background-color: rgb(33, 31, 109) !important;
-  border: 0 !important;
+  background-color: #f8be35 !important;
+  border-color: #f8be35;
 }
 
 .btn-primary:hover {
   opacity: 0.5;
-  border: 0;
+  border-color: #f8be35;
 }
 
 .btn-primary.disabled, .btn-primary:disabled {

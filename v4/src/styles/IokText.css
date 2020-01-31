@@ -9,17 +9,41 @@
     z-index: 999; */
 }
 
+.edit-div {
+    padding-top: 10px;
+}
+
 .hr-sep {
     /* since width not supported in html5 */
-    border-top: 4px solid black;
+    border-top: 4px solid #f8be35;
 }
 
 .btn.btn-info.btn-lg.btn-save {
-    background-color: green;
-    border-color: green
+    background-color: #75b5aa;
+    border-color: #75b5aa
+}
+
+.btn.btn-info.btn-lg.btn-util {
+    background-color: #a9a8a8; 
+    border-color: #a9a8a8;
 }
 
 .btn.btn-info.btn-lg.btn-delete {
-    background-color: red;
-    border-color: red;
+    background-color: #E8747C;
+    border-color: #E8747C;
 }
+
+.btn.btn-info.btn-lg.btn-save:hover, 
+.btn.btn-info.btn-lg.btn-delete:hover,
+.btn.btn-info.btn-lg.btn-util:hover,
+.btn.btn-info.btn-lg.btn-save:focus, 
+.btn.btn-info.btn-lg.btn-delete:focus,
+.btn.btn-info.btn-lg.btn-util:focus,
+.btn.btn-info.btn-lg.btn-save:active, 
+.btn.btn-info.btn-lg.btn-delete:active,
+.btn.btn-info.btn-lg.btn-util:active {
+    opacity: 0.5;
+    border-color: #f8be35;
+    outline:0;
+}
+

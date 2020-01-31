@@ -67,8 +67,8 @@ export default class AddNodeModal extends Component {
   render() {
     return (
       <div>
-        <Button className="btn btn-info btn-lg" onClick={this.toggleModal}>Add node</Button>
-        <Modal show={this.state.isOpen} onHide={this.toggleModal}>
+        <Button className="btn btn-info btn-lg btn-mod" onClick={this.toggleModal}>Add node</Button>
+        <Modal className="Modal" show={this.state.isOpen} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Add Node</Modal.Title>
           </Modal.Header>
@@ -160,10 +160,7 @@ export default class AddNodeModal extends Component {
             </Modal.Body>
 
             <Modal.Footer>
-              <Button variant="secondary" onClick={this.handleClose}>
-                Cancel
-              </Button>
-              <Button variant="primary" type="submit" onClick={this.handleSubmit}>
+              <Button style={{'backgroundColor': '#a9a8a8'}}variant="primary" type="submit" onClick={this.handleSubmit}>
                 Add node
               </Button>
             </Modal.Footer>

@@ -100,27 +100,32 @@ export default class IokText extends Component {
                 <hr className="hr-sep"></hr>
 
                 <div>
-                  <h5>Misc IoK</h5>
-                  <button className="btn btn-info btn-lg" onClick={this.onMetaClick}>Toggle meta-graph</button>
-                  <button className="btn btn-info btn-lg" onClick={this.onRegroupClick}>Regroup</button>
+                  <div>
+                    <h5>Misc IoK</h5>
+                    <button className="btn btn-info btn-lg btn-util" onClick={this.onMetaClick}>Toggle meta-graph</button>
+                    <button className="btn btn-info btn-lg btn-util" onClick={this.onRegroupClick}>Regroup</button>
+                  </div>
 
-                  <h5>Edit</h5>
-                  <AddNodeModal addNode={this.addNodeToCy}/>
-                  <button className="btn btn-info btn-lg btn-save" onClick={this.onSaveClick}>Save</button>
-                  <button className="btn btn-info btn-lg btn-delete" onClick={this.onDeleteClick}>Delete</button>
-                  <button 
-                    className="btn btn-info btn-lg" 
-                    onClick={
-                      () => {
-                        this.onDrawClick(); 
-                        this.setState({drawEnabled: !this.state.drawEnabled});
-                        return
+                  <div className="edit-div">
+                    <h5>Edit</h5>
+                    <AddNodeModal addNode={this.addNodeToCy}/>
+                    <button className="btn btn-info btn-lg btn-save" onClick={this.onSaveClick}>Save</button>
+                    <button className="btn btn-info btn-lg btn-delete" onClick={this.onDeleteClick}>Delete</button>
+                    <button 
+                      className="btn btn-info btn-lg btn-util" 
+                      onClick={
+                        () => {
+                          this.onDrawClick(); 
+                          this.setState({drawEnabled: !this.state.drawEnabled});
+                          return
+                        }
                       }
-                    }
-                  >
-                    Turn {this.state.drawEnabled ? 'OFF' : 'ON'} edge drawing
-                  </button>
-                  {/* <button className="btn btn-info btn-lg" onClick={this.onAddClick}>ADD TEST</button> */}
+                    >
+                      Turn {this.state.drawEnabled ? 'OFF' : 'ON'} edge drawing
+                    </button>
+                    {/* <button className="btn btn-info btn-lg" onClick={this.onAddClick}>ADD TEST</button> */}
+                  </div>
+
                 </div>
             </div>
         </div>

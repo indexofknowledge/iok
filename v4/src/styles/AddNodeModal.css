@@ -1,14 +1,12 @@
 .Modal {
-    position: absolute;
-    top: 30%;
-    left: 30%;
-    right: 30%;
-    bottom: 30%;
-    z-index: 10000;
-    background-color: papayawhip !important;
-    opacity: 1;
+    color: black;
 }
 
-.modal-wrapper {
+.btn.btn-info.btn-lg.btn-mod {
+    border-color: #f8be35;
+}
 
+.btn-cancel {
+    border-color: #a9a8a8;
+    background-color: #a9a8a8;
 }
