@@ -54,6 +54,7 @@ export default class IokText extends Component {
   /**
    * Adds node to cy with the given data
    * NOTE: Don't give me an id!
+   * XXX: perhaps move this to utils
    * @param {*} data 
    */
   addNodeToCy(data) {

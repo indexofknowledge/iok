@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
 import { UserSession } from 'blockstack'
 import Split from 'react-split'
+import { Button, Modal } from 'react-bootstrap'
 
 import Cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
@@ -12,7 +12,7 @@ import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
 import './styles/SignedIn.css'
 
-import { regroupCy, registerNodeTap, highlightNodeDepsOnClick, registerEdgeHandles } from './listen'
+import { regroupCy, registerNodeTap, registerEdgeHandles, addNode } from './listen'
 
 const TAG = 'SignedIn'
 
@@ -33,7 +33,8 @@ class SignedIn extends Component {
 
     this.state = {
       savingGraph: false,
-      gotGraph: false,
+      graphLoaded: false,
+      unableToLoadGraph: false,
       username: username,
       loadUsername: loadUsername
     }
@@ -43,6 +44,8 @@ class SignedIn extends Component {
     this.deleteGraph = this.deleteGraph.bind(this)
     this.signOut = this.signOut.bind(this)
     this.changeLoadUser = this.changeLoadUser.bind(this)
+    this.loadDefaultGraph = this.loadDefaultGraph.bind(this)
+    this.loadEmptyGraph = this.loadEmptyGraph.bind(this)
   }
 
   // since we're creating the cytoscape div in this component,
@@ -55,7 +58,8 @@ class SignedIn extends Component {
         layout: { 
           name: 'dagre', 
           animate: true,
-        }
+        },
+        style: DEFL_GRAPH_STYLE
       }),
     }, () => {
       registerNodeTap(this.state.cy)
@@ -82,20 +86,24 @@ class SignedIn extends Component {
         const graph = JSON.parse(content)
         this.state.cy.json(graph) // edit local cy in place
 
+        console.log("Cy currently size", this.state.cy.elements().length)
+        regroupCy(this.state.cy)
+        this.setState({ graphLoaded: true }) // induce a re-render with state change
+
       } else {
-        alert('Failed to get graph data...')
-        this.state.cy.json({
-          elements: DEFL_GRAPH_ELEMENTS,
-          style: DEFL_GRAPH_STYLE
-        })
+
+        this.setState({ unableToLoadGraph: true })
+
+        // this.state.cy.json({
+        //   elements: DEFL_GRAPH_ELEMENTS,
+        //   style: DEFL_GRAPH_STYLE
+        // })
 
         // TODO might need to indicate that this is default, and re-fetch...
-        // this.setState({ gotGraph: true }) // induce a re-render with state change
+        // this.setState({ graphLoaded: true }) // induce a re-render with state change
 
       }
-      console.log("Cy currently size", this.state.cy.elements().length)
-      regroupCy(this.state.cy)
-      this.setState({ gotGraph: true }) // induce a re-render with state change
+
 
     })
   }
@@ -127,7 +135,7 @@ class SignedIn extends Component {
         style: DEFL_GRAPH_STYLE
       })
       this.setState({
-        gotGraph: false // XXX: need another flag prob...
+        graphLoaded: false // XXX: need another flag prob...
       })
     })
   }
@@ -138,9 +146,48 @@ class SignedIn extends Component {
     window.location = '/'
   }
 
+  loadEmptyGraph() {
+    this.setState({ graphLoaded: true, unableToLoadGraph: false })
+    addNode(this.state.cy, { name: 'delet this' })
+    addNode(this.state.cy, { name: 'delet this too' })
+    regroupCy(this.state.cy, )
+  }
+
+  loadDefaultGraph() {
+    this.state.cy.json({
+      elements: DEFL_GRAPH_ELEMENTS,
+      style: DEFL_GRAPH_STYLE
+    })
+    this.setState({ graphLoaded: true, unableToLoadGraph: false})
+    regroupCy(this.state.cy)
+  }
+
   render() {
     return (
       <div className="SignedIn">
+
+        <Modal className="Modal" show={!this.state.graphLoaded}>
+          <Modal.Header>
+            <Modal.Title>Loading graph from blockstack</Modal.Title>
+          </Modal.Header>
+          <Modal.Footer>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal className="Modal" show={this.state.unableToLoadGraph}>
+          <Modal.Header>
+            <Modal.Title>Unable to fetch graph</Modal.Title>
+          </Modal.Header>
+          <Modal.Footer>
+            <Button style={{'backgroundColor': '#a9a8a8'}} variant="secondary" type="submit" onClick={this.loadEmptyGraph}>
+              Load empty
+            </Button>
+            <Button style={{'backgroundColor': '#a9a8a8'}} variant="primary" type="submit" onClick={this.loadDefaultGraph}>
+              Load default
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
         <NavBar className="nav-parent" username={this.state.username} loadName={this.state.loadUsername} changeLoadUser={this.state.changeLoadUser} signOut={this.signOut}/>
         <Split className="split-parent" 
             sizes={[60, 40]}
