@@ -42,6 +42,7 @@ class SignedIn extends Component {
     this.saveGraph = this.saveGraph.bind(this)
     this.deleteGraph = this.deleteGraph.bind(this)
     this.signOut = this.signOut.bind(this)
+    this.changeLoadUser = this.changeLoadUser.bind(this)
   }
 
   // since we're creating the cytoscape div in this component,
@@ -63,12 +64,10 @@ class SignedIn extends Component {
     this.loadGraph()
   }
 
-  // /**
-  //  * Setup some stuff about the group assuming that we have cy
-  //  */
-  // setupGraph() {
-
-  // }
+  // this is important since we want to re-render each time the user changes
+  changeLoadUser(newUser) { 
+    this.setState({ loadUsername: newUser })
+  }
 
   /**
    * Load cy instance from Gaia into local state
@@ -142,7 +141,7 @@ class SignedIn extends Component {
   render() {
     return (
       <div className="SignedIn">
-        <NavBar className="nav-parent" username={this.state.username} loadName={this.state.loadUsername} signOut={this.signOut}/>
+        <NavBar className="nav-parent" username={this.state.username} loadName={this.state.loadUsername} changeLoadUser={this.state.changeLoadUser} signOut={this.signOut}/>
         <Split className="split-parent" 
             sizes={[60, 40]}
             gutterStyle={function(dimension, gutterSize) { // override somehow

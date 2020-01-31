@@ -7,9 +7,10 @@ class NavBar extends Component {
   render() {
     const username = this.props.username
     const loadUsername = this.props.loadName
+    const changeLoad = this.props.changeLoadUser
     return (
 <nav className="navbar navbar-expand-md navbar-dark bg-blue fixed-top">
-<Link className="navbar-brand" to={username}>Index of Knowledge</Link>
+<Link className="navbar-brand" onClick={() => changeLoad(username)} to={username}>Index of Knowledge</Link>
 
 <ul className="navbar-nav mr-auto">
   <li className="nav-item">
