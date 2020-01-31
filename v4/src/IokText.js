@@ -74,10 +74,10 @@ export default class IokText extends Component {
                 <h3 id="nodetitle">Overview</h3>
         
                 <div>
-                  <h5>Description</h5>
-                  <p id="nodetext">
-                    Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency.
-                  </p>
+                  <h5>Description(s)</h5>
+                  <ul id="nodedescs">
+                    <li>Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency.</li>
+                  </ul>
                 </div>
         
                 <div>

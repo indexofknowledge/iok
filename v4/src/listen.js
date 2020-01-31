@@ -206,10 +206,10 @@ var setNodeData = (node) => {
     var neighbors = node.incomers((el) => el.isNode())
     var ulNodeLinks = document.getElementById('nodelinks');
     var ulNodeDeps = document.getElementById('nodedeps')
-    var pNodeText = document.getElementById('nodetext')
-    ulNodeLinks.innerHTML = '';
+    var ulNodeDescs = document.getElementById('nodedescs')
+    ulNodeLinks.innerHTML = ''; // dirty wiping
     ulNodeDeps.innerHTML = '';
-    pNodeText.innerHTML = '';
+    ulNodeDescs.innerHTML = '';
     var li = null;
     var depText = null;
     var a = null;
@@ -225,7 +225,9 @@ var setNodeData = (node) => {
         } else if (dataObj.node_type === 2) { // resource
             data = neighbors[i].data().data
             if (dataObj.resource_type === 1) { // desc
-                pNodeText.appendChild(document.createTextNode(data))
+                li = document.createElement('li')
+                li.appendChild(document.createTextNode(data))
+                ulNodeDescs.appendChild(li)
             } else { // link type
                 li = document.createElement('li');
                 a = document.createElement('a');
