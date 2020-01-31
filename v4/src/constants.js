@@ -128,7 +128,6 @@ export const DEFL_GRAPH_ELEMENTS = {
         "resource_type": 1,
         "data": "world computer",
         "id": "ethereum-dCPDaweKhB",
-        "name": "ethereum-dCPDaweKhB"
       }
     },
     {
@@ -266,7 +265,14 @@ export const DEFL_GRAPH_STYLE = [
       selector: 'node[name]',
       style: {
         'background-color': '#11479e',
-        'content': 'data(name)'
+        'label': 'data(name)'
+      }
+    },
+    {
+      selector: 'node[^name]',
+      style: {
+        'background-color': '#11479e',
+        'label': 'data(id)'
       }
     },
     {
