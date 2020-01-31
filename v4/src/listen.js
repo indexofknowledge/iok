@@ -87,7 +87,9 @@ export var regroupCy = (cy) => {
     var layout = cy.layout({
         name: 'dagre',
         animate: true,
-        padding: 10
+        padding: 50,
+        animationDuration: 300,
+        nodeDimensionsIncludeLabels: true
     });
     layout.run();
     return new Promise(() => { // give it some time
@@ -211,9 +213,11 @@ var setNodeData = (node) => {
     var ulNodeLinks = document.getElementById('nodelinks');
     var ulNodeDeps = document.getElementById('nodedeps')
     var ulNodeDescs = document.getElementById('nodedescs')
+    var nodeSubtitle = document.getElementById('nodesubtitle')
     ulNodeLinks.innerHTML = ''; // dirty wiping
     ulNodeDeps.innerHTML = '';
     ulNodeDescs.innerHTML = '';
+    nodeSubtitle.innerHTML = '';
     var li = null;
     var depText = null;
     var a = null;
@@ -226,7 +230,7 @@ var setNodeData = (node) => {
     // XXX: HACK!! If it's a resource, just make it it's own neighbor so we can display
     if (node.data('node_type') !== 1) {
         neighbors = [node]
-        document.getElementById('nodesubtitle').innerText = 'Resource node. Displaying own contents';
+        nodeSubtitle.innerHTML = 'NOTE: Resource node. Displaying own contents';
     }
 
     for (var i = 0; i < neighbors.length; i++) {

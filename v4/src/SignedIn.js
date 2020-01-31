@@ -45,7 +45,6 @@ class SignedIn extends Component {
         layout: { 
           name: 'dagre', 
           animate: true,
-          padding: 10
         }
       }),
     }, () => {
@@ -71,9 +70,8 @@ class SignedIn extends Component {
     this.userSession.getFile(GRAPH_FILENAME, options)
     .then((content) => {
       if(content && content.length > 0) {
+        // console.log(TAG, 'Loaded data:', content)
         const graph = JSON.parse(content)
-        console.log(TAG, 'Loaded data:', graph)
-
         this.state.cy.json(graph) // edit local cy in place
 
       } else {

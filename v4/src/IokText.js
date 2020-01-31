@@ -60,6 +60,9 @@ export default class IokText extends Component {
     var hash = sha256.create();
     hash.update(JSON.stringify(data))
     data = {...data, id: hash.hex()}
+    if (!('name' in data)) { // XXX: make a note of this... give it a name...
+      data = {...data, name: 'res-'.concat(data.id.substring(0, 10))}
+    }
     console.log('DATA', data)
     addNode(this.state.cy, data)
   }
@@ -72,7 +75,7 @@ export default class IokText extends Component {
                 <h2 id="nodetitle">Overview</h2>
 
                 {/* used mainly to display info text to user */}
-                <h4 id="nodesubtitle"></h4>
+                <p id="nodesubtitle"></p>
 
                 <hr className="hr-sep"></hr>
         
