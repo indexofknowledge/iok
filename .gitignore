@@ -4,3 +4,8 @@ output.log
 graph_output.log*
 __pycache__/
 venv/
+.DS_store
+
+# stuff that legacy scrapers generate
+credentials.json
+token.json
