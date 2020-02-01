@@ -147,11 +147,11 @@ export default class IokText extends Component {
                 <hr className="hr-sep"></hr>
 
                 <div>
-                  <div>
+                  {/* <div>
                     <h5>Misc IoK</h5>
                     <button className="btn btn-info btn-lg btn-util" onClick={this.onMetaClick}>Toggle meta-graph</button>
                     <button className="btn btn-info btn-lg btn-util" onClick={this.onRegroupClick}>Regroup</button>
-                  </div>
+                  </div> */}
 
                   <div className="edit-div">
                     <h5>Edit</h5>

@@ -9,6 +9,18 @@
     position: absolute;
 }
 
+.btn.btn-info.btn-lg.btn-util {
+    background-color: #a9a8a8 !important; 
+    border-color: #a9a8a8 !important;
+}
+
+.cy-overlay {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1000;
+}
+
 /* ugly for debugging :) */
 .graph-parent {
     height: 100%;

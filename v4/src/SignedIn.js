@@ -12,7 +12,7 @@ import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
 import './styles/SignedIn.css'
 
-import { regroupCy, registerNodeTap, registerEdgeHandles, addNode } from './listen'
+import { regroupCy, registerNodeTap, registerEdgeHandles, addNode, toggleMeta } from './listen'
 
 const TAG = 'SignedIn'
 
@@ -151,7 +151,7 @@ class SignedIn extends Component {
     this.setState({ graphLoaded: true, unableToLoadGraph: false })
     addNode(this.state.cy, { name: 'delet this' })
     addNode(this.state.cy, { name: 'delet this too' })
-    regroupCy(this.state.cy, )
+    regroupCy(this.state.cy)
   }
 
   loadDefaultGraph() {
@@ -211,8 +211,13 @@ class SignedIn extends Component {
         >
             {/* first split */}
             <div className="split split-horizontal">
-              <p className="hidden-msg">p.s. refresh if the graph doesn't load</p>
-              <div className="split content" id="cy"/>
+              <div className="split content" id="cy">
+                <p className="hidden-msg">p.s. refresh if the graph doesn't load</p>
+                <div className="cy-overlay">
+                  <Button className="btn btn-info btn-lg btn-util" onClick={() => toggleMeta(this.state.cy)}>Toggle meta-graph</Button>
+                  <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(this.state.cy)}>Regroup</Button>
+                </div>
+              </div>
             </div>
 
             {/* second split */}
