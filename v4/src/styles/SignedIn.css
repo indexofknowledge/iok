@@ -4,10 +4,6 @@
     margin: 0;
 }
 
-.nav-parent {
-    position:relative;
-}
-
 .hidden-msg {
     padding: 10px;
     position: absolute;
@@ -27,7 +23,6 @@
     height: 100%;
     width: 100%;
     margin: 0%;
-    position:relative;
     box-sizing: border-box;
     margin-top: 5rem;
 }

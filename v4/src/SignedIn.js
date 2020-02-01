@@ -188,9 +188,8 @@ class SignedIn extends Component {
             </Button>
           </Modal.Footer>
         </Modal>
-
+        
         <NavBar 
-          className="nav-parent" 
           username={this.state.username} 
           loadName={this.state.loadUsername} 
           changeLoadUser={this.state.changeLoadUser} 
