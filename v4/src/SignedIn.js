@@ -24,17 +24,26 @@ class SignedIn extends Component {
   constructor(props) {
     super(props)
     this.userSession = new UserSession({ appConfig })
-    var username = this.userSession.loadUserData().username
-    var splits = window.location.pathname.split('/')
-    var loadUsername = username
-    if (splits.length === 2 && splits[1]) {
-      loadUsername = splits[1]
+    if (!this.props.guestMode) {
+      var username = this.userSession.loadUserData().username
+    } else {
+      var username = 'guest'
+    }
+    var url = new URL(window.location.href)
+    var par = url.searchParams
+    if (par.has('loaduser')) {
+      var loadUsername = par.get('loaduser')
+    } else {
+      var loadUsername = username
+      par.set('loaduser', username)
+      window.location.href = url
     }
 
     this.state = {
       savingGraph: false,
       graphLoaded: false,
       unableToLoadGraph: false,
+      guestMode: this.props.guestMode,
       username: username,
       loadUsername: loadUsername
     }
@@ -91,20 +100,10 @@ class SignedIn extends Component {
         this.setState({ graphLoaded: true }) // induce a re-render with state change
 
       } else {
-
-        this.setState({ unableToLoadGraph: true })
-
-        // this.state.cy.json({
-        //   elements: DEFL_GRAPH_ELEMENTS,
-        //   style: DEFL_GRAPH_STYLE
-        // })
-
-        // TODO might need to indicate that this is default, and re-fetch...
-        // this.setState({ graphLoaded: true }) // induce a re-render with state change
-
-      }
-
-
+        this.setState({ unableToLoadGraph: true, loadUsername: 'default' })
+      }                                             // deal with fail and err as same
+    }).catch((err) => {
+      this.setState({ unableToLoadGraph: true, loadUsername: 'default' })
     })
   }
 
@@ -135,7 +134,8 @@ class SignedIn extends Component {
       })
       this.setState({
         graphLoaded: false,
-        unableToLoadGraph: true
+        unableToLoadGraph: true,
+        loadUsername: 'default'
       })
       this.loadGraph()
     })
@@ -189,7 +189,14 @@ class SignedIn extends Component {
           </Modal.Footer>
         </Modal>
 
-        <NavBar className="nav-parent" username={this.state.username} loadName={this.state.loadUsername} changeLoadUser={this.state.changeLoadUser} signOut={this.signOut}/>
+        <NavBar 
+          className="nav-parent" 
+          username={this.state.username} 
+          loadName={this.state.loadUsername} 
+          changeLoadUser={this.state.changeLoadUser} 
+          signOut={this.signOut}
+        />
+        
         <Split className="split-parent" 
             sizes={[60, 40]}
             gutterStyle={function(dimension, gutterSize) { // override somehow
@@ -216,6 +223,7 @@ class SignedIn extends Component {
                 cy={this.state.cy}
                 onSaveClick={this.saveGraph}
                 onDeleteClick={this.deleteGraph}
+                guestMode={this.state.guestMode}
               />
             </div>
         </Split>

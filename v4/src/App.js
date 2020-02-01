@@ -10,12 +10,18 @@ class App extends Component {
   constructor() {
     super()
     this.userSession = new UserSession()
+    var par = new URLSearchParams(window.location.search)
+    this.state = {
+      guestMode: par.has('guest') && par.get('guest') === 'true'
+    }
+    console.log("GUEST MODE?", this.state.guestMode)
+    this.changeToGuestMode = this.changeToGuestMode.bind(this)
   }
 
   componentDidMount() {
     // moved from deprecated
     const session = this.userSession
-    if(!session.isUserSignedIn() && session.isSignInPending()) {
+    if(!this.state.guestMode && !session.isUserSignedIn() && session.isSignInPending()) {
       session.handlePendingSignIn()
       .then((userData) => {
         if(!userData.username) {
@@ -26,13 +32,20 @@ class App extends Component {
     }
   }
 
+  changeToGuestMode() {
+    var url = new URL(window.location.href)
+    var par = url.searchParams
+    par.set('guest', 'true')
+    window.location.href = url
+  }
+
   render() {
     return (
       <div className="site-wrapper">
-        {this.userSession.isUserSignedIn() ?
-          <SignedIn />
+        {this.state.guestMode || this.userSession.isUserSignedIn() ?
+          <SignedIn guestMode={this.state.guestMode}/>
         :
-          <Landing />
+          <Landing guestModeHandler={this.changeToGuestMode}/>
         }
       </div>
     );

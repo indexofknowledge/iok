@@ -10,7 +10,7 @@ class NavBar extends Component {
     const changeLoad = this.props.changeLoadUser
     return (
 <nav className="navbar navbar-expand-md navbar-dark bg-blue fixed-top">
-<Link className="navbar-brand" onClick={() => changeLoad(username)} to={username}>Index of Knowledge</Link>
+<Link className="navbar-brand" onClick={() => changeLoad(username)} to='/'>Index of Knowledge</Link>
 
 <ul className="navbar-nav mr-auto">
   <li className="nav-item">
@@ -21,7 +21,7 @@ class NavBar extends Component {
 <button
   className="btn btn-primary"
   onClick={this.props.signOut.bind(this)}
->Sign out
+>Sign {username === 'guest' ? 'in' : 'out'}
 </button>
 </nav>
 )
