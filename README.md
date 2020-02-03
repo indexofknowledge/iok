@@ -22,5 +22,11 @@ This contains the old IoK client using CommonJS and Cytoscape. Storage happens o
 
 Mostly deprecated, but there's some bits we can salvage into v4. 
 
+### `scraper`
+
+This contains an experimental webscraper based off of puppeteer that waits for the react app in `v4` to fully render before collecting graph data to JSON. We can then use some of our old scripts from `legacy` retrofitted to regenerate our other static clients.
+
+Still need some testing to see how well puppeteer works on gcp (e.g. cloud functions) but this beats running our own gaia node and setting up watchman etc.
+
 
 
