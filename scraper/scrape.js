@@ -16,13 +16,17 @@ strip_html_tags = (str) => {
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto('http://127.0.0.1:3000/?loaduser=rustielin.id.blockstack&guest=true&json=true');
-
-  await page.waitForSelector('#jsonData', { timeout: 5000 })
-  await page.screenshot({path: 'example.png'});
-  const html = await page.content()
-  var dat = strip_html_tags(html)
-  fs.writeFileSync('graph.json', dat)
+  await page.goto(process.env.SCRAPE_APP);
+  try {
+    await page.waitForSelector('#jsonData', { timeout: 5000 })
+    await page.screenshot({path: 'example.png'});
+    const html = await page.content()
+    var dat = strip_html_tags(html)
+    fs.writeFileSync(process.env.GRAPH_FILE, dat)
+  } catch (e) {
+    console.error(e)
+    process.exit(1)
+  }
 
   await browser.close();
 })();
