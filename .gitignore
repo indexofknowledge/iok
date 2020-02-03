@@ -6,6 +6,8 @@ __pycache__/
 venv/
 .DS_store
 
+node_modules
+
 # stuff that legacy scrapers generate
 credentials.json
 token.json

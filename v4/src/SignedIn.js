@@ -97,7 +97,16 @@ class SignedIn extends Component {
 
         console.log("Cy currently size", this.state.cy.elements().length)
         regroupCy(this.state.cy)
-        this.setState({ graphLoaded: true }) // induce a re-render with state change
+        
+        if (this.props.jsonMode) {
+          this.setState({ graphLoaded: true }, () => {
+            document.open()
+            document.write('<div id="jsonData">' + JSON.stringify(graph) + '</div>')
+            document.close()
+          }) // induce a re-render with state change
+        } else {
+          this.setState({ graphLoaded: true })
+        }
 
       } else {
         this.setState({ unableToLoadGraph: true, loadUsername: 'default' })
