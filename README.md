@@ -1,32 +1,65 @@
-# Index of Knowledge (IoK)
+# Index of Knowledge
 
-Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency. Currently working to support graph visualization and awesome-list clients.
+The Decentralized Index of Knowledge (DIoK) is a curated collection of resources for blockchain, grouped by topic and ordered by pedagogical dependency. We store data as a graph, allowing programmatic creation of front-ends such as interactive graph visualizations as well as awesome-lists.
 
-Previous iterations of the IoK failed in part due to centralization of control. Sounds like a good use of blockchain :thonk:, at least to a certain extent. 
+## Table of Contents
 
-## Project structure
+* [bitcoin](#bitcoin)
+* [computer science](#computer\ science)
+* [economics](#economics)
+* [math](#math)
 
-Description of folders and the projects they contain. Most will have their own READMEs.
+## bitcoin
 
-### `v4`
+### Description
 
-The `v4` folder contains a ReactJS app that uses Blockstack to allow users to create, view, and share others' own IoKs. For example, the link below allows you to see my personal IoK from a guest mode:
+Bitcoin is an innovative payment network and a new kind of money.
 
-https://index-of-knowledge.firebaseapp.com/?guest=true&loaduser=rustielin.id.blockstack
+### Papers
 
-Currently, you can create and share your own IoKs, as well as copy other public IoKs as an authenticated user. As a guest, you can view all public IoKs and add nodes/edges, but none of your changes will persist (naturally).
+* [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf)
 
-### `legacy` 
+### Articles
 
-This contains the old IoK client using CommonJS and Cytoscape. Storage happens on GitHub. There was also a mechanism for taking IoK data and linearizing it to programatically generate the README, in the format of an awesome-list. 
+### Videos
 
-Mostly deprecated, but there's some bits we can salvage into v4. 
+## computer science
 
-### `scraper`
+### Description
 
-This contains an experimental webscraper based off of puppeteer that waits for the react app in `v4` to fully render before collecting graph data to JSON. We can then use some of our old scripts from `legacy` retrofitted to regenerate our other static clients.
+Computer science is the study of processes that interact with data and that can be represented as data in the form of programs.
 
-Still need some testing to see how well puppeteer works on gcp (e.g. cloud functions) but this beats running our own gaia node and setting up watchman etc.
+### Papers
 
+* [The Byzantine Generals Problem](https://people.eecs.berkeley.edu/~luca/cs174/byzantine.pdf)
 
+* [Impossibility of Distributed Consensus with One Faulty Process ](https://groups.csail.mit.edu/tds/papers/Lynch/jacm85.pdf)
+
+### Articles
+
+### Videos
+
+## economics
+
+### Description
+
+Economics is the social science that studies the production, distribution, and consumption of goods and services.
+
+### Papers
+
+### Articles
+
+### Videos
+
+## math
+
+### Description
+
+Mathematics is the study of abstract objects and structures that are often, but not always, abstracted from the physical world. It includes the study of such abstractions as quantity, structure, space and shapes, and change.
+
+### Papers
+
+### Articles
+
+### Videos
 
