@@ -5,7 +5,8 @@ import { sha256 } from 'js-sha256'
 
 import './styles/IokText.css'
 
-import { regroupCy, toggleDrawMode, toggleMeta, addNode } from './listen'
+import { regroupCy, toggleDrawMode, toggleMeta, addNode, getNodesEdgesJson } from './listen'
+import { GRAPH_FILENAME } from './constants'
 
 export default class IokText extends Component {
 
@@ -21,6 +22,7 @@ export default class IokText extends Component {
     this.addNodeToCy = this.addNodeToCy.bind(this)
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this)
     this.toggleSaveModal = this.toggleSaveModal.bind(this)
+    this.downloadGraph = this.downloadGraph.bind(this)
 
     this.state = {
       drawEnabled: false,
@@ -79,6 +81,18 @@ export default class IokText extends Component {
     }
     console.log('DATA', data)
     addNode(this.state.cy, data)
+  }
+
+  downloadGraph(){
+    var exportObj = getNodesEdgesJson(this.state.cy)
+    var exportName = GRAPH_FILENAME
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", exportName);
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
   }
 
   render() {
@@ -173,7 +187,7 @@ export default class IokText extends Component {
                     >
                       Turn {this.state.drawEnabled ? 'OFF' : 'ON'} edge drawing
                     </button>
-                    {/* <button className="btn btn-info btn-lg" onClick={this.onAddClick}>ADD TEST</button> */}
+                    <button className="btn btn-info btn-lg btn-util" onClick={this.downloadGraph}>Download</button>
                   </div>
 
                 </div>

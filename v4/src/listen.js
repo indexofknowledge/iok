@@ -24,6 +24,32 @@ export var addNode = (cy, data) => {
     }
 }
 
+/**
+ * Extract the json for the cy instance but only with nodes and edges
+ * Dealing with the entire cy instance is too heavy and also comes with unintended
+ * side effects (e.g. node highlighting and styles)
+ * @param {*} cy 
+ */
+export var getNodesEdgesJson = (cy) => {
+    var j = cy.json()
+    var nodes = j.elements.nodes
+    var edges = j.elements.edges
+    for (var i = 0; i < nodes.length; i++) {
+        nodes[i] = { data: nodes[i].data }
+    }
+    for (var j = 0; j < edges.length; j++) {
+        edges[j] = { data: edges[j].data} 
+    }
+    return { nodes: nodes, edges: edges }
+}
+
+export var getExportableJson = (cy) => {
+    var j = getNodesEdgesJson(cy)
+    var obj = { elements: j }
+    obj.style = cy.style
+    return obj
+}
+
 export var registerEdgeHandles = (cy) => {
     eh = cy.edgehandles({
       preview: true,

@@ -12,7 +12,7 @@ import IokText from './IokText'
 import { appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE } from './constants'
 import './styles/SignedIn.css'
 
-import { regroupCy, registerNodeTap, registerEdgeHandles, addNode, toggleMeta } from './listen'
+import { regroupCy, registerNodeTap, registerEdgeHandles, addNode, toggleMeta, getExportableJson } from './listen'
 
 const TAG = 'SignedIn'
 
@@ -113,7 +113,8 @@ class SignedIn extends Component {
   saveGraph() {
     // this.setState({savingGraph: true}) // XXX: might not need this to rerender
     const options = { encrypt: false }
-    var graph = this.state.cy.json()
+    // var graph = this.state.cy.json()
+    var graph = getExportableJson(this.state.cy)
     // var graph = {elements: this.state.graphElements, style: this.state.graphStyles}
     console.log(TAG, "SAVING...", graph)
     this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(graph), options)
