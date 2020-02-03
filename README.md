@@ -21,7 +21,17 @@ Bitcoin is an innovative payment network and a new kind of money.
 
 ### Articles
 
+* [The shy college student who helped build Bitcoin into a global phenomenon](https://www.theverge.com/2015/6/10/8751933/the-shy-college-student-who-helped-build-bitcoin-into-a-global)
+
+* [Bitcoin Developer Guide](https://bitcoin.org/en/developer-guide)
+
 ### Videos
+
+* [The Essence of How Bitcoin Works (Non-Technical)](https://www.youtube.com/watch?v=t5JGQXCTe3c&amp;feature=youtu.be)
+
+* [But how does bitcoin actually work? - 3Blue1Brown](https://www.youtube.com/watch?v=bBC-nXj3Ng4)
+
+* [How Bitcoin Works in 5 Minutes (Technical)](https://www.youtube.com/watch?v=l9jOJk30eQs&amp;feature=youtu.be)
 
 ## computer science
 
@@ -37,7 +47,13 @@ Computer science is the study of processes that interact with data and that can 
 
 ### Articles
 
+* [Merkle Trees - Wikipedia](https://en.wikipedia.org/wiki/Merkle_tree)
+
+* [Merkle Tree in Bitcoin - BitcoinWiki](https://en.bitcoinwiki.org/wiki/Merkle_tree)
+
 ### Videos
+
+* [Map of Computer Science](https://www.youtube.com/watch?v=SzJ46YA_RaA)
 
 ## economics
 
@@ -47,9 +63,13 @@ Economics is the social science that studies the production, distribution, and c
 
 ### Papers
 
+* [Equilibrium points in n-person games](https://www.pnas.org/content/36/1/48)
+
 ### Articles
 
 ### Videos
+
+* [How the economic machine works by Ray Dalio](https://www.youtube.com/watch?v=PHe0bXAIuk0)
 
 ## math
 
@@ -59,7 +79,13 @@ Mathematics is the study of abstract objects and structures that are often, but 
 
 ### Papers
 
+* [On proof and progress in mathematics](https://arxiv.org/abs/math/9404236)
+
 ### Articles
 
+* [Ed25519: high-speed high-security signatures](https://ed25519.cr.yp.to/)
+
 ### Videos
+
+* [Map of Mathematics](https://www.youtube.com/watch?v=OmJ-4B-mS-Y)
 
