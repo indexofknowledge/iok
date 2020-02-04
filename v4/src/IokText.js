@@ -171,10 +171,11 @@ export default class IokText extends Component {
                     <h5>Edit</h5>
                     <AddNodeModal addNode={this.addNodeToCy}/>
 
-                    <button disabled={this.props.guestMode} className="btn btn-info btn-lg btn-save" onClick={this.toggleSaveModal}>Save</button>
-                    <button disabled={this.props.guestMode} className="btn btn-info btn-lg btn-delete" onClick={this.toggleDeleteModal}>Delete</button>
-
-
+                    {this.props.guestMode ? <div></div> : 
+                    <div><button className="btn btn-info btn-lg btn-save" onClick={this.toggleSaveModal}>Save</button>
+                    <button className="btn btn-info btn-lg btn-delete" onClick={this.toggleDeleteModal}>Delete</button></div>
+                    }
+                    
                     <button 
                       className="btn btn-info btn-lg btn-util" 
                       onClick={
@@ -187,7 +188,8 @@ export default class IokText extends Component {
                     >
                       Turn {this.state.drawEnabled ? 'OFF' : 'ON'} edge drawing
                     </button>
-                    <button className="btn btn-info btn-lg btn-util" onClick={this.downloadGraph}>Download</button>
+                    {this.props.graphLoaded ? <button id="downloadButton" className="btn btn-info btn-lg btn-util" onClick={this.downloadGraph}>Download</button> : <div></div>}
+                    
                   </div>
 
                 </div>
