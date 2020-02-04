@@ -13,7 +13,6 @@ class App extends Component {
     var par = new URLSearchParams(window.location.search)
     this.state = {
       guestMode: par.has('guest') && par.get('guest') === 'true',
-      jsonMode: par.has('json') && par.get('json') === 'true'
     }
     console.log("GUEST MODE?", this.state.guestMode)
     this.changeToGuestMode = this.changeToGuestMode.bind(this)
@@ -44,7 +43,7 @@ class App extends Component {
     return (
       <div className="site-wrapper">
         {this.state.guestMode || this.userSession.isUserSignedIn() ?
-          <SignedIn jsonMode={this.state.jsonMode} guestMode={this.state.guestMode}/>
+          <SignedIn guestMode={this.state.guestMode}/>
         :
           <Landing guestModeHandler={this.changeToGuestMode}/>
         }

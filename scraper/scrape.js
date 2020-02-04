@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer');
-const fs = require('fs')
 
 sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -18,11 +17,14 @@ strip_html_tags = (str) => {
   const page = await browser.newPage();
   await page.goto(process.env.SCRAPE_APP);
   try {
-    await page.waitForSelector('#jsonData', { timeout: 5000 })
-    await page.screenshot({path: 'example.png'});
-    const html = await page.content()
-    var dat = strip_html_tags(html)
-    fs.writeFileSync(process.env.GRAPH_FILE, dat)
+    await sleep(5000)
+    await page._client.send('Page.setDownloadBehavior', {
+      behavior: 'allow',
+      downloadPath: process.cwd(),
+    });
+    await page.waitForSelector('#downloadButton')
+    await page.click('#downloadButton')
+    await sleep(5000)
   } catch (e) {
     console.error(e)
     process.exit(1)

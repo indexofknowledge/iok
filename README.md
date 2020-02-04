@@ -5,7 +5,7 @@ The Decentralized Index of Knowledge (DIoK) is a curated collection of resources
 ## Table of Contents
 
 * [bitcoin](#bitcoin)
-* [computer science](#computer\ science)
+* [computer science](#computer science)
 * [economics](#economics)
 * [math](#math)
 
@@ -27,11 +27,11 @@ Bitcoin is an innovative payment network and a new kind of money.
 
 ### Videos
 
-* [The Essence of How Bitcoin Works (Non-Technical)](https://www.youtube.com/watch?v=t5JGQXCTe3c&amp;feature=youtu.be)
+* [The Essence of How Bitcoin Works (Non-Technical)](https://www.youtube.com/watch?v=t5JGQXCTe3c&feature=youtu.be)
 
 * [But how does bitcoin actually work? - 3Blue1Brown](https://www.youtube.com/watch?v=bBC-nXj3Ng4)
 
-* [How Bitcoin Works in 5 Minutes (Technical)](https://www.youtube.com/watch?v=l9jOJk30eQs&amp;feature=youtu.be)
+* [How Bitcoin Works in 5 Minutes (Technical)](https://www.youtube.com/watch?v=l9jOJk30eQs&feature=youtu.be)
 
 ## computer science
 

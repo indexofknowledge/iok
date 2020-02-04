@@ -44,8 +44,7 @@ class KnowledgeGraph:
     def read_from_file(self, filename):
         """Reads graph from JSON file in data link format"""
         with open(filename, 'r') as f:
-            dat = json.load(f)
-        elements = dat['elements']
+            elements = json.load(f)
         nodes = elements['nodes']
         edges = elements['edges']
         for node in nodes:

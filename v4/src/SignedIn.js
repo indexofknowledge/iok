@@ -99,16 +99,8 @@ class SignedIn extends Component {
 
         console.log("Cy currently size", this.state.cy.elements().length)
         regroupCy(this.state.cy)
-        
-        if (this.props.jsonMode) {
-          this.setState({ graphLoaded: true }, () => {
-            document.open()
-            document.write('<div id="jsonData">' + JSON.stringify(graph) + '</div>')
-            document.close()
-          }) // induce a re-render with state change
-        } else {
-          this.setState({ graphLoaded: true })
-        }
+
+        this.setState({ graphLoaded: true })
 
       } else {
         this.setState({ unableToLoadGraph: true, loadUsername: 'default' })
@@ -241,6 +233,7 @@ class SignedIn extends Component {
                 onSaveClick={this.saveGraph}
                 onDeleteClick={this.deleteGraph}
                 guestMode={this.state.guestMode}
+                graphLoaded={this.state.graphLoaded}
               />
             </div>
         </Split>
