@@ -5,6 +5,7 @@ import { Button, Modal } from 'react-bootstrap'
 
 import Cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
+import cola from 'cytoscape-cola'
 import edgehandles from 'cytoscape-edgehandles'
 
 import NavBar from './NavBar'
@@ -17,6 +18,7 @@ import { regroupCy, registerNodeTap, registerEdgeHandles, addNode, toggleMeta, g
 const TAG = 'SignedIn'
 
 Cytoscape.use(dagre)
+Cytoscape.use(cola)
 Cytoscape.use(edgehandles)
 
 class SignedIn extends Component {
@@ -225,7 +227,8 @@ class SignedIn extends Component {
                 <p className="hidden-msg">p.s. refresh if the graph doesn't load</p>
                 <div className="cy-overlay">
                   <Button className="btn btn-info btn-lg btn-util" onClick={() => toggleMeta(this.state.cy)}>Toggle meta-graph</Button>
-                  <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(this.state.cy)}>Regroup</Button>
+                  <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(this.state.cy)}>Regroup dagre</Button>
+                  <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(this.state.cy, true)}>Regroup cola</Button>
                 </div>
               </div>
             </div>

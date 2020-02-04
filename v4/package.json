@@ -14,6 +14,7 @@
   "dependencies": {
     "blockstack": "^19.2.5",
     "cytoscape": "^3.13.0",
+    "cytoscape-cola": "^2.3.0",
     "cytoscape-dagre": "^2.2.2",
     "cytoscape-edgehandles": "^3.6.0",
     "js-sha256": "^0.9.0",

@@ -7,6 +7,7 @@ var TAG = 'listen'
 var cy = null
 var eh = null
 var drawOn = false
+var layout = null
 
 /**
  * 
@@ -109,9 +110,12 @@ export var recenterCy = (cy) => {
     cy.fit()
 }
 
-export var regroupCy = (cy) => {
-    var layout = cy.layout({
-        name: 'dagre',
+export var regroupCy = (cy, cola = false) => {
+    if (layout) {
+        layout.stop()
+    }
+    layout = cy.layout({
+        name: cola ? 'cola' : 'dagre',
         animate: true,
         padding: 50,
         animationDuration: 300,
