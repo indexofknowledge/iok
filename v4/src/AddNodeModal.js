@@ -38,6 +38,7 @@ export default class AddNodeModal extends Component {
 
   handleSubmit() {
     var nodeType = this.state.nodeType
+    var data = {}
 
     // get the topic name, or don't have the key
     if (nodeType === 0) {
@@ -48,13 +49,13 @@ export default class AddNodeModal extends Component {
         alert("Missing topic name")
         return
       }
-      var data = { name: this.state.topicName }
+      data = { name: this.state.topicName }
     } else { // nodeType === 2 aka Resource
       if (this.state.resourceType === 0) {
         alert("Missing resource type")
         return
       }
-      var data = {
+      data = {
         resource_type: this.state.resourceType,
         data: this.state.resourceData
       }

@@ -38,8 +38,8 @@ export var getNodesEdgesJson = (cy) => {
     for (var i = 0; i < nodes.length; i++) {
         nodes[i] = { data: nodes[i].data }
     }
-    for (var j = 0; j < edges.length; j++) {
-        edges[j] = { data: edges[j].data} 
+    for (var k = 0; k < edges.length; k++) {
+        edges[k] = { data: edges[k].data} 
     }
     return { nodes: nodes, edges: edges }
 }

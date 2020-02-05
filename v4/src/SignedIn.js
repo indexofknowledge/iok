@@ -26,17 +26,16 @@ class SignedIn extends Component {
   constructor(props) {
     super(props)
     this.userSession = new UserSession({ appConfig })
+    var username = 'guest'
     if (!this.props.guestMode) {
-      var username = this.userSession.loadUserData().username
-    } else {
-      var username = 'guest'
+      username = this.userSession.loadUserData().username
     }
     var url = new URL(window.location.href)
     var par = url.searchParams
+    var loadUsername = username
     if (par.has('loaduser')) {
-      var loadUsername = par.get('loaduser')
+      loadUsername = par.get('loaduser')
     } else {
-      var loadUsername = username
       par.set('loaduser', username)
       window.location.href = url
     }
