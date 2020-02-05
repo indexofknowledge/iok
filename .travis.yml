@@ -1,14 +1,22 @@
-language: generic
+sudo: required
+dist: trusty
+language: node_js
 node_js:
   - "node"
 python:
   - "3.7"
-script:
- - echo "Deploy!!"
-install:
-  - npm install -g firebase-tools
+before_install:
+  - python --version
+  - python3 --version
   - alias python=python3
-  - cd $TRAVIS_BUILD_DIR/scraper && pip3 install -r requirements.txt && npm install
-after_success:
-  - cd $TRAVIS_BUILD_DIR/scraper && ./scrape-awesome.sh -v 
-  - cd $TRAVIS_BUILD_DIR/v4 && firebase deploy --project index-of-knowledge --token $FIREBASE_TOKEN
+  - sudo apt-get update
+  - sudo apt install -y gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 lib
+  dbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgt
+  k-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 li
+  bxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxs
+  s1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils 
+  wget
+install:
+  - cd $TRAVIS_BUILD_DIR/scraper && sudo pip3 install -r requirements.txt && npm install
+  - npm install -g firebase-tools
+  cd $TRAVIS_BUILD_DIR/v4 && firebase deploy --project index-of-knowledge --token $FIREBASE_TOKEN
