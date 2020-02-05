@@ -14,6 +14,8 @@ import logging
 # TODO: make this multiline nicer
 DESCRIPTION = "The Decentralized Index of Knowledge (DIoK) is a curated collection of resources for blockchain, grouped by topic and ordered by pedagogical dependency. We store data as a graph, allowing programmatic creation of front-ends such as interactive graph visualizations as well as awesome-lists."
 
+TRAVIS = '[![Build Status](https://travis-ci.com/rustielin/iok.svg?branch=master)](https://travis-ci.com/rustielin/iok)'
+
 class NodeType(IntEnum):
     TOPIC = 1
     RESOURCE = 2
@@ -138,7 +140,7 @@ class AwesomeClient():
 
     def escape_toc_link_txt(self, s):
         """spaces in toc link need to be escaped, among others"""
-        return re.sub(r"\s+", '\ ', s)
+        return re.sub(r"\s+", '%20', s)
 
     def get_toc_link(self, title):
         """Generate link that references title on the same doc"""
@@ -155,6 +157,7 @@ class AwesomeClient():
     def build_str(self):
         head = ''
         head += self.get_h('Index of Knowledge')
+        head += self.get_s(TRAVIS)
         head += self.get_s(DESCRIPTION)
 
         s = ''
