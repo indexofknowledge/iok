@@ -6,10 +6,27 @@ The Decentralized Index of Knowledge (DIoK) is a curated collection of resources
 
 ## Table of Contents
 
+* [bitcoin script](#bitcoin%20script)
 * [bitcoin](#bitcoin)
 * [computer science](#computer%20science)
 * [economics](#economics)
 * [math](#math)
+
+## bitcoin script
+
+### Description
+
+Bitcoin uses a scripting system for transactions. Forth-like, Script is simple, stack-based, and processed from left to right. It is intentionally not Turing-complete, with no loops.
+
+### Papers
+
+### Articles
+
+* [Script - Bitcoin Wiki](https://en.bitcoin.it/wiki/Script)
+
+* [The Best Step-By-Step Bitcoin Script Guide](https://blockgeeks.com/guides/best-bitcoin-script-guide/)
+
+### Videos
 
 ## bitcoin
 
