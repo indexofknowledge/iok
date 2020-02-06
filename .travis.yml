@@ -24,6 +24,7 @@ after_script:
 - cd $TRAVIS_BUILD_DIR/scraper && ./scrape-awesome.sh
 - cd $TRAVIS_BUILD_DIR/v4 && firebase deploy --project index-of-knowledge --token
   $FIREBASE_TOKEN
+- cd $TRAVIS_BUILD_DIR && ./test_runner.sh
 env:
   matrix:
     secure: A8W7JZPiQOIzLppZpoKl/qupW0hF7HRQKD6eDR6f9ai3N36QVLgL/YC13nDJbLJasnlGMUNCjTBlJStzGkwRJlxdyCukPfZ1/+zksmO7XUHhv6/ZYcRu4tLz1YYdBi+ZGQDdBP9AbubMehXu7qPlNbIIeRrxXLgCuK/Zd3mbzNXk2V6dakg4C8qfkvQSToI249bqe3Z7Xc1mqvQfSK1ZV0YAkILzdBAyvAQiOr4WN0v7uO0dKb+gK56ngY6PM/rFlx79+j585fvZbM9uSdS+YApzr0JF6LH8wBS6khvfi6SEWGqmgGXFQ3U9HRt+cLg97fuvwNeqBLWevR9U4nCnNTRf4mpnvrObu0B5frnHOdTe+JTKSBissVxbm16cY/mS+S+xSGma/6ahcsM29sSChn5XeW6Co/kERjNdBFeP6sVvc9W1tSn/BsxrRXEqv1JXGBBhZ/uFBmyxZ0qBAlybtGtcI0Wr5/egueTKXYWHcQ9BSkS41Z5Yq8rpYYtgvd8v9K1RItaYjtyDIE3MTM0k2vcvIBEuCvO6bP98pOctXiVFOln0xbNjdLfzArgQeDN+wU72a0cNpKNn5374ifrGEI9FuLNFKbGrOSRo/AyKWg88G3PoF+djOW1lSYgkiRaDvFFIxEVGrBF6mlUp3qMqiGxGXM4covLK5387vb+yu5g=
