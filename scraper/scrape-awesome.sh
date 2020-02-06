@@ -47,7 +47,7 @@ if [ $? -eq 0 ]
 then
     log "------ scrape successful ------"    
     log "make graph prettier"
-    python -m json.tool $GRAPH_FILE > $GRAPH_FILE$TEMP
+    python3.7 -m json.tool $GRAPH_FILE > $GRAPH_FILE$TEMP
 
     mv $GRAPH_FILE$TEMP $GRAPH_FILE
 
@@ -55,7 +55,10 @@ then
     head $GRAPH_FILE
 
     echo "generating awesome-list"
-    python iok_client.py
+    python3.7 iok_client.py
+
+    log "got awesome-list, sample: "
+    head $AWESOME_FILE
 else
     log "!!!!!! scrape failed !!!!!!"
     echo "exiting..."

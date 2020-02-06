@@ -13,7 +13,7 @@ strip_html_tags = (str) => {
 }
 
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ userDataDir: '/dev/null' });
   const page = await browser.newPage();
   await page.goto(process.env.SCRAPE_APP);
   try {
