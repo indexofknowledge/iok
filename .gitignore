@@ -11,3 +11,7 @@ node_modules
 # stuff that legacy scrapers generate
 credentials.json
 token.json
+
+# travis
+travis_key
+travis_key.pub
