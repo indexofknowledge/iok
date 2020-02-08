@@ -43,14 +43,12 @@ jobs:
     - stage: deploy-scraper
       env:
         - DEPLOY_TARGET=prod
-      script: "./deploy_scraper.sh"
+      script: "./deploy_scraper.sh && ./push.sh"
     - stage: deploy-scraper-beta
       env:
         - DEPLOY_TARGET=beta
       script: "./deploy_scraper.sh"
       
-        
-
 env:
   global:
   - secure: j1fo43+OeLz+r5CHowIx8ifPswJJquWCAhzeyUqQWEIzR9DW4E/VUjZZiI1UYnghpINan3qm6k2GCNxJ6Rn4Cu74bWEsIkp8/Pa/DDzyKoTwHquTsexdZ1nP+ixXcrOueEQ2p5gVyQt2joxIoNN9wjx5OZ5Oit+psGdLRH3cNg36hDRisXwaMg6VNvsGRH33/R6/dMeZHQpF5nd79wZQh8e9Bo4ieAG5Mikrtgycv2mSxzoY3zVxTXXwFwHMZKTD2i0n3sozkv7ymynDvuPg+JGrXsnR/03KafK6FkCOPeoCUCHBxsOoqo+MSBRUA9wexTw0dzUVv6oz+P4nEcRmPY8fzt9H0FSXB9gv4nlCjXIoccuuyTJspFI+ecMxAIcfOP7+xF5JuchMpEEw+fxSLtQmiPRnN2moHkp13GGcnaNt1LzYcnRu6TfoV6fxrd7G1msB3J46+n4vVtUjZfHjPrv0yhLeNBiMKew+NpZqYprHYMcmcBH6tH0AP53RYiwypqmYeKVAqEZ1ZmdGMq46xA3uSvnELvV5+xYuJGvF5tW6+sLoUizRRDEm+sXFfCKixFYCbm6JP1MIy1l+FX42yw1Itk782mExQpCNBX3sLrhDNd5xvtdWelQPT+KnW/axqstFh6BOm7Y62UGagwqVTSnF037JXThJ041TjKMtN2Y=
