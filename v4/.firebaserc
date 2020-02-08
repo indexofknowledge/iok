@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "index-of-knowledge"
+  },
+  "targets": {
+    "index-of-knowledge": {
+      "hosting": {
+        "beta": [
+          "index-of-knowledge-beta"
+        ],
+        "prod": [
+          "index-of-knowledge"
+        ]
+      }
+    }
   }
 }
