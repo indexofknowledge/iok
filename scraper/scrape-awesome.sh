@@ -4,8 +4,8 @@
 #
 
 case "$DEPLOY_TARGET" in
-    prod) export SCRAPE_APP='https://index-of-knowledge.firebaseapp.com/?loaduser=rustielin.id.blockstack&guest=true'
-    beta) export SCRAPE_APP='https://index-of-knowledge-beta.firebaseapp.com/?loaduser=rustielin.id.blockstack&guest=true'
+    prod) export SCRAPE_APP='https://index-of-knowledge.firebaseapp.com/?loaduser=rustielin.id.blockstack&guest=true' ;;
+    beta) export SCRAPE_APP='https://index-of-knowledge-beta.firebaseapp.com/?loaduser=rustielin.id.blockstack&guest=true' ;;
     *) exit ;;
 esac
 

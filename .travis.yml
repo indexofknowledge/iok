@@ -21,6 +21,10 @@ jobs:
       deploy:
         skip_cleanup: true
         provider: firebase
+        on:
+          branches:
+            only:
+              - master
         only: "hosting:prod"
         project: index-of-knowledge
     - stage: deploy-v4-beta
@@ -30,6 +34,10 @@ jobs:
       deploy:
         skip_cleanup: true
         provider: firebase
+        on:
+          branches:
+            only:
+              - develop
         only: "hosting:prod"
         project: index-of-knowledge
     - stage: deploy-scraper
