@@ -50,6 +50,7 @@ class SignedIn extends Component {
     }
 
     this.loadGraph = this.loadGraph.bind(this)
+    this.loadGraphFromFile = this.loadGraphFromFile.bind(this)
     this.saveGraph = this.saveGraph.bind(this)
     this.deleteGraph = this.deleteGraph.bind(this)
     this.signOut = this.signOut.bind(this)
@@ -107,6 +108,26 @@ class SignedIn extends Component {
     }).catch((err) => {
       this.setState({ unableToLoadGraph: true, loadUsername: 'default' })
     })
+  }
+
+
+  /**
+   * Support loading graph from user-uploaded JSON file
+   */
+  loadGraphFromFile(content) {
+    if(content && content.length > 0) {
+      // console.log(TAG, 'Loaded data:', content)
+      const graph = JSON.parse(content)
+      this.state.cy.json(graph) // edit local cy in place
+
+      console.log("Cy currently size", this.state.cy.elements().length)
+      regroupCy(this.state.cy)
+
+      this.setState({ graphLoaded: true })
+
+    } else {
+      this.setState({ unableToLoadGraph: true, loadUsername: 'default' })
+    }  
   }
 
   /**
@@ -233,6 +254,7 @@ class SignedIn extends Component {
                 onDeleteClick={this.deleteGraph}
                 guestMode={this.state.guestMode}
                 graphLoaded={this.state.graphLoaded}
+                loadGraphHandler={this.loadGraphFromFile}
               />
             </div>
         </Split>

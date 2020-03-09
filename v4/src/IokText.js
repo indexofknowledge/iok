@@ -14,6 +14,7 @@ export default class IokText extends Component {
     super(props)
     this.onSaveClick = this.props.onSaveClick
     this.onDeleteClick = this.props.onDeleteClick
+    this.loadGraphHandler = this.props.loadGraphHandler
 
     this.onMetaClick = this.onMetaClick.bind(this)
     this.onRegroupClick = this.onRegroupClick.bind(this)
@@ -23,6 +24,7 @@ export default class IokText extends Component {
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this)
     this.toggleSaveModal = this.toggleSaveModal.bind(this)
     this.downloadGraph = this.downloadGraph.bind(this)
+    this.onFileUploadHandler = this.onFileUploadHandler.bind(this)
 
     this.state = {
       drawEnabled: false,
@@ -93,6 +95,12 @@ export default class IokText extends Component {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  }
+
+  onFileUploadHandler = event => {
+    const uploadedFile = event.target.files[0]
+    console.log("User uploaded:", uploadedFile)
+    this.onFileUploadHandler(uploadedFile)
   }
 
   render() {
@@ -189,7 +197,7 @@ export default class IokText extends Component {
                       Turn {this.state.drawEnabled ? 'OFF' : 'ON'} edge drawing
                     </button>
                     {this.props.graphLoaded ? <button id="downloadButton" className="btn btn-info btn-lg btn-util" onClick={this.downloadGraph}>Download</button> : <div></div>}
-                    
+                    <input type="file" name="file" value="Upload" onChange={this.onFileUploadHandler}/>
                   </div>
 
                 </div>
