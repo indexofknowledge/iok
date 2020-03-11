@@ -32,6 +32,11 @@
     border-color: #a9a8a8 !important;
 }
 
+.btn.btn-info.btn-lg.btn-upload {
+    background-color: transparent !important; 
+    border-color: transparent !important;
+}
+
 .btn.btn-info.btn-lg.btn-delete {
     background-color: #E8747C !important;
     border-color: #E8747C !important;

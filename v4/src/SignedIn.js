@@ -115,19 +115,19 @@ class SignedIn extends Component {
    * Support loading graph from user-uploaded JSON file
    */
   loadGraphFromFile(content) {
-    if(content && content.length > 0) {
+    try {
+      console.log("CORRECT!!")
       // console.log(TAG, 'Loaded data:', content)
-      const graph = JSON.parse(content)
-      this.state.cy.json(graph) // edit local cy in place
-
-      console.log("Cy currently size", this.state.cy.elements().length)
+      this.state.cy.json({
+        elements: content,
+        style: DEFL_GRAPH_STYLE
+      })
       regroupCy(this.state.cy)
-
       this.setState({ graphLoaded: true })
-
-    } else {
+    } catch (err) {
+      alert("Invalid graph format")
       this.setState({ unableToLoadGraph: true, loadUsername: 'default' })
-    }  
+    }
   }
 
   /**

@@ -98,9 +98,18 @@ export default class IokText extends Component {
   }
 
   onFileUploadHandler = event => {
-    const uploadedFile = event.target.files[0]
-    console.log("User uploaded:", uploadedFile)
-    this.onFileUploadHandler(uploadedFile)
+    var reader = new FileReader();
+    reader.onload = event => {
+      // console.log(event.target.result);
+      try {
+        var obj = JSON.parse(event.target.result);
+        this.loadGraphHandler(obj);
+      } catch (err) {
+        console.log(err)
+        alert("Invalid JSON file")
+      }
+    }
+    reader.readAsText(event.target.files[0]);
   }
 
   render() {
@@ -197,7 +206,7 @@ export default class IokText extends Component {
                       Turn {this.state.drawEnabled ? 'OFF' : 'ON'} edge drawing
                     </button>
                     {this.props.graphLoaded ? <button id="downloadButton" className="btn btn-info btn-lg btn-util" onClick={this.downloadGraph}>Download</button> : <div></div>}
-                    <input type="file" name="file" value="Upload" onChange={this.onFileUploadHandler}/>
+                    <input className="btn btn-info btn-lg btn-upload" type="file" name="file" onChange={this.onFileUploadHandler}/>
                   </div>
 
                 </div>
