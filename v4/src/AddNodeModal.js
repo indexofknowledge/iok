@@ -8,7 +8,7 @@ import './styles/AddNodeModal.css'
 export default class AddNodeModal extends Component {
 	constructor(props) {
 		super(props);
-    this.state = { 
+    this.state = {
       isOpen: false,
       nodeType: 0,
       topicName: '',
@@ -19,12 +19,12 @@ export default class AddNodeModal extends Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
 	}
-	
+
 	toggleModal = event => {
 		const { isOpen } = this.state;
 		this.setState({ isOpen: !isOpen });
   }
-  
+
   handleClose() {
     this.setState({ // make it default again
       isOpen: false,
@@ -80,7 +80,7 @@ export default class AddNodeModal extends Component {
 
   render() {
     return (
-      <div>
+      <span>
         <Button className="btn btn-info btn-lg btn-mod" onClick={this.toggleModal}>Add node</Button>
         <Modal className="Modal" show={this.state.isOpen} onHide={this.handleClose}>
           <Modal.Header closeButton>
@@ -97,12 +97,12 @@ export default class AddNodeModal extends Component {
               {/* so lazy */}
               {
               this.state.nodeType === 0 ? <p>Pick a node type please</p> : (
-                this.state.nodeType === 1 ? 
+                this.state.nodeType === 1 ?
                   <Form.Group>
                     <Form.Label>Topic Name</Form.Label>
                     <Form.Control type="text" placeholder="Bitcoin" onChange={ev => this.setState({topicName: ev.target.value})}/>
                   </Form.Group>
-                : 
+                :
                   <Form.Group>
                     <Form.Label>Resource data</Form.Label>
                     <Form.Group>
@@ -111,7 +111,7 @@ export default class AddNodeModal extends Component {
                       <Form.Check type="radio" name="radioResourceType" label="Video" onClick={() => this.setState({resourceType: 3, resourceData: {}})} />
                       <Form.Check type="radio" name="radioResourceType" label="Paper" onClick={() => this.setState({resourceType: 4, resourceData: {}})} />
                     </Form.Group>
-                    
+
                     {
                       this.state.resourceType === 0 || this.state.resourceType === 1 ?
                         <div>
@@ -125,17 +125,17 @@ export default class AddNodeModal extends Component {
                         </div>
                       :
                         <div>
-                          <Form.Control 
-                            type="text" 
-                            placeholder="Bitcoin whitepaper" 
+                          <Form.Control
+                            type="text"
+                            placeholder="Bitcoin whitepaper"
                             onChange={ev => {
                               var val = ev.target.value // to save the virtual event
                               this.setState(prevState => ({
-                                resourceData: { 
-                                  ...prevState.resourceData, 
+                                resourceData: {
+                                  ...prevState.resourceData,
                                   text: val
                                 }
-                              })) 
+                              }))
                             }}/>
                           <Form.Control.Feedback type="invalid">
                             Please provide valid resource link name
@@ -144,18 +144,18 @@ export default class AddNodeModal extends Component {
                             Resource link name
                           </Form.Text>
 
-                          <Form.Control 
-                            type="url" 
-                            placeholder="https://bitcoin.org/bitcoin.pdf" 
+                          <Form.Control
+                            type="url"
+                            placeholder="https://bitcoin.org/bitcoin.pdf"
                             onChange={ev => {
                               var val = ev.target.value
                               this.setState(prevState => ({
-                                resourceData: { 
-                                  ...prevState.resourceData, 
+                                resourceData: {
+                                  ...prevState.resourceData,
                                   link: val
                                 }
-                              })) 
-                            }}/>                          
+                              }))
+                            }}/>
                           <Form.Control.Feedback type="invalid">
                             Please provide valid resource link
                           </Form.Control.Feedback>
@@ -167,7 +167,7 @@ export default class AddNodeModal extends Component {
 
 
                   </Form.Group>
-                
+
                 )
               }
 
@@ -180,7 +180,7 @@ export default class AddNodeModal extends Component {
             </Modal.Footer>
 
         </Modal>
-      </div>
+      </span>
     );
   }
 }

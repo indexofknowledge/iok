@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AddNodeModal from './AddNodeModal'
+import EditNodeModal from './EditNodeModal'
 import { Button, Modal } from 'react-bootstrap'
 import { sha256 } from 'js-sha256'
 
@@ -70,7 +71,7 @@ export default class IokText extends Component {
    * Adds node to cy with the given data
    * NOTE: Don't give me an id!
    * XXX: perhaps move this to utils
-   * @param {*} data 
+   * @param {*} data
    */
   addNodeToCy(data) {
     var hash = sha256.create();
@@ -118,7 +119,7 @@ export default class IokText extends Component {
             <Modal.Title>Save your IoK?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            This will save your IoK data to your Blockstack data locker, potentially overwriting previous versions. 
+            This will save your IoK data to your Blockstack data locker, potentially overwriting previous versions.
           </Modal.Body>
           <Modal.Footer>
             <Button className={"btn btn-info btn-lg btn-save"} onClick={() => {this.onSaveClick(); this.toggleSaveModal()}}>
@@ -136,14 +137,14 @@ export default class IokText extends Component {
                 <p id="nodesubtitle"></p>
 
                 <hr className="hr-sep"></hr>
-        
+
                 <div>
                   <h5>Description(s)</h5>
                   <ul id="nodedescs">
                     <li>Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency.</li>
                   </ul>
                 </div>
-        
+
                 <div>
                   <h5>Links</h5>
                   <ul id="nodelinks">
@@ -169,18 +170,19 @@ export default class IokText extends Component {
 
                   <div className="edit-div">
                     <h5>Edit</h5>
+                    <EditNodeModal editNode={this.addNodeToCy}/>
                     <AddNodeModal addNode={this.addNodeToCy}/>
 
-                    {this.props.guestMode ? <div></div> : 
+                    {this.props.guestMode ? <div></div> :
                     <div><button className="btn btn-info btn-lg btn-save" onClick={this.toggleSaveModal}>Save</button>
                     <button className="btn btn-info btn-lg btn-delete" onClick={this.toggleDeleteModal}>Delete</button></div>
                     }
-                    
-                    <button 
-                      className="btn btn-info btn-lg btn-util" 
+
+                    <button
+                      className="btn btn-info btn-lg btn-util"
                       onClick={
                         () => {
-                          this.onDrawClick(); 
+                          this.onDrawClick();
                           this.setState({drawEnabled: !this.state.drawEnabled});
                           return
                         }
@@ -189,7 +191,7 @@ export default class IokText extends Component {
                       Turn {this.state.drawEnabled ? 'OFF' : 'ON'} edge drawing
                     </button>
                     {this.props.graphLoaded ? <button id="downloadButton" className="btn btn-info btn-lg btn-util" onClick={this.downloadGraph}>Download</button> : <div></div>}
-                    
+
                   </div>
 
                 </div>
