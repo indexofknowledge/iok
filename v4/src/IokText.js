@@ -176,26 +176,26 @@ export default class IokText extends Component {
 
             <hr className="hr-sep"></hr>
 
-            <div>
+            {descList.length !== 0 && <div>
               <h5>Description(s)</h5>
               <ul id="nodedescs">
                 {descList}
               </ul>
-            </div>
+            </div>}
 
-            <div>
+            {linkList.length !== 0 && <div>
               <h5>Links</h5>
               <ul id="nodelinks">
                 {linkList}
               </ul>
-            </div>
+            </div>}
 
-            <div>
+            {depList.length !== 0 && <div>
               <h5>Dependencies</h5>
               <ul id="nodedeps">
                 {depList}
               </ul>
-            </div>
+            </div>}
 
             <hr className="hr-sep"></hr>
 
