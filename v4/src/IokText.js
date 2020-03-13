@@ -103,13 +103,13 @@ export default class IokText extends Component {
     };
 
     let subtitle = '';
-    if (data.node_type == NTYPE.RESO) {
+    if (data.node_type === NTYPE.RESO) {
       subtitle = 'NOTE: Resource node. Displaying own contents';
     }
 
     let neighbors = [data];
 
-    if (data.node_type == NTYPE.TOPIC) {
+    if (data.node_type === NTYPE.TOPIC) {
       neighbors = node.incomers((el) => el.isNode())
         .map(neighbor => neighbor.data());
     }
