@@ -46,7 +46,8 @@ class SignedIn extends Component {
       unableToLoadGraph: false,
       guestMode: this.props.guestMode,
       username: username,
-      loadUsername: loadUsername
+      loadUsername: loadUsername,
+      selectedNode: ''
     }
 
     this.loadGraph = this.loadGraph.bind(this)
@@ -65,21 +66,23 @@ class SignedIn extends Component {
     this.setState({
       cy: Cytoscape({
         container: document.getElementById("cy"),
-        layout: { 
-          name: 'dagre', 
+        layout: {
+          name: 'dagre',
           animate: true,
         },
         style: DEFL_GRAPH_STYLE
       }),
     }, () => {
-      registerNodeTap(this.state.cy)
+      registerNodeTap(this.state.cy, (node) => {
+        this.setState({ selectedNode: node })
+      })
       registerEdgeHandles(this.state.cy)
     }) // trace...
     this.loadGraph()
   }
 
   // this is important since we want to re-render each time the user changes
-  changeLoadUser(newUser) { 
+  changeLoadUser(newUser) {
     this.setState({ loadUsername: newUser })
   }
 
@@ -90,23 +93,23 @@ class SignedIn extends Component {
     console.log(TAG, "Loading", this.state.loadUsername, "'s data")
     const options = { decrypt: false, username: this.state.loadUsername }
     this.userSession.getFile(GRAPH_FILENAME, options)
-    .then((content) => {
-      if(content && content.length > 0) {
-        // console.log(TAG, 'Loaded data:', content)
-        const graph = JSON.parse(content)
-        this.state.cy.json(graph) // edit local cy in place
+      .then((content) => {
+        if (content && content.length > 0) {
+          // console.log(TAG, 'Loaded data:', content)
+          const graph = JSON.parse(content)
+          this.state.cy.json(graph) // edit local cy in place
 
-        console.log("Cy currently size", this.state.cy.elements().length)
-        regroupCy(this.state.cy)
+          console.log("Cy currently size", this.state.cy.elements().length)
+          regroupCy(this.state.cy)
 
-        this.setState({ graphLoaded: true })
+          this.setState({ graphLoaded: true })
 
-      } else {
+        } else {
+          this.setState({ unableToLoadGraph: true, loadUsername: 'default' })
+        }                                             // deal with fail and err as same
+      }).catch((err) => {
         this.setState({ unableToLoadGraph: true, loadUsername: 'default' })
-      }                                             // deal with fail and err as same
-    }).catch((err) => {
-      this.setState({ unableToLoadGraph: true, loadUsername: 'default' })
-    })
+      })
   }
 
   /**
@@ -120,9 +123,9 @@ class SignedIn extends Component {
     // var graph = {elements: this.state.graphElements, style: this.state.graphStyles}
     console.log(TAG, "SAVING...", graph)
     this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(graph), options)
-    .finally(() => {
-      // this.setState({savingGraph: false})
-    })
+      .finally(() => {
+        // this.setState({savingGraph: false})
+      })
   }
 
   /**
@@ -130,18 +133,18 @@ class SignedIn extends Component {
    */
   deleteGraph() {
     this.userSession.deleteFile(GRAPH_FILENAME)
-    .finally(() => {
-      this.state.cy.json({
-        elements: [],
-        style: DEFL_GRAPH_STYLE
+      .finally(() => {
+        this.state.cy.json({
+          elements: [],
+          style: DEFL_GRAPH_STYLE
+        })
+        this.setState({
+          graphLoaded: false,
+          unableToLoadGraph: true,
+          loadUsername: 'default'
+        })
+        this.loadGraph()
       })
-      this.setState({
-        graphLoaded: false,
-        unableToLoadGraph: true,
-        loadUsername: 'default'
-      })
-      this.loadGraph()
-    })
   }
 
   signOut(e) {
@@ -162,7 +165,7 @@ class SignedIn extends Component {
       elements: DEFL_GRAPH_ELEMENTS,
       style: DEFL_GRAPH_STYLE
     })
-    this.setState({ graphLoaded: true, unableToLoadGraph: false})
+    this.setState({ graphLoaded: true, unableToLoadGraph: false })
     regroupCy(this.state.cy)
   }
 
@@ -183,58 +186,59 @@ class SignedIn extends Component {
             <Modal.Title>Unable to fetch graph</Modal.Title>
           </Modal.Header>
           <Modal.Footer>
-            <Button style={{'backgroundColor': '#a9a8a8'}} variant="secondary" type="submit" onClick={this.loadEmptyGraph}>
+            <Button style={{ 'backgroundColor': '#a9a8a8' }} variant="secondary" type="submit" onClick={this.loadEmptyGraph}>
               Load empty
             </Button>
-            <Button style={{'backgroundColor': '#a9a8a8'}} variant="primary" type="submit" onClick={this.loadDefaultGraph}>
+            <Button style={{ 'backgroundColor': '#a9a8a8' }} variant="primary" type="submit" onClick={this.loadDefaultGraph}>
               Load default
             </Button>
           </Modal.Footer>
         </Modal>
-        
-        <NavBar 
-          username={this.state.username} 
-          loadName={this.state.loadUsername} 
-          changeLoadUser={this.state.changeLoadUser} 
+
+        <NavBar
+          username={this.state.username}
+          loadName={this.state.loadUsername}
+          changeLoadUser={this.state.changeLoadUser}
           signOut={this.signOut}
         />
-        
-        <Split className="split-parent" 
-            sizes={[60, 40]}
-            gutterStyle={function(dimension, gutterSize) { // override somehow
-              return {
-                  'width': '8px',
-                  'height': '90vh',
-                  'background-color': '#18191c'
-                }
-            }}
-            gutterAlign="center"
-            direction="horizontal"
-            cursor="col-resize"
+
+        <Split className="split-parent"
+          sizes={[60, 40]}
+          gutterStyle={function (dimension, gutterSize) { // override somehow
+            return {
+              'width': '8px',
+              'height': '90vh',
+              'background-color': '#18191c'
+            }
+          }}
+          gutterAlign="center"
+          direction="horizontal"
+          cursor="col-resize"
         >
-            {/* first split */}
-            <div className="split split-horizontal">
-              <div className="split content" id="cy">
-                <p className="hidden-msg">p.s. refresh if the graph doesn't load</p>
-                <div className="cy-overlay">
-                  <Button className="btn btn-info btn-lg btn-util" onClick={() => toggleMeta(this.state.cy)}>Toggle meta-graph</Button>
-                  <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(this.state.cy)}>Regroup dagre</Button>
-                  <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(this.state.cy, true)}>Regroup cola</Button>
-                </div>
+          {/* first split */}
+          <div className="split split-horizontal">
+            <div className="split content" id="cy">
+              <p className="hidden-msg">p.s. refresh if the graph doesn't load</p>
+              <div className="cy-overlay">
+                <Button className="btn btn-info btn-lg btn-util" onClick={() => toggleMeta(this.state.cy)}>Toggle meta-graph</Button>
+                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(this.state.cy)}>Regroup dagre</Button>
+                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(this.state.cy, true)}>Regroup cola</Button>
               </div>
             </div>
+          </div>
 
-            {/* second split */}
-            <div className="split split-horizontal">
-              <IokText 
-                className="split content"
-                cy={this.state.cy}
-                onSaveClick={this.saveGraph}
-                onDeleteClick={this.deleteGraph}
-                guestMode={this.state.guestMode}
-                graphLoaded={this.state.graphLoaded}
-              />
-            </div>
+          {/* second split */}
+          <div className="split split-horizontal">
+            <IokText
+              currNode={this.state.selectedNode}
+              className="split content"
+              cy={this.state.cy}
+              onSaveClick={this.saveGraph}
+              onDeleteClick={this.deleteGraph}
+              guestMode={this.state.guestMode}
+              graphLoaded={this.state.graphLoaded}
+            />
+          </div>
         </Split>
       </div>
     );
