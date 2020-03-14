@@ -17,29 +17,11 @@ jobs:
     - stage: deploy-v4
       env:
         - DEPLOY_TARGET=prod
-      script: "./compile_v4.sh"
-      deploy:
-        skip_cleanup: true
-        provider: firebase
-        on:
-          branches:
-            only:
-              - master
-        only: "hosting:prod"
-        project: index-of-knowledge
+      script: "./compile_v4.sh && ./deploy_v4.sh"
     - stage: deploy-v4-beta
       env:
         - DEPLOY_TARGET=beta
-      script: "./compile_v4.sh"
-      deploy:
-        skip_cleanup: true
-        provider: firebase
-        on:
-          branches:
-            only:
-              - develop
-        only: "hosting:beta"
-        project: index-of-knowledge
+      script: "./compile_v4.sh && ./deploy_v4.sh"
     - stage: deploy-scraper
       env:
         - DEPLOY_TARGET=prod
