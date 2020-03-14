@@ -29,7 +29,7 @@ jobs:
         project: index-of-knowledge
     - stage: deploy-v4-beta
       env:
-        - DEPLOY_TARGET=prod
+        - DEPLOY_TARGET=beta
       script: "./compile_v4.sh"
       deploy:
         skip_cleanup: true
@@ -38,7 +38,7 @@ jobs:
           branches:
             only:
               - develop
-        only: "hosting:prod"
+        only: "hosting:beta"
         project: index-of-knowledge
     - stage: deploy-scraper
       env:
