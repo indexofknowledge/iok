@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form } from 'react-bootstrap'
+import { Button, Modal } from 'react-bootstrap'
 
-import { validURL } from './listen'
 import { IOKS } from './constants' 
 
 import './styles/ListIoksModal.css'
