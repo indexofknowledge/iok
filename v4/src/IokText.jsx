@@ -1,5 +1,4 @@
 // eslint-disable-line
-/* eslint-disable no-console */
 /* eslint-disable no-alert */
 import React, { Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
@@ -286,7 +285,7 @@ class IokText extends Component {
             </div>
           </div>
         </div>
-      </div>
+      </div >
     );
   }
 }
