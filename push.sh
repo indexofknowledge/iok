@@ -30,6 +30,7 @@ upload_files() {
 # XXX: potential race condition if origin/develop changes,
 # but we can just re-run manually
 fix_develop() {
+  git fetch origin
   git checkout develop
   git rebase master
   git push --quiet --set-upstream origin develop
