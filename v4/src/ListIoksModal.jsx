@@ -10,7 +10,7 @@ class ListIoksModal extends Component {
    * in which case it should be prefixed with the current URL. The
    * prior is to give users the flexibility to host their own IoKs
    */
-  static makeIokComponent(user, app) {
+  static makeIokComponent(index, user, app) {
     return <a href={app}>{user}</a>;
   }
 
@@ -54,7 +54,7 @@ class ListIoksModal extends Component {
 
           <Modal.Body>
             <ul>
-              {IOKS.map((iok) => <li>{ListIoksModal.makeIokComponent(iok.user, iok.app)}</li>)}
+              {IOKS.map((iok) => <li key={iok.user}>{ListIoksModal.makeIokComponent(iok.user, iok.app)}</li>)}
             </ul>
 
           </Modal.Body>
