@@ -62,7 +62,7 @@ class SignedIn extends Component {
       guestMode,
       username,
       loadUsername,
-      selectedNode: '',
+      selectedNode: {}, // XXX: UGLY, should use TS...
     };
 
     this.loadGraph = this.loadGraph.bind(this);
