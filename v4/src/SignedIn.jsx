@@ -1,5 +1,4 @@
 // eslint-disable-line
-/* eslint-disable no-console */
 import React, { Component } from 'react';
 import { UserSession } from 'blockstack';
 import Split from 'react-split';
