@@ -10,7 +10,7 @@ class ListIoksModal extends Component {
    * in which case it should be prefixed with the current URL. The
    * prior is to give users the flexibility to host their own IoKs
    */
-  static makeIokComponent(user, app) {
+  static makeIokComponent(index, user, app) {
     return <a href={app}>{user}</a>;
   }
 
