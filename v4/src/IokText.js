@@ -121,18 +121,18 @@ export default class IokText extends Component {
 
     for (const neighbor of neighbors) {
       if (neighbor.node_type === NTYPE.TOPIC) { // topic is dep
-        depList.push(<li>{neighbor.name}</li>);
+        depList.push(<li key={neighbor.name}>{neighbor.name}</li>);
       } else if (neighbor.node_type === NTYPE.RESO) { // resource
         if (neighbor.resource_type === 1) { // desc
-          descList.push(<li>{neighbor.data}</li>);
+          descList.push(<li key={neighbor.data}>{neighbor.data}</li>);
         } else { // link type
-          linkList.push(<li><a href={neighbor.data.link}>{neighbor.data.text}</a></li>);
+          linkList.push(<li key={neighbor.data.text}><a href={neighbor.data.link}>{neighbor.data.text}</a></li>);
         }
       }
     }
     //XXX: HACK!! if no node is selected, we use a linkList alongside a descList
     if (!node) {
-      linkList.push(<li><a href=".">Resource links appear here!</a></li>);
+      linkList.push(<li key="dummy"><a href=".">Resource links appear here!</a></li>);
     }
 
     return (
