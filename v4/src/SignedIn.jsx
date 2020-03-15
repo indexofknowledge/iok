@@ -106,12 +106,13 @@ class SignedIn extends Component {
    * Load cy instance from Gaia into local state
    */
   loadGraph() {
-    const { loadUsername, cy } = this.state;
+    const { loadUsername } = this.state;
     console.log(TAG, 'Loading', loadUsername, "'s data");
     const options = { decrypt: false, username: loadUsername };
     this.userSession.getFile(GRAPH_FILENAME, options)
       .then((content) => {
         if (content && content.length > 0) {
+          const { cy } = this.state;
           // console.log(TAG, 'Loaded data:', content)
           const graph = JSON.parse(content);
           cy.json(graph); // edit local cy in place
