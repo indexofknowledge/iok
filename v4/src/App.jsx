@@ -23,7 +23,6 @@ class App extends Component {
       guestMode,
     };
     console.log('GUEST MODE?', guestMode);
-    this.changeToGuestMode = this.changeToGuestMode.bind(this);
   }
 
   componentDidMount() {
@@ -47,7 +46,7 @@ class App extends Component {
       <div className="site-wrapper">
         {guestMode || this.userSession.isUserSignedIn()
           ? <SignedIn guestMode={guestMode} />
-          : <Landing guestModeHandler={this.changeToGuestMode} />
+          : <Landing guestModeHandler={App.changeToGuestMode} />
         }
       </div>
     );
