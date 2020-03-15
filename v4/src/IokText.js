@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AddNodeModal from './AddNodeModal'
+import ListIoksModal from './ListIoksModal'
 import { Button, Modal } from 'react-bootstrap'
 import { sha256 } from 'js-sha256'
 
@@ -209,6 +210,7 @@ export default class IokText extends Component {
               <div className="edit-div">
                 <h5>Edit</h5>
                 <AddNodeModal addNode={this.addNodeToCy} />
+                <ListIoksModal />
 
                 {this.props.guestMode ? <div></div> :
                   <div><button className="btn btn-info btn-lg btn-save" onClick={this.toggleSaveModal}>Save</button>

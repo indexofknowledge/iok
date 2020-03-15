@@ -4,7 +4,16 @@ export const appConfig = new AppConfig(['store_write', 'publish_data'])
 
 export const GRAPH_FILENAME = 'graph.json'
 
-export const IOKS = []
+export const IOKS = [
+  {
+    user: 'rustielin.id.blockstack',
+    app: 'https://index-of-knowledge.firebaseapp.com/?loaduser=rustielin.id.blockstack'
+  },
+  {
+    user: 'rustielintest.id.blockstack',
+    app: 'https://index-of-knowledge-beta.firebaseapp.com/?loaduser=rustielintest.id.blockstack'
+  }
+]
 
 /** Types of nodes on the graph */
 export const NTYPE = {
