@@ -1,4 +1,7 @@
 // eslint-disable-line
+/* eslint-disable no-console */
+/* eslint-disable no-alert */
+
 // Mostly imported from old IoKv3...
 // Ugly code inbound
 
