@@ -5,13 +5,13 @@ node_js:
 - '8'
 stages:
 - name: deploy-v4
-  if: branch = master
+  if: branch = master AND sender != "Travis CI"
 - name: deploy-v4-beta
-  if: branch = develop
+  if: branch = develop AND sender != "Travis CI"
 - name: deploy-scraper
-  if: branch = master
+  if: branch = master AND sender != "Travis CI"
 - name: deploy-scraper-beta
-  if: branch = develop
+  if: branch = develop AND sender != "Travis CI"
 jobs:
   include:
     - stage: deploy-v4
