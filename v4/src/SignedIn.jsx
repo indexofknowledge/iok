@@ -77,7 +77,6 @@ class SignedIn extends Component {
   // only create the cy instance (and load data into it) after
   // we've rendered
   componentDidMount() {
-    const { cy } = this.state;
     this.setState({
       cy: Cytoscape({
         container: document.getElementById('cy'),
@@ -88,6 +87,7 @@ class SignedIn extends Component {
         style: DEFL_GRAPH_STYLE,
       }),
     }, () => {
+      const { cy } = this.state;
       registerNodeTap(cy, (node) => {
         this.setState({ selectedNode: node });
       });
