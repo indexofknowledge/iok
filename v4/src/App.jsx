@@ -1,4 +1,5 @@
 // eslint-disable-line
+/* eslint-disable no-console */
 import React, { Component } from 'react';
 import './styles/App.css';
 import { UserSession } from 'blockstack';
