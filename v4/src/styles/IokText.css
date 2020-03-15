@@ -17,6 +17,10 @@
     padding-top: 10px;
 }
 
+.misc-div {
+    padding-top: 10px;
+}
+
 .hr-sep {
     /* since width not supported in html5 */
     border-top: 4px solid #f8be35;
