@@ -17,6 +17,7 @@
     "cytoscape-cola": "^2.3.0",
     "cytoscape-dagre": "^2.2.2",
     "cytoscape-edgehandles": "^3.6.0",
+    "eslint-config-airbnb": "^18.1.0",
     "js-sha256": "^0.9.0",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.16",
