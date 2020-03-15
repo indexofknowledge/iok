@@ -18,18 +18,14 @@ const NavBar = function render(props) {
         </li>
       </ul>
       <p className="navbar-nav mr-auto">
-        Viewing
-        {loadName}
-        &apos;s IoK, logged in as
-        {username}
+        {`Viewing ${loadName}'s IoK, logged in as ${username}`}
       </p>
       <button
         type="button"
         className="btn btn-primary"
         onClick={signOut.bind(this)}
       >
-        Sign
-        {username === 'guest' ? 'in' : 'out'}
+        {`Sign ${username === 'guest' ? 'in' : 'out'}`}
       </button>
     </nav>
   );
