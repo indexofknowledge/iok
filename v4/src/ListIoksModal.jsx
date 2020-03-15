@@ -54,7 +54,7 @@ class ListIoksModal extends Component {
 
           <Modal.Body>
             <ul>
-              { /* eslint-disable-next-line max-len */ }
+              { /* eslint-disable-next-line max-len */}
               {IOKS.map((iok) => <li key={iok.user}>{ListIoksModal.makeIokComponent(iok.user, iok.app)}</li>)}
             </ul>
 
