@@ -12,7 +12,9 @@ from enum import IntEnum
 import logging
 
 # TODO: make this multiline nicer
-DESCRIPTION = "The Decentralized Index of Knowledge (DIoK) is a curated collection of resources for blockchain, grouped by topic and ordered by pedagogical dependency. We store data as a graph, allowing programmatic creation of front-ends such as interactive graph visualizations as well as awesome-lists."
+DESCRIPTION = "The Index of Knowledge (IoK) project aims to provide tools for the creation of curated collections of resources. Resources and their corresponding topics are stored as a graph, allowing programmatic creation of front-ends, such as [interactive graph visualizations](https://index-of-knowledge.firebaseapp.com/?loaduser=rustielin.id.blockstack) as well as \"awesome-lists\", such as this README! The trick is in the data representation and traversal, e.g. grouped by topic and explored in order of pedagogical dependency. Users' IoK data are by default stored in Blockstack's Gaia distributed storage system, but otherwise pluggable with any other storage."
+
+SUBTITLE = '> Tools to create curated collections of blockchain resources, on a blockchain'
 
 TRAVIS = '[![Build Status](https://travis-ci.com/rustielin/iok.svg?branch=master)](https://travis-ci.com/rustielin/iok)'
 
@@ -157,6 +159,7 @@ class AwesomeClient():
     def build_str(self):
         head = ''
         head += self.get_h('Index of Knowledge')
+        head += self.get_s(SUBTITLE)
         head += self.get_s(TRAVIS)
         head += self.get_s(DESCRIPTION)
 
