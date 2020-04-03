@@ -163,21 +163,25 @@ class AwesomeClient():
         s = ''
         for key in self.mindmap:
             s += self.get_h(key, level=2)
-            s += self.get_h('Description', level=3)
-            for x in self.mindmap[key]['descriptions']:
-                s += self.get_s(x)
-            s += self.get_h('Papers', level=3)
-            for x in self.mindmap[key]['papers']:
-                s += self.get_link(x)
-                s += '\n'
-            s += self.get_h('Articles', level=3)
-            for x in self.mindmap[key]['articles']:
-                s += self.get_link(x)
-                s += '\n'
-            s += self.get_h('Videos', level=3)
-            for x in self.mindmap[key]['videos']:
-                s += self.get_link(x)
-                s += '\n'
+            if len(self.mindmap[key]['descriptions']):
+                s += self.get_h('Description', level=3)
+                for x in self.mindmap[key]['descriptions']:
+                    s += self.get_s(x)
+            if len(self.mindmap[key]['papers']):
+                s += self.get_h('Papers', level=3)
+                for x in self.mindmap[key]['papers']:
+                    s += self.get_link(x)
+                    s += '\n'
+            if len(self.mindmap[key]['articles']):
+                s += self.get_h('Articles', level=3)
+                for x in self.mindmap[key]['articles']:
+                    s += self.get_link(x)
+                    s += '\n'
+            if len(self.mindmap[key]['videos']):
+                s += self.get_h('Videos', level=3)
+                for x in self.mindmap[key]['videos']:
+                    s += self.get_link(x)
+                    s += '\n'
 
         # TODO: write a ToC
         toc = ''
