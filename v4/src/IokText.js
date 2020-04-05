@@ -100,7 +100,9 @@ export default class IokText extends Component {
     const node = this.props.currNode;
     const data = node ? node.data() : {
       name: "Overview",
-      data: "Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency.", resource_type: 1, node_type: 2,
+      data: {
+        "text": "Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency.", resource_type: 1, node_type: 2,
+      }
     };
 
     let subtitle = '';
@@ -124,7 +126,7 @@ export default class IokText extends Component {
         depList.push(<li>{neighbor.name}</li>);
       } else if (neighbor.node_type === NTYPE.RESO) { // resource
         if (neighbor.resource_type === 1) { // desc
-          descList.push(<li>{neighbor.data}</li>);
+          descList.push(<li>{neighbor.data.text}</li>);
         } else { // link type
           linkList.push(<li><a href={neighbor.data.link}>{neighbor.data.text}</a></li>);
         }
@@ -207,13 +209,13 @@ export default class IokText extends Component {
                     <button className="btn btn-info btn-lg btn-util" onClick={this.onRegroupClick}>Regroup</button>
                   </div> */}
 
-                  <div className="edit-div">
-                    <h5>Edit</h5>
-                    <EditNodeModal editNode={this.addNodeToCy}/>
-                    <AddNodeModal addNode={this.addNodeToCy}/>
+              <div className="edit-div">
+                <h5>Edit</h5>
+                <EditNodeModal node={node} />
+                <AddNodeModal addNode={this.addNodeToCy} />
 
-                    {this.props.guestMode ? <div></div> :
-                    <div><button className="btn btn-info btn-lg btn-save" onClick={this.toggleSaveModal}>Save</button>
+                {this.props.guestMode ? <div></div> :
+                  <div><button className="btn btn-info btn-lg btn-save" onClick={this.toggleSaveModal}>Save</button>
                     <button className="btn btn-info btn-lg btn-delete" onClick={this.toggleDeleteModal}>Delete</button></div>
                 }
 
