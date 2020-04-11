@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Modal, Form, ToggleButtonGroup, ToggleButton, Nav } from 'react-bootstrap'
+import { GRAPH_FILENAME, NTYPE, RTYPE } from './constants'
 
 import { validURL } from './listen'
-
+import { sha256 } from 'js-sha256'
 import './styles/AddNodeModal.css'
 
 export default class EditNodeModal extends Component {
@@ -30,7 +31,7 @@ export default class EditNodeModal extends Component {
   handleOpen() {
     this.setState({ // make it default again
       isOpen: true,
-      topicName: '',
+      topicName: (this.props.node ? this.props.node.data('name') : ''),
       resourceType: (this.props.node ? this.props.node.data('resource_type') : 0),
       resourceData: (this.props.node ? this.props.node.data('data') : {})
     })
@@ -44,8 +45,32 @@ export default class EditNodeModal extends Component {
   }
 
   handleSubmit() {
-    alert('GOTCHA!')
     this.toggleModal()
+    const node = this.props.node
+    const data = { ...node.data() }
+    data.resource_type = this.state.resourceType
+    data.data = this.state.resourceData
+    if (this.state.topicName) {
+      data.name = this.state.topicName
+    }
+    if (JSON.stringify(data) === JSON.stringify(node.data())) {
+      return; // No changes to save
+    }
+
+    if (!this.state.topicName) {
+      delete data.name
+    }
+    delete data.id
+
+    const newNode = this.props.addNode(data)
+    this.props.setNode(newNode)
+
+    node.incomers((el) => el.isNode()).map(neighbor => neighbor.data());
+    node.outgoers((el) => el.isNode()).map(neighbor => neighbor.data());
+
+    //delete n
+    this.props.removeNode(node)
+
   }
 
   setResourceType(resourceType) {
@@ -53,6 +78,7 @@ export default class EditNodeModal extends Component {
   }
 
   render() {
+    console.log(this.props.node ? this.props.node.data() : '');
     const node = this.props.node;
     if (!node) return <span></span>
     return (
@@ -65,10 +91,10 @@ export default class EditNodeModal extends Component {
 
           <Modal.Body>
             <p>{node.data('name')}</p>
-            {node.data('node_type') == 1 ?
+            {node.data('node_type') == NTYPE.TOPIC ?
               <Form.Group>
                 <Form.Label>Topic Name</Form.Label>
-                <Form.Control type="text" placeholder="Bitcoin" onChange={ev => this.setState({ topicName: ev.target.value })} />
+                <Form.Control type="text" placeholder="Bitcoin" value={this.state.topicName} onChange={ev => this.setState({ topicName: ev.target.value })} />
               </Form.Group>
               :
               <Form.Group>
@@ -82,7 +108,7 @@ export default class EditNodeModal extends Component {
                 </ToggleButtonGroup>
 
                 {
-                  this.state.resourceType === 0 || this.state.resourceType === 1 ?
+                  this.state.resourceType === 0 || this.state.resourceType === RTYPE.DESC ?
                     <div>
                       <Form.Control
                         id="abc"
@@ -112,7 +138,7 @@ export default class EditNodeModal extends Component {
                       <Form.Control
                         type="text"
                         placeholder="Bitcoin whitepaper"
-                        value={this.state.resourceData.text}
+                        value={this.state.resourceData ? this.state.resourceData.text : null}
                         onChange={ev => {
                           var val = ev.target.value // to save the virtual event
                           this.setState(prevState => ({
@@ -132,7 +158,7 @@ export default class EditNodeModal extends Component {
                       <Form.Control
                         type="url"
                         placeholder="https://bitcoin.org/bitcoin.pdf"
-                        value={this.state.resourceData.link}
+                        value={this.state.resourceData ? this.state.resourceData.link : null}
                         onChange={ev => {
                           var val = ev.target.value
                           this.setState(prevState => ({
