@@ -22,17 +22,17 @@ let hasCycle = false;
  * @param {*} cy
  * @param {*} data including node_type, id, and name
  */
-// eslint-disable-next-line no-shadow
-export const addNode = (cy, data) => {
+export var addNode = (cy, data) => {
   try {
-    cy.add({
-      group: 'nodes',
-      data,
-    });
+    return cy.add({
+      group: "nodes",
+      data: data
+    })
   } catch (err) {
-    alert('Failed to add node. Check for ID collisions');
+    console.error(err)
+    alert("Failed to add node. Check for ID collisions")
   }
-};
+}
 
 /**
  * Extract the json for the cy instance but only with nodes and edges
@@ -233,11 +233,11 @@ export const registerNodeTap = (cy, callback) => {
 
 export const validURL = (str) => {
   const pattern = new RegExp('^(https?:\\/\\/)?' // protocol
-        + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' // domain name
-        + '((\\d{1,3}\\.){3}\\d{1,3}))' // OR ip (v4) address
-        + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' // port and path
-        + '(\\?[;&a-z\\d%_.~+=-]*)?' // query string
-        + '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+    + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' // domain name
+    + '((\\d{1,3}\\.){3}\\d{1,3}))' // OR ip (v4) address
+    + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' // port and path
+    + '(\\?[;&a-z\\d%_.~+=-]*)?' // query string
+    + '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
   return !!pattern.test(str);
 };
 
