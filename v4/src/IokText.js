@@ -21,6 +21,7 @@ export default class IokText extends Component {
     this.onDrawClick = this.onDrawClick.bind(this)
     this.onAddClick = this.onAddClick.bind(this)
     this.addNodeToCy = this.addNodeToCy.bind(this)
+    this.removeNodeFromCy = this.removeNodeFromCy.bind(this)
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this)
     this.toggleSaveModal = this.toggleSaveModal.bind(this)
     this.downloadGraph = this.downloadGraph.bind(this)
@@ -81,7 +82,11 @@ export default class IokText extends Component {
       data = { ...data, name: 'res-'.concat(data.id.substring(0, 10)) }
     }
     console.log('DATA', data)
-    addNode(this.state.cy, data)
+    return addNode(this.state.cy, data)
+  }
+
+  removeNodeFromCy(node) {
+    this.state.cy.remove(node)
   }
 
   downloadGraph() {
@@ -211,7 +216,7 @@ export default class IokText extends Component {
 
               <div className="edit-div">
                 <h5>Edit</h5>
-                <EditNodeModal node={node} />
+                <EditNodeModal node={node} addNode={this.addNodeToCy} removeNode={this.removeNodeFromCy} setNode={this.props.setCurrNode} />
                 <AddNodeModal addNode={this.addNodeToCy} />
 
                 {this.props.guestMode ? <div></div> :

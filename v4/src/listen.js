@@ -16,11 +16,12 @@ var layout = null
  */
 export var addNode = (cy, data) => {
     try {
-        cy.add({
+        return cy.add({
             group: "nodes",
             data: data
         })
     } catch (err) {
+        console.error(err)
         alert("Failed to add node. Check for ID collisions")
     }
 }

@@ -237,6 +237,7 @@ class SignedIn extends Component {
               onDeleteClick={this.deleteGraph}
               guestMode={this.state.guestMode}
               graphLoaded={this.state.graphLoaded}
+              setCurrNode={node => this.setState({ selectedNode: node })}
             />
           </div>
         </Split>
