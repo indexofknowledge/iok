@@ -89,6 +89,12 @@ export default class IokText extends Component {
     this.state.cy.remove(node)
   }
 
+  updateEdgesFromCy = (oldNode, newNode) => {
+    oldNode.incomers((el) => el.isNode()).map(neighbor => this.state.cy.add({ group: "edges", data: { "source": neighbor.id(), "target": newNode.id() } }));
+    oldNode.outgoers((el) => el.isNode()).map(neighbor => this.state.cy.add({ group: "edges", data: { "source": newNode.id(), "target": neighbor.id() } }));
+    this.state.cy.remove(oldNode.connectedEdges());
+  }
+
   downloadGraph() {
     var exportObj = getNodesEdgesJson(this.state.cy)
     var exportName = GRAPH_FILENAME
@@ -216,7 +222,7 @@ export default class IokText extends Component {
 
               <div className="edit-div">
                 <h5>Edit</h5>
-                <EditNodeModal node={node} addNode={this.addNodeToCy} removeNode={this.removeNodeFromCy} setNode={this.props.setCurrNode} />
+                <EditNodeModal node={node} addNode={this.addNodeToCy} removeNode={this.removeNodeFromCy} setNode={this.props.setCurrNode} updateEdges={this.updateEdgesFromCy} />
                 <AddNodeModal addNode={this.addNodeToCy} />
 
                 {this.props.guestMode ? <div></div> :

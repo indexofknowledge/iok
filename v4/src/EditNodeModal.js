@@ -57,16 +57,21 @@ export default class EditNodeModal extends Component {
       return; // No changes to save
     }
 
-    if (!this.state.topicName) {
+    //if this is a resource node delete its name
+    if (data.node_type === 2) {
       delete data.name
     }
+
+    //if nodetype, rename
+
     delete data.id
 
     const newNode = this.props.addNode(data)
     this.props.setNode(newNode)
 
-    node.incomers((el) => el.isNode()).map(neighbor => neighbor.data());
-    node.outgoers((el) => el.isNode()).map(neighbor => neighbor.data());
+    //take existing edges and put newNode 
+    this.props.updateEdges(node, newNode)
+    newNode.shift(node.position())
 
     //delete n
     this.props.removeNode(node)
