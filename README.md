@@ -11,6 +11,7 @@ The Decentralized Index of Knowledge (DIoK) is a curated collection of resources
 * [computer science](#computer%20science)
 * [economics](#economics)
 * [math](#math)
+* [stack machine](#stack%20machine)
 
 ## bitcoin script
 
@@ -27,6 +28,8 @@ Bitcoin uses a scripting system for transactions. Forth-like, Script is simple, 
 * [The Best Step-By-Step Bitcoin Script Guide](https://blockgeeks.com/guides/best-bitcoin-script-guide/)
 
 ### Videos
+
+* [What is the Bitcoin stack machine?](https://www.youtube.com/watch?v=OQjSjr6cFDo)
 
 ## bitcoin
 
@@ -107,4 +110,18 @@ Mathematics is the study of abstract objects and structures that are often, but 
 ### Videos
 
 * [Map of Mathematics](https://www.youtube.com/watch?v=OmJ-4B-mS-Y)
+
+## stack machine
+
+### Description
+
+In computer science, computer engineering and programming language implementations, a stack machine is a type of computer. The main difference from other computers is that most of its instructions operate on a pushdown stack of numbers rather than numbers held in processor registers.
+
+### Papers
+
+### Articles
+
+### Videos
+
+* [What is the Bitcoin stack machine?](https://www.youtube.com/watch?v=OQjSjr6cFDo)
 
