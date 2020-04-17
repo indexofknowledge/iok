@@ -22,17 +22,16 @@ let hasCycle = false;
  * @param {*} cy
  * @param {*} data including node_type, id, and name
  */
-export var addNode = (cy, data) => {
+// eslint-disable-next-line no-shadow
+export const addNode = (cy, data) => {
   try {
-    return cy.add({
-      group: "nodes",
-      data: data
-    })
+    return cy.add({ group: 'nodes', data });
   } catch (err) {
-    console.error(err)
-    alert("Failed to add node. Check for ID collisions")
+    console.error(err);
+    alert('Failed to add node. Check for ID collisions');
+    return null;
   }
-}
+};
 
 /**
  * Extract the json for the cy instance but only with nodes and edges

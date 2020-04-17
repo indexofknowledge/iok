@@ -366,6 +366,7 @@ class SignedIn extends Component {
               loadGraphHandler={this.loadGraphFromFile}
               guestMode={guest}
               graphLoaded={graphLoaded}
+              setCurrNode={(node) => this.setState({ selectedNode: node })}
             />
           </div>
         </Split>
