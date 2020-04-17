@@ -61,52 +61,52 @@ export const DEFL_GRAPH_ELEMENTS = {
       },
     },
     {
-      'data': {
-        'resource_type': 1,
-        'data': {
-          'text': 'Computer science is the study of processes that interact with data and that can be represented as data in the form of programs.',
-          'link': ''
+      data: {
+        resource_type: 1,
+        data: {
+          text: 'Computer science is the study of processes that interact with data and that can be represented as data in the form of programs.',
+          link: '',
         },
-        'node_type': 2,
-        'id': '8d3e61ce168c16ae5c10fc0eb2085e7063844736be62d37c1318b437e60a06b2',
-        'name': 'res-8d3e61ce16'
+        node_type: 2,
+        id: '8d3e61ce168c16ae5c10fc0eb2085e7063844736be62d37c1318b437e60a06b2',
+        name: 'res-8d3e61ce16',
       },
     },
     {
-      'data': {
-        'resource_type': 1,
-        'data': {
-          'text': 'Economics is the social science that studies the production, distribution, and consumption of goods and services.',
-          'link': ''
+      data: {
+        resource_type: 1,
+        data: {
+          text: 'Economics is the social science that studies the production, distribution, and consumption of goods and services.',
+          link: '',
         },
-        'node_type': 2,
-        'id': '71686ead6a4dc2481870877da6a888fab7c488819572c391b71acabd047930fe',
-        'name': 'res-71686ead6a'
+        node_type: 2,
+        id: '71686ead6a4dc2481870877da6a888fab7c488819572c391b71acabd047930fe',
+        name: 'res-71686ead6a',
       },
     },
     {
-      'data': {
-        'resource_type': 1,
-        'data': {
-          'text': 'Mathematics is the study of abstract objects and structures that are often, but not always, abstracted from the physical world. It includes the study of such abstractions as quantity, structure, space and shapes, and change.',
-          'link': ''
+      data: {
+        resource_type: 1,
+        data: {
+          text: 'Mathematics is the study of abstract objects and structures that are often, but not always, abstracted from the physical world. It includes the study of such abstractions as quantity, structure, space and shapes, and change.',
+          link: '',
         },
-        'node_type': 2,
-        'id': '4fba4eba5e774c7a67c951001f27784d63116b4fc182b9977254bd1223e185a1',
-        'name': 'res-4fba4eba5e'
+        node_type: 2,
+        id: '4fba4eba5e774c7a67c951001f27784d63116b4fc182b9977254bd1223e185a1',
+        name: 'res-4fba4eba5e',
       },
     },
     {
-      'data': {
-        'resource_type': 1,
-        'data': {
-          'text': 'Bitcoin is an innovative payment network and a new kind of money.',
-          'link': ''
+      data: {
+        resource_type: 1,
+        data: {
+          text: 'Bitcoin is an innovative payment network and a new kind of money.',
+          link: '',
         },
-        'node_type': 2,
-        'id': 'e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855',
-        'name': 'res-e6f043e279'
-      }
+        node_type: 2,
+        id: 'e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855',
+        name: 'res-e6f043e279',
+      },
     },
     {
       data: {
