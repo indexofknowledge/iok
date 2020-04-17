@@ -257,8 +257,8 @@ class SignedIn extends Component {
               onDeleteClick={this.deleteGraph}
               guestMode={guestMode}
               graphLoaded={graphLoaded}
-              setCurrNode={node => this.setState({ selectedNode: node })
-                />
+              setCurrNode={(node) => this.setState({ selectedNode: node })}
+            />
           </div>
         </Split>
       </div>
@@ -267,11 +267,11 @@ class SignedIn extends Component {
 }
 
 SignedIn.defaultProps = {
-          guestMode: false,
+  guestMode: false,
 };
 
 SignedIn.propTypes = {
-          guestMode: PropTypes.bool,
+  guestMode: PropTypes.bool,
 
 };
 
