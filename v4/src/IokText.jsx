@@ -6,6 +6,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { sha256 } from 'js-sha256';
 import { PropTypes } from 'prop-types';
 import AddNodeModal from './AddNodeModal';
+import EditNodeModal from './EditNodeModal';
 import ListIoksModal from './ListIoksModal';
 import Log from './log';
 
@@ -123,6 +124,17 @@ class IokText extends Component {
     const { showDeleteModal } = this.state;
     this.setState({ showDeleteModal: !showDeleteModal });
   }
+  removeNodeFromCy(node) {
+    const { cy } = this.state;
+    cy.remove(node);
+  }
+
+  updateEdgesFromCy(oldNode, newNode) {
+    const { cy } = this.state;
+    oldNode.incomers((el) => el.isNode()).map((neighbor) => cy.add({ group: 'edges', data: { source: neighbor.id(), target: newNode.id() } }));
+    oldNode.outgoers((el) => el.isNode()).map((neighbor) => cy.add({ group: 'edges', data: { source: newNode.id(), target: neighbor.id() } }));
+    cy.remove(oldNode.connectedEdges());
+  }
 
   toggleSaveModal() {
     const { showSaveModal } = this.state;
@@ -131,7 +143,9 @@ class IokText extends Component {
 
   render() {
     // XXX: makes the linter happy, but hard to read...
-    const { currNode, graphLoaded, guestMode } = this.props;
+    const {
+      currNode, graphLoaded, guestMode, setCurrNode,
+    } = this.props;
     const { showDeleteModal, showSaveModal, drawEnabled } = this.state;
 
     const node = currNode;
@@ -252,6 +266,13 @@ class IokText extends Component {
             <div>
               <div className="edit-div">
                 <h5>Edit</h5>
+                <EditNodeModal
+                  node={node}
+                  addNode={this.addNodeToCy}
+                  removeNode={this.removeNodeFromCy}
+                  setNode={setCurrNode}
+                  updateEdges={this.updateEdgesFromCy}
+                />
                 <AddNodeModal addNode={this.addNodeToCy} />
 
                 <button
@@ -299,6 +320,7 @@ IokText.defaultProps = {
   currNode: {},
   graphLoaded: false,
   guestMode: false,
+  setCurrNode: () => alert('ERROR: setCurrNode() invalid'),
 };
 
 IokText.propTypes = {
@@ -311,6 +333,7 @@ IokText.propTypes = {
   currNode: PropTypes.object, // XXX: a good excuse to use TypeScript...
   graphLoaded: PropTypes.bool,
   guestMode: PropTypes.bool,
+  setCurrNode: PropTypes.func,
 };
 
 export default IokText;
