@@ -1,7 +1,7 @@
 /* eslint-disable */
 import debug from 'debug';
 
-const BASE = 'awesome-react-app';
+const BASE = 'iok';
 const COLOURS = {
   trace: 'lightblue',
   info: 'green',

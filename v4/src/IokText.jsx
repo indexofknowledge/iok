@@ -147,10 +147,10 @@ class IokText extends Component {
         depList.push(<li key={neighbor.name}>{neighbor.name}</li>);
       } else if (neighbor.node_type === NTYPE.RESO) { // resource
         if (neighbor.resource_type === 1) { // desc
-          descList.push(<li key={neighbor.data}>{neighbor.data}</li>);
+          descList.push(<li key={neighbor.data}>{neighbor.data.text}</li>);
         } else { // link type
           // eslint-disable-next-line max-len
-          linkList.push(<li key={neighbor.data.text}><a href={neighbor.data.link}>{neighbor.data.text}</a></li>);
+          linkList.push(<li key={neighbor.data}><a href={neighbor.data.link}>{neighbor.data.text}</a></li>);
         }
       }
     }

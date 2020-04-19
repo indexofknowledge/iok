@@ -13,7 +13,7 @@ import './styles/style.css';
 
 // set up the
 if (process.env.NODE_ENV !== 'production') {
-    localStorage.setItem('debug', 'awesome-react-app:*');
+    localStorage.setItem('debug', 'iok:*');
     // test the logs
     Log.info('Non-production... logging!');
     Log.trace('Non-production... logging!');
