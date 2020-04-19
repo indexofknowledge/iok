@@ -33,7 +33,7 @@ class SignedIn extends Component {
   static overrideGutterStyle() { // override somehow
     return {
       width: '8px',
-      height: '90vh',
+      height: '100vh',
       'background-color': '#18191c',
     };
   }
