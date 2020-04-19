@@ -7,6 +7,7 @@ import { sha256 } from 'js-sha256';
 import { PropTypes } from 'prop-types';
 import AddNodeModal from './AddNodeModal';
 import ListIoksModal from './ListIoksModal';
+import Log from './log';
 
 import './styles/IokText.css';
 
@@ -23,6 +24,14 @@ class IokText extends Component {
 
     this.onSaveClick = onSaveClick;
     this.onDeleteClick = onDeleteClick;
+
+    this.toggleSaveModal = this.toggleSaveModal.bind(this);
+    this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
+    this.onMetaClick = this.onMetaClick.bind(this);
+    this.onRegroupClick = this.onRegroupClick.bind(this);
+    this.onAddClick = this.onRegroupClick.bind(this);
+    this.addNodeToCy = this.addNodeToCy.bind(this);
+    this.downloadGraph = this.downloadGraph.bind(this);
 
     this.state = {
       drawEnabled: false,
@@ -84,7 +93,8 @@ class IokText extends Component {
     if (!('name' in data)) { // XXX: make a note of this... give it a name...
       dataWithHash = { ...dataWithHash, name: 'res-'.concat(dataWithHash.id.substring(0, 10)) };
     }
-    console.log('DATA', dataWithHash);
+
+    Log.info('DATA', dataWithHash);
     addNode(cy, dataWithHash);
   }
 
@@ -231,7 +241,7 @@ class IokText extends Component {
                   className="btn btn-info btn-lg btn-util"
                   onClick={
                     () => {
-                      this.onDrawClick();
+                      IokText.onDrawClick();
                       this.setState({ drawEnabled: !drawEnabled });
                     }
                   }
