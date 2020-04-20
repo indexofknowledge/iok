@@ -20,10 +20,11 @@ class IokText extends Component {
   constructor(props) {
     super(props);
 
-    const { onSaveClick, onDeleteClick } = this.props;
+    const { onSaveClick, onDeleteClick, loadGraphHandler } = this.props;
 
     this.onSaveClick = onSaveClick;
     this.onDeleteClick = onDeleteClick;
+    this.loadGraphHandler = loadGraphHandler;
 
     this.toggleSaveModal = this.toggleSaveModal.bind(this);
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
@@ -32,6 +33,7 @@ class IokText extends Component {
     this.onAddClick = this.onRegroupClick.bind(this);
     this.addNodeToCy = this.addNodeToCy.bind(this);
     this.downloadGraph = this.downloadGraph.bind(this);
+    this.onFileUploadHandler = this.onFileUploadHandler.bind(this);
 
     this.state = {
       drawEnabled: false,
@@ -69,14 +71,32 @@ class IokText extends Component {
     this.addNodeToCy(data);
   }
 
-  toggleDeleteModal() {
-    const { showDeleteModal } = this.state;
-    this.setState({ showDeleteModal: !showDeleteModal });
+  onFileUploadHandler(event) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      Log.info(ev.target.result);
+      try {
+        const obj = JSON.parse(ev.target.result);
+        this.loadGraphHandler(obj);
+      } catch (err) {
+        Log.error(err);
+        alert('Invalid JSON file');
+      }
+    };
+    reader.readAsText(event.target.files[0]);
   }
 
-  toggleSaveModal() {
-    const { showSaveModal } = this.state;
-    this.setState({ showSaveModal: !showSaveModal });
+  downloadGraph() {
+    const { cy } = this.state;
+    const exportObj = getNodesEdgesJson(cy);
+    const exportName = GRAPH_FILENAME;
+    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(exportObj))}`;
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute('href', dataStr);
+    downloadAnchorNode.setAttribute('download', exportName);
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
   }
 
   /**
@@ -98,17 +118,14 @@ class IokText extends Component {
     addNode(cy, dataWithHash);
   }
 
-  downloadGraph() {
-    const { cy } = this.state;
-    const exportObj = getNodesEdgesJson(cy);
-    const exportName = GRAPH_FILENAME;
-    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(exportObj))}`;
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute('href', dataStr);
-    downloadAnchorNode.setAttribute('download', exportName);
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+  toggleDeleteModal() {
+    const { showDeleteModal } = this.state;
+    this.setState({ showDeleteModal: !showDeleteModal });
+  }
+
+  toggleSaveModal() {
+    const { showSaveModal } = this.state;
+    this.setState({ showSaveModal: !showSaveModal });
   }
 
   render() {
@@ -203,30 +220,30 @@ class IokText extends Component {
             <hr className="hr-sep" />
 
             {descList.length !== 0 && (
-            <div>
-              <h5>Description(s)</h5>
-              <ul id="nodedescs">
-                {descList}
-              </ul>
-            </div>
+              <div>
+                <h5>Description(s)</h5>
+                <ul id="nodedescs">
+                  {descList}
+                </ul>
+              </div>
             )}
 
             {linkList.length !== 0 && (
-            <div>
-              <h5>Links</h5>
-              <ul id="nodelinks">
-                {linkList}
-              </ul>
-            </div>
+              <div>
+                <h5>Links</h5>
+                <ul id="nodelinks">
+                  {linkList}
+                </ul>
+              </div>
             )}
 
             {depList.length !== 0 && (
-            <div>
-              <h5>Dependencies</h5>
-              <ul id="nodedeps">
-                {depList}
-              </ul>
-            </div>
+              <div>
+                <h5>Dependencies</h5>
+                <ul id="nodedeps">
+                  {depList}
+                </ul>
+              </div>
             )}
 
             <hr className="hr-sep" />
@@ -262,7 +279,7 @@ class IokText extends Component {
                 <h5>Misc</h5>
                 <ListIoksModal />
                 {graphLoaded ? <button type="button" id="downloadButton" className="btn btn-info btn-lg btn-util" onClick={this.downloadGraph}>Download</button> : <div />}
-
+                <input className="btn btn-info btn-lg btn-upload" type="file" name="file" onChange={this.onFileUploadHandler} />
               </div>
 
             </div>
@@ -276,6 +293,7 @@ class IokText extends Component {
 IokText.defaultProps = {
   onSaveClick: () => alert('ERROR: onSaveClick() invalid'),
   onDeleteClick: () => alert('ERROR: onDeleteClick() invalid'),
+  loadGraphHandler: () => alert('ERROR: loadGraphHandler() invalid'),
   cy: {}, // XXX: UGLY!!!!
   currNode: {},
   graphLoaded: false,
@@ -285,6 +303,7 @@ IokText.defaultProps = {
 IokText.propTypes = {
   onSaveClick: PropTypes.func,
   onDeleteClick: PropTypes.func,
+  loadGraphHandler: PropTypes.func,
   // eslint-disable-next-line react/forbid-prop-types
   cy: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
