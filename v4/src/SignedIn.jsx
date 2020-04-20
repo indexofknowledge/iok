@@ -73,6 +73,7 @@ class SignedIn extends Component {
     this.changeLoadUser = this.changeLoadUser.bind(this);
     this.loadDefaultGraph = this.loadDefaultGraph.bind(this);
     this.loadEmptyGraph = this.loadEmptyGraph.bind(this);
+    this.loadGraphFromFile = this.loadGraphFromFile.bind(this);
   }
 
   // since we're creating the cytoscape div in this component,
@@ -128,6 +129,27 @@ class SignedIn extends Component {
       }).catch(() => {
         this.setState({ unableToLoadGraph: true, loadUsername: 'default' });
       });
+  }
+
+  /**
+   * Support loading graph from user-uploaded JSON file
+   */
+  loadGraphFromFile(content) {
+    try {
+      console.log('CORRECT!!');
+      // console.log(TAG, 'Loaded data:', content)
+      const { cy } = this.state;
+      cy.json({
+        elements: content,
+        style: DEFL_GRAPH_STYLE,
+      });
+      regroupCy(cy);
+      this.setState({ graphLoaded: true });
+    } catch (err) {
+      // eslint-disable-next-line no-alert
+      alert('Invalid graph format');
+      this.setState({ unableToLoadGraph: true, loadUsername: 'default' });
+    }
   }
 
   /**
@@ -256,6 +278,7 @@ class SignedIn extends Component {
               cy={cy}
               onSaveClick={this.saveGraph}
               onDeleteClick={this.deleteGraph}
+              loadGraphHandler={this.loadGraphFromFile}
               guestMode={guestMode}
               graphLoaded={graphLoaded}
             />

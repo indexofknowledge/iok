@@ -41,6 +41,11 @@
     border-color: #E8747C !important;
 }
 
+.btn.btn-info.btn-lg.btn-upload {
+    background-color: transparent !important; 
+    border-color: transparent !important;
+}
+
 .btn.btn-info.btn-lg.btn-save:hover, 
 .btn.btn-info.btn-lg.btn-delete:hover,
 .btn.btn-info.btn-lg.btn-util:hover,
