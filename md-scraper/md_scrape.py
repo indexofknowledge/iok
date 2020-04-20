@@ -63,6 +63,8 @@ class Scope:
 
         dats = json.dumps(dat).encode('utf-8')
         dat["id"] = sha256(dats).hexdigest()
+        if "name" not in dat:
+            dat["name"] = 'res-' + dat["id"][:10]
         return {"data": dat}
 
 
