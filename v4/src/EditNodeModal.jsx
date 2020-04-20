@@ -5,6 +5,8 @@ import React, { Component } from 'react';
 import {
   Button, Modal, Form, ToggleButtonGroup, ToggleButton,
 } from 'react-bootstrap';
+
+import { PropTypes } from 'prop-types';
 import { NTYPE, RTYPE } from './constants';
 
 import './styles/AddNodeModal.css';
@@ -29,17 +31,22 @@ class EditNodeModal extends Component {
     this.setResourceType = this.setResourceType.bind(this);
   }
 
+  setResourceType(resourceType) {
+    this.setState({ resourceType });
+  }
+
   toggleModal() {
     const { isOpen } = this.state;
     this.setState({ isOpen: !isOpen });
   }
 
   handleOpen() {
+    const { node } = this.props;
     this.setState({ // make it default again
       isOpen: true,
-      topicName: (this.props.node ? this.props.node.data('name') : ''),
-      resourceType: (this.props.node ? this.props.node.data('resource_type') : 0),
-      resourceData: (this.props.node ? this.props.node.data('data') : {}),
+      topicName: (node ? node.data('name') : ''),
+      resourceType: (node ? node.data('resource_type') : 0),
+      resourceData: (node ? node.data('data') : {}),
     });
   }
 
@@ -52,12 +59,15 @@ class EditNodeModal extends Component {
 
   handleSubmit() {
     this.toggleModal();
-    const { node } = this.props;
+    const {
+      node, addNode, setNode, updateEdges, removeNode,
+    } = this.props;
     const data = { ...node.data() };
-    data.resource_type = this.state.resourceType;
-    data.data = this.state.resourceData;
-    if (this.state.topicName) {
-      data.name = this.state.topicName;
+    const { resourceType, resourceData, topicName } = this.state;
+    data.resource_type = resourceType;
+    data.data = resourceData;
+    if (topicName) {
+      data.name = topicName;
     }
     if (JSON.stringify(data) === JSON.stringify(node.data())) {
       return; // No changes to save
@@ -72,47 +82,46 @@ class EditNodeModal extends Component {
 
     delete data.id;
 
-    const newNode = this.props.addNode(data);
-    this.props.setNode(newNode);
+    const newNode = addNode(data);
+    setNode(newNode);
 
     // take existing edges and put newNode
-    this.props.updateEdges(node, newNode);
+    updateEdges(node, newNode);
     newNode.shift(node.position());
 
     // delete n
-    this.props.removeNode(node);
+    removeNode(node);
   }
 
-  setResourceType(resourceType) {
-    this.setState({ resourceType });
-  }
 
   render() {
-    console.log(this.props.node ? this.props.node.data() : '');
     const { node } = this.props;
+    const {
+      isOpen, topicName, resourceType, resourceData,
+    } = this.state;
     if (!node) return <span />;
     return (
       <span>
         <Button className="btn btn-info btn-lg btn-mod" onClick={this.toggleModal}>Edit node</Button>
-        <Modal className="Modal" show={this.state.isOpen} onHide={this.handleClose} onShow={this.handleOpen}>
+        <Modal className="Modal" show={isOpen} onHide={this.handleClose} onShow={this.handleOpen}>
           <Modal.Header closeButton>
             <Modal.Title>Edit Node</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
             <p>{node.data('name')}</p>
-            {node.data('node_type') == NTYPE.TOPIC
+            {node.data('node_type') === NTYPE.TOPIC
               ? (
                 <Form.Group>
                   <Form.Label>Topic Name</Form.Label>
-                  <Form.Control type="text" placeholder="Bitcoin" value={this.state.topicName} onChange={(ev) => this.setState({ topicName: ev.target.value })} />
+                  <Form.Control type="text" placeholder="Bitcoin" value={topicName} onChange={(ev) => this.setState({ topicName: ev.target.value })} />
                 </Form.Group>
               )
               : (
                 <Form.Group>
                   <Form.Label>Resource data</Form.Label>
 
-                  <ToggleButtonGroup type="radio" name="idk" value={this.state.resourceType} onChange={this.setResourceType}>
+                  <ToggleButtonGroup type="radio" name="idk" value={resourceType} onChange={this.setResourceType}>
                     <ToggleButton value={1}>Description</ToggleButton>
                     <ToggleButton value={2}>Article</ToggleButton>
                     <ToggleButton value={3}>Video</ToggleButton>
@@ -120,79 +129,79 @@ class EditNodeModal extends Component {
                   </ToggleButtonGroup>
 
                   {
-                  this.state.resourceType === 0 || this.state.resourceType === RTYPE.DESC
-                    ? (
-                      <div>
-                        <Form.Control
-                          id="abc"
-                          name="abc"
-                          type="text"
-                          placeholder="Bitcoin is a p2p cash system"
-                          value={this.state.resourceData.text}
-                          onChange={(ev) => {
-                            const val = ev.target.value; // to save the virtual event
-                            this.setState((prevState) => ({
-                              resourceData: {
-                                ...prevState.resourceData,
-                                text: val,
-                              },
-                            }));
-                          }}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                        Please provide valid resource data
-                        </Form.Control.Feedback>
-                        <Form.Text>
-                        Resource data can be a description or hyperlink
-                        </Form.Text>
-                      </div>
-                    )
-                    : (
-                      <div>
-                        <Form.Control
-                          type="text"
-                          placeholder="Bitcoin whitepaper"
-                          value={this.state.resourceData ? this.state.resourceData.text : null}
-                          onChange={(ev) => {
-                            const val = ev.target.value; // to save the virtual event
-                            this.setState((prevState) => ({
-                              resourceData: {
-                                ...prevState.resourceData,
-                                text: val,
-                              },
-                            }));
-                          }}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                        Please provide valid resource link name
-                        </Form.Control.Feedback>
-                        <Form.Text>
-                        Resource link name
-                        </Form.Text>
+                    resourceType === 0 || resourceType === RTYPE.DESC
+                      ? (
+                        <div>
+                          <Form.Control
+                            id="abc"
+                            name="abc"
+                            type="text"
+                            placeholder="Bitcoin is a p2p cash system"
+                            value={resourceData.text}
+                            onChange={(ev) => {
+                              const val = ev.target.value; // to save the virtual event
+                              this.setState((prevState) => ({
+                                resourceData: {
+                                  ...prevState.resourceData,
+                                  text: val,
+                                },
+                              }));
+                            }}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            Please provide valid resource data
+                          </Form.Control.Feedback>
+                          <Form.Text>
+                            Resource data can be a description or hyperlink
+                          </Form.Text>
+                        </div>
+                      )
+                      : (
+                        <div>
+                          <Form.Control
+                            type="text"
+                            placeholder="Bitcoin whitepaper"
+                            value={resourceData ? resourceData.text : null}
+                            onChange={(ev) => {
+                              const val = ev.target.value; // to save the virtual event
+                              this.setState((prevState) => ({
+                                resourceData: {
+                                  ...prevState.resourceData,
+                                  text: val,
+                                },
+                              }));
+                            }}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            Please provide valid resource link name
+                          </Form.Control.Feedback>
+                          <Form.Text>
+                            Resource link name
+                          </Form.Text>
 
-                        <Form.Control
-                          type="url"
-                          placeholder="https://bitcoin.org/bitcoin.pdf"
-                          value={this.state.resourceData ? this.state.resourceData.link : null}
-                          onChange={(ev) => {
-                            const val = ev.target.value;
-                            this.setState((prevState) => ({
-                              resourceData: {
-                                ...prevState.resourceData,
-                                link: val,
-                              },
-                            }));
-                          }}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                        Please provide valid resource link
-                        </Form.Control.Feedback>
-                        <Form.Text>
-                        Resource link URL
-                        </Form.Text>
-                      </div>
-                    )
-                }
+                          <Form.Control
+                            type="url"
+                            placeholder="https://bitcoin.org/bitcoin.pdf"
+                            value={resourceData ? resourceData.link : null}
+                            onChange={(ev) => {
+                              const val = ev.target.value;
+                              this.setState((prevState) => ({
+                                resourceData: {
+                                  ...prevState.resourceData,
+                                  link: val,
+                                },
+                              }));
+                            }}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            Please provide valid resource link
+                          </Form.Control.Feedback>
+                          <Form.Text>
+                            Resource link URL
+                          </Form.Text>
+                        </div>
+                      )
+                  }
 
                 </Form.Group>
               )
@@ -213,11 +222,18 @@ class EditNodeModal extends Component {
 
 EditNodeModal.defaultProps = {
   addNode: () => alert('ERROR: addNode() invalid'),
+  node: null,
+  setNode: () => alert('ERROR: setNode() invalid'),
+  updateEdges: () => alert('ERROR: updateEdgges() invalid'),
+  removeNode: () => alert('ERROR: removeNode() invalid'),
 };
 
 EditNodeModal.propTypes = {
   addNode: PropTypes.func,
-  node: PropTypes.object,
+  node: PropTypes.object, // eslint-disable-line
+  setNode: PropTypes.func,
+  updateEdges: PropTypes.func,
+  removeNode: PropTypes.func,
 };
 
 export default EditNodeModal;
