@@ -152,7 +152,7 @@ class IokText extends Component {
         depList.push(<li key={neighbor.name}>{neighbor.name}</li>);
       } else if (neighbor.node_type === NTYPE.RESO) { // resource
         if (neighbor.resource_type === 1) { // desc
-          descList.push(<li key={neighbor.data.text}>{neighbor.data}</li>);
+          descList.push(<li key={neighbor.data.text}>{neighbor.data.text}</li>);
         } else { // link type
           // eslint-disable-next-line max-len
           linkList.push(<li key={neighbor.data.text}><a href={neighbor.data.link}>{neighbor.data.text}</a></li>);
@@ -208,30 +208,30 @@ class IokText extends Component {
             <hr className="hr-sep" />
 
             {descList.length !== 0 && (
-              <div>
-                <h5>Description(s)</h5>
-                <ul id="nodedescs">
-                  {descList}
-                </ul>
-              </div>
+            <div>
+              <h5>Description(s)</h5>
+              <ul id="nodedescs">
+                {descList}
+              </ul>
+            </div>
             )}
 
             {linkList.length !== 0 && (
-              <div>
-                <h5>Links</h5>
-                <ul id="nodelinks">
-                  {linkList}
-                </ul>
-              </div>
+            <div>
+              <h5>Links</h5>
+              <ul id="nodelinks">
+                {linkList}
+              </ul>
+            </div>
             )}
 
             {depList.length !== 0 && (
-              <div>
-                <h5>Dependencies</h5>
-                <ul id="nodedeps">
-                  {depList}
-                </ul>
-              </div>
+            <div>
+              <h5>Dependencies</h5>
+              <ul id="nodedeps">
+                {depList}
+              </ul>
+            </div>
             )}
 
             <hr className="hr-sep" />
@@ -289,7 +289,7 @@ IokText.defaultProps = {
   onSaveClick: () => alert('ERROR: onSaveClick() invalid'),
   onDeleteClick: () => alert('ERROR: onDeleteClick() invalid'),
   cy: {}, // XXX: UGLY!!!!
-  currNode: {},
+  currNode: null,
   graphLoaded: false,
   guestMode: false,
   setCurrNode: () => alert('ERROR: setCurrNode() invalid'),

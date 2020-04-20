@@ -23,9 +23,11 @@ let hasCycle = false;
 // eslint-disable-next-line no-shadow
 export const addNode = (cy, data) => {
   try {
-    return cy.add({ group: 'nodes', data });
+    return cy.add({
+      group: 'nodes',
+      data,
+    });
   } catch (err) {
-    console.error(err);
     alert('Failed to add node. Check for ID collisions');
     return null;
   }
@@ -69,7 +71,7 @@ export const registerEdgeHandles = (cy) => {
   });
   eh.disableDrawMode();
   eh.disable();
-    // eslint-disable-line
+  // eslint-disable-line
   // eslint-disable-next-line no-unused-vars
   cy.on('ehcomplete', (event, sourceNode, targetNode, addedEles) => {
     // let { position } = event;

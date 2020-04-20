@@ -15,7 +15,7 @@ class EditNodeModal extends Component {
   constructor(props) {
     super(props);
     const { addNode, node } = this.props;
-
+    console.log(node)
     this.state = {
       isOpen: false,
       topicName: '',

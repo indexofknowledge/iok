@@ -8,7 +8,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.readwrite import json_graph
 from enum import IntEnum
-# from logging import logging 
+# from logging import logging
 import logging
 
 # TODO: make this multiline nicer
@@ -27,6 +27,13 @@ class ResourceType(IntEnum):
     PAPER = 4
 
 LINK_TYPES = [ResourceType.ARTICLE, ResourceType.VIDEO, ResourceType.PAPER]
+
+RESOURCE_HEADINGS = {
+    ResourceType.DESCRIPTION: 'Description',
+    ResourceType.ARTICLE: 'Articles',
+    ResourceType.VIDEO: 'Videos',
+    ResourceType.PAPER: 'Papers'
+}
 
 class KnowledgeGraph:
 
@@ -99,10 +106,10 @@ class AwesomeClient():
             name = node['name']
             if node['node_type'] == NodeType.TOPIC: # if sorted, topics always before resources
                 dic[name] = {'name': name}  # XXX: a placeholder
-                dic[name]['papers'] = []
-                dic[name]['videos'] = []
-                dic[name]['articles'] = []
-                dic[name]['descriptions'] = []
+                dic[name][ResourceType.PAPER] = []
+                dic[name][ResourceType.VIDEO] = []
+                dic[name][ResourceType.ARTICLE] = []
+                dic[name][ResourceType.DESCRIPTION] = []
                 logging.debug(f"Added topic to map: {name}")
             else:  # NodeType.RESOURCE
                 # put it in parents
@@ -116,16 +123,16 @@ class AwesomeClient():
                     logging.debug("Building map for type {}".format(t))
 
                     if t == ResourceType.PAPER:
-                        dic[parent]['papers'].append(dat)
+                        dic[parent][ResourceType.PAPER].append(dat)
                         logging.debug("Adding paper")
                     elif t == ResourceType.VIDEO:
-                        dic[parent]['videos'].append(dat)
+                        dic[parent][ResourceType.VIDEO].append(dat)
                         logging.debug("Adding video")
                     elif t == ResourceType.ARTICLE:
-                        dic[parent]['articles'].append(dat)
+                        dic[parent][ResourceType.ARTICLE].append(dat)
                         logging.debug("Adding articles")
                     elif t == ResourceType.DESCRIPTION:
-                        dic[parent]['descriptions'].append(dat)
+                        dic[parent][ResourceType.DESCRIPTION].append(dat)
                         logging.debug("Adding description")
 
 
@@ -136,7 +143,16 @@ class AwesomeClient():
         # TODO: get separate alt text
         text = dat['text']
         link = dat['link']
-        return f'* [{text}]({link})\n' 
+        return f'* [{text}]({link})\n'
+
+    def get_nodedata(self, dat):
+        """Formats a node's data.
+        Like get_s or get_link, but handles any type of node data."""
+        if isinstance(dat, str):
+            return self.get_s(dat)
+        if 'link' in dat:
+            return self.get_link(dat)
+        return self.get_s(dat['text'])
 
     def escape_toc_link_txt(self, s):
         """spaces in toc link need to be escaped, among others"""
@@ -155,6 +171,7 @@ class AwesomeClient():
         return f'{s}\n\n'
 
     def build_str(self):
+        """Create a markdown representing the whole iok."""
         head = ''
         head += self.get_h('Index of Knowledge')
         head += self.get_s(TRAVIS)
@@ -163,21 +180,7 @@ class AwesomeClient():
         s = ''
         for key in self.mindmap:
             s += self.get_h(key, level=2)
-            s += self.get_h('Description', level=3)
-            for x in self.mindmap[key]['descriptions']:
-                s += self.get_s(x)
-            s += self.get_h('Papers', level=3)
-            for x in self.mindmap[key]['papers']:
-                s += self.get_link(x)
-                s += '\n'
-            s += self.get_h('Articles', level=3)
-            for x in self.mindmap[key]['articles']:
-                s += self.get_link(x)
-                s += '\n'
-            s += self.get_h('Videos', level=3)
-            for x in self.mindmap[key]['videos']:
-                s += self.get_link(x)
-                s += '\n'
+            s += self.build_node_str(self.mindmap[key])
 
         # TODO: write a ToC
         toc = ''
@@ -187,6 +190,16 @@ class AwesomeClient():
         toc += '\n'
 
         return head + toc + s
+
+    def build_node_str(self, node):
+        """Create a markdown representing a node on the iok."""
+        s = ''
+        for hkey, hname in RESOURCE_HEADINGS.items():
+            if len(node[hkey]):
+                s += self.get_h(hname, level=3)
+                for x in node[hkey]:
+                    s += self.get_nodedata(x)
+        return s
 
     def write_to_file(self, filename):
         """Writes awesome-list"""
