@@ -114,7 +114,7 @@ export const recenterCy = (cy) => {
 };
 
 // eslint-disable-next-line no-shadow
-export const regroupCy = (cy, cola = false) => {
+export const regroupCy = (cy, cola = true) => {
   if (layout) {
     layout.stop();
   }
