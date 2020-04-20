@@ -97,6 +97,58 @@ def match_hierarchy(line: str) -> str:
             return h
     return ""
 
+def update_scopes(match: str, line: str, scopes: list, graph: nx.DiGraph) -> list:
+    """
+    Update the scopes and add a new node to graph
+    """
+    scopes_cpy = scopes.copy()
+
+    # build the node
+    new_scope = Scope(match, line)
+    id = new_scope.get_id()
+
+    # add the node to graph
+    graph.add_node(id)
+    node = graph.nodes[id]
+    for k, v in new_scope.node.items():
+        node[k] = v
+
+    # connect
+    if scopes_cpy:
+        graph.add_edge(id, scopes_cpy[-1].get_id())
+
+    scopes_cpy.append(new_scope)
+    return scopes_cpy
+
+
+def match_line(match: str, line: str, scopes: list, graph: nx.DiGraph) -> list:
+    """
+    Based on the current scope (list of regex by increasing specificity), add the current matched line
+    to the graph by either branching or continuing the current branch 
+    """
+    if scopes is None:
+        return []
+    scopes_cpy = scopes.copy()
+    if not match:
+        return scopes_cpy
+    if not scopes_cpy:
+        return update_scopes(match, line, scopes, graph)
+
+    # peek the end
+    end_scope = scopes_cpy[-1]
+    end_match, end_node = end_scope.match, end_scope.node
+
+    # determine whether to continue or branch
+    cmped = cmp_hierarchy(match, end_match)
+    if cmped < 0:
+        return update_scopes(match, line, scopes, graph)
+    else:
+        try:
+            scopes_cpy.pop()
+            return match_line(match, line, scopes_cpy, graph)
+        except IndexError:
+            return scopes_cpy
+
 
 # returns the graph for debugging
 def main(link: str) -> nx.DiGraph:
@@ -135,59 +187,7 @@ def main(link: str) -> nx.DiGraph:
             ^-- H2 <-- BULLET
 
     """
-
-    def update_scopes(match: str, line: str, scopes: list, graph: nx.DiGraph) -> list:
-        """
-        Update the scopes and add a new node to graph
-        """
-        scopes_cpy = scopes.copy()
-
-        # build the node
-        new_scope = Scope(match, line)
-        id = new_scope.get_id()
-
-        # add the node to graph
-        graph.add_node(id)
-        node = graph.nodes[id]
-        for k, v in new_scope.node.items():
-            node[k] = v
-
-        # connect
-        if scopes_cpy:
-            graph.add_edge(id, scopes_cpy[-1].get_id())
-
-        scopes_cpy.append(new_scope)
-        return scopes_cpy
-
-
-    def match_line(match: str, line: str, scopes: list, graph: nx.DiGraph) -> list:
-        """
-        Based on the current scope (list of regex by increasing specificity), add the current matched line
-        to the graph by either branching or continuing the current branch 
-        """
-        if scopes is None:
-            return []
-        scopes_cpy = scopes.copy()
-        if not match:
-            return scopes_cpy
-        if not scopes_cpy:
-            return update_scopes(match, line, scopes, graph)
-
-        # peek the end
-        end_scope = scopes_cpy[-1]
-        end_match, end_node = end_scope.match, end_scope.node
-
-        # determine whether to continue or branch
-        cmped = cmp_hierarchy(match, end_match)
-        if cmped < 0:
-            return update_scopes(match, line, scopes, graph)
-        else:
-            try:
-                scopes_cpy.pop()
-                return match_line(match, line, scopes_cpy, graph)
-            except IndexError:
-                return scopes_cpy
-
+    
     scopes = []
     graph = nx.DiGraph()
     for line in textlines:
