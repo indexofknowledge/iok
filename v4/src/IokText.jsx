@@ -124,6 +124,7 @@ class IokText extends Component {
     const { showDeleteModal } = this.state;
     this.setState({ showDeleteModal: !showDeleteModal });
   }
+
   removeNodeFromCy(node) {
     const { cy } = this.state;
     cy.remove(node);
@@ -307,7 +308,7 @@ class IokText extends Component {
             </div>
           </div>
         </div>
-      </div >
+      </div>
     );
   }
 }
