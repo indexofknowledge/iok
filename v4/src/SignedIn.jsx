@@ -120,6 +120,7 @@ class SignedIn extends Component {
           cy.json(graph); // edit local cy in place
 
           Log.info('Cy currently size', cy.elements().length);
+          regroupCy(cy, false);
           regroupCy(cy);
 
           this.setState({ graphLoaded: true });
@@ -143,6 +144,7 @@ class SignedIn extends Component {
         elements: content,
         style: DEFL_GRAPH_STYLE,
       });
+      regroupCy(cy, false);
       regroupCy(cy);
       this.setState({ graphLoaded: true });
     } catch (err) {
@@ -210,6 +212,7 @@ class SignedIn extends Component {
       style: DEFL_GRAPH_STYLE,
     });
     this.setState({ graphLoaded: true, unableToLoadGraph: false });
+    regroupCy(cy, false);
     regroupCy(cy);
   }
 
@@ -264,8 +267,8 @@ class SignedIn extends Component {
               <p className="hidden-msg">p.s. refresh if the graph does not load</p>
               <div className="cy-overlay">
                 <Button className="btn btn-info btn-lg btn-util" onClick={() => toggleMeta(cy)}>Toggle meta-graph</Button>
-                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(cy)}>Regroup dagre</Button>
-                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(cy, true)}>Regroup cola</Button>
+                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(cy, false)}>Regroup dagre</Button>
+                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(cy)}>Regroup cola</Button>
               </div>
             </div>
           </div>
