@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from hashlib import sha256
 import json
 import sys
+import uuid
 from networkx.readwrite import json_graph
 
 # configs
@@ -25,10 +26,10 @@ class Scope:
         self.node = self.build_node_obj(line, match)
 
     def get_id(self):
-        return self.node["id"]
+        return self.node["data"]["id"]
 
     def get_name(self):
-        return self.node["name"]
+        return self.node["data"]["name"]
 
     def get_link(self, line):
         """Returns link text and link of parsed markdown link, if regex matched"""
@@ -49,18 +50,20 @@ class Scope:
         if match != r"^[A-Za-z]":
             cleaned_line = re.sub(match, '', line).strip()
         if match in TOPICS:
-            dat = {"name": cleaned_line}
+            dat = {"name": cleaned_line, "node_type": 1}
         elif match in RESOURCES:
             link_if_link = self.get_link(cleaned_line)
             if link_if_link:
                 text, link = link_if_link
-                dat = {"data": {"text": text, "link": link}}
+                # TODO: borrow enums from scraper/iok.py, into utils module
+                # TODO: do something about not inferring resource_type 2 for links...
+                dat = {"data": {"text": text, "link": link}, "node_type": 2, "resource_type": 2}
             else:
-                dat = {"data": {"text": cleaned_line, "link": ""}}
+                dat = {"data": {"text": cleaned_line, "link": ""}, "node_type": 2, "resource_type": 1}
 
         dats = json.dumps(dat).encode('utf-8')
         dat["id"] = sha256(dats).hexdigest()
-        return dat
+        return {"data": dat}
 
 
 def cmp_hierarchy(s1: str, s2: str) -> int:
@@ -202,5 +205,13 @@ if __name__ == "__main__":
 
     # write to json file too
     dat = json_graph.node_link_data(g)
+    # making it a format cytoscape likes...
+    dat["edges"] = dat.pop("links")
+    # wrap everything in a "data" key...
+    for x in dat["edges"]:
+        x["data"] = x.copy()
+        x["data"]["id"] = uuid.uuid1().hex
+        del x["source"]
+        del x["target"]
     with open(JSON_FILE, 'w') as f:
         json.dump(dat, f)    
