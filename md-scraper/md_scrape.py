@@ -68,6 +68,11 @@ class Scope:
 
 def cmp_hierarchy(s1: str, s2: str) -> int:
     assert s1 in HIERARCHY and s2 in HIERARCHY
+
+    # all resources are equal
+    if s1 in RESOURCES and s2 in RESOURCES:
+        return 0
+
     i, i1, i2 = 0, 0, 0
     for h in HIERARCHY:
         if s1 == h:
