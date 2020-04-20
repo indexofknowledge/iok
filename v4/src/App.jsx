@@ -6,6 +6,7 @@ import { UserSession } from 'blockstack';
 
 import Landing from './Landing';
 import SignedIn from './SignedIn';
+import Log from './log';
 
 class App extends Component {
   static changeToGuestMode() {
@@ -23,7 +24,7 @@ class App extends Component {
     this.state = {
       guestMode,
     };
-    console.log('GUEST MODE?', guestMode);
+    Log.info('GUEST MODE?', guestMode);
   }
 
   componentDidMount() {
