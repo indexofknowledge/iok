@@ -7,7 +7,6 @@ import { sha256 } from 'js-sha256';
 import { PropTypes } from 'prop-types';
 import AddNodeModal from './AddNodeModal';
 import ListIoksModal from './ListIoksModal';
-import Log from './log';
 
 import './styles/IokText.css';
 
@@ -24,14 +23,6 @@ class IokText extends Component {
 
     this.onSaveClick = onSaveClick;
     this.onDeleteClick = onDeleteClick;
-
-    this.toggleSaveModal = this.toggleSaveModal.bind(this);
-    this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
-    this.onMetaClick = this.onMetaClick.bind(this);
-    this.onRegroupClick = this.onRegroupClick.bind(this);
-    this.onAddClick = this.onRegroupClick.bind(this);
-    this.addNodeToCy = this.addNodeToCy.bind(this);
-    this.downloadGraph = this.downloadGraph.bind(this);
 
     this.state = {
       drawEnabled: false,
@@ -93,8 +84,7 @@ class IokText extends Component {
     if (!('name' in data)) { // XXX: make a note of this... give it a name...
       dataWithHash = { ...dataWithHash, name: 'res-'.concat(dataWithHash.id.substring(0, 10)) };
     }
-
-    Log.info('DATA', dataWithHash);
+    console.log('DATA', dataWithHash);
     addNode(cy, dataWithHash);
   }
 
@@ -147,10 +137,10 @@ class IokText extends Component {
         depList.push(<li key={neighbor.name}>{neighbor.name}</li>);
       } else if (neighbor.node_type === NTYPE.RESO) { // resource
         if (neighbor.resource_type === 1) { // desc
-          descList.push(<li key={neighbor.data}>{neighbor.data.text}</li>);
+          descList.push(<li key={neighbor.data}>{neighbor.data}</li>);
         } else { // link type
           // eslint-disable-next-line max-len
-          linkList.push(<li key={neighbor.data}><a href={neighbor.data.link}>{neighbor.data.text}</a></li>);
+          linkList.push(<li key={neighbor.data.text}><a href={neighbor.data.link}>{neighbor.data.text}</a></li>);
         }
       }
     }
@@ -241,7 +231,7 @@ class IokText extends Component {
                   className="btn btn-info btn-lg btn-util"
                   onClick={
                     () => {
-                      IokText.onDrawClick();
+                      this.onDrawClick();
                       this.setState({ drawEnabled: !drawEnabled });
                     }
                   }

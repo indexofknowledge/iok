@@ -27,6 +27,20 @@ upload_files() {
   git push --quiet --set-upstream origin master
 }
 
+# XXX: potential race condition if origin/develop changes,
+# but we can just re-run manually
+fix_develop() {
+  git fetch origin
+  git checkout develop
+  git rebase master
+  git push --quiet --set-upstream origin develop
+}
+
 setup_git
 commit_website_files
 upload_files
+
+# XXX: master gets new awesome-list via codegen
+# we need to rebase develop on master each time to prevent divergence
+fix_develop
+

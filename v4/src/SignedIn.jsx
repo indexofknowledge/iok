@@ -16,7 +16,6 @@ import IokText from './IokText';
 import {
   appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE,
 } from './constants';
-import Log from './log';
 import './styles/SignedIn.css';
 
 import {
@@ -33,7 +32,7 @@ class SignedIn extends Component {
   static overrideGutterStyle() { // override somehow
     return {
       width: '8px',
-      height: '100vh',
+      height: '90vh',
       'background-color': '#18191c',
     };
   }
@@ -108,17 +107,17 @@ class SignedIn extends Component {
    */
   loadGraph() {
     const { loadUsername } = this.state;
-    Log.info(TAG, 'Loading', loadUsername, "'s data");
+    console.log(TAG, 'Loading', loadUsername, "'s data");
     const options = { decrypt: false, username: loadUsername };
     this.userSession.getFile(GRAPH_FILENAME, options)
       .then((content) => {
         if (content && content.length > 0) {
           const { cy } = this.state;
-          // Log.info(TAG, 'Loaded data:', content)
+          // console.log(TAG, 'Loaded data:', content)
           const graph = JSON.parse(content);
           cy.json(graph); // edit local cy in place
 
-          Log.info('Cy currently size', cy.elements().length);
+          console.log('Cy currently size', cy.elements().length);
           regroupCy(cy);
 
           this.setState({ graphLoaded: true });
@@ -140,7 +139,7 @@ class SignedIn extends Component {
     // var graph = this.state.cy.json()
     const graph = getExportableJson(cy);
     // var graph = {elements: this.state.graphElements, style: this.state.graphStyles}
-    Log.info(TAG, 'SAVING...', graph);
+    console.log(TAG, 'SAVING...', graph);
     this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(graph), options)
       .finally(() => {
         // this.setState({savingGraph: false})
