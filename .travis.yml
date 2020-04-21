@@ -2,7 +2,7 @@ sudo: required
 dist: xenial
 language: node_js
 node_js:
-- '8'
+- '13'
 stages:
 - name: deploy-v4
   if: branch = master AND sender != "Travis CI" AND type IN (push)
