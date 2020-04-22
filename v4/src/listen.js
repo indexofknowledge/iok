@@ -2,6 +2,8 @@
 /* eslint-disable no-console */
 /* eslint-disable no-alert */
 
+import Log from './log';
+
 // Mostly imported from old IoKv3...
 // Ugly code inbound
 
@@ -75,11 +77,11 @@ export const registerEdgeHandles = (cy) => {
   // eslint-disable-next-line no-unused-vars
   cy.on('ehcomplete', (event, sourceNode, targetNode, addedEles) => {
     // let { position } = event;
-    console.log(TAG, 'Added edge...');
-    console.log(TAG, 'source:', sourceNode);
-    console.log(TAG, 'target:', targetNode);
-    console.log(TAG, 'eles:', cy.elements().length);
-    // console.log(TAG, cy.nodes().length)
+    Log.info(TAG, 'Added edge...');
+    Log.info(TAG, 'source:', sourceNode);
+    Log.info(TAG, 'target:', targetNode);
+    Log.info(TAG, 'eles:', cy.elements().length);
+    // Log.info(TAG, cy.nodes().length)
   });
 };
 
@@ -100,7 +102,7 @@ export const getCy = () => cy;
 
 // TODO: offer alternatives..?
 // export const highlightNodeDepsOnClick = (evt) => {
-//     // console.log('Node tapped')
+//     // Log.info('Node tapped')
 //     const node = evt.target;
 //     setHighlighted(node);
 //     setNodeData(node);
@@ -113,7 +115,7 @@ export const recenterCy = (cy) => {
 };
 
 // eslint-disable-next-line no-shadow
-export const regroupCy = (cy, cola = false) => {
+export const regroupCy = (cy, cola = true) => {
   if (layout) {
     layout.stop();
   }
@@ -132,10 +134,10 @@ export const regroupCy = (cy, cola = false) => {
 
 // eslint-disable-next-line no-shadow
 export const toggleMeta = (cy) => {
-  // console.log("TOGGLING META")
+  // Log.info("TOGGLING META")
   const resources = cy.nodes('[node_type > 1]');
   if (resources.length === 0) {
-    // console.log("No resources found, can't toggle meta")
+    // Log.info("No resources found, can't toggle meta")
     return;
   }
   let replacementStyle = 'none';
@@ -204,13 +206,13 @@ const calcDepNaive = (root, depe) => {
 
 // eslint-disable-next-line no-shadow
 const drawDependency = (cy, node) => {
-  // console.log("drawDependency")
+  // Log.info("drawDependency")
   clearHighlighted(cy);
   lastRoot = node;
   hasCycle = false;
   const graph = calcDepNaive(node, cy.collection());
-  // console.log("deps...")
-  // console.log(graph)
+  // Log.info("deps...")
+  // Log.info(graph)
   if (hasCycle) {
     graph.filter(notRootFilter).forEach(setAltHighlighted);
   } else {

@@ -16,6 +16,7 @@ import IokText from './IokText';
 import {
   appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE,
 } from './constants';
+import Log from './log';
 import './styles/SignedIn.css';
 
 import {
@@ -32,7 +33,7 @@ class SignedIn extends Component {
   static overrideGutterStyle() { // override somehow
     return {
       width: '8px',
-      height: '90vh',
+      height: '100vh',
       'background-color': '#18191c',
     };
   }
@@ -72,6 +73,7 @@ class SignedIn extends Component {
     this.changeLoadUser = this.changeLoadUser.bind(this);
     this.loadDefaultGraph = this.loadDefaultGraph.bind(this);
     this.loadEmptyGraph = this.loadEmptyGraph.bind(this);
+    this.loadGraphFromFile = this.loadGraphFromFile.bind(this);
   }
 
   // since we're creating the cytoscape div in this component,
@@ -107,17 +109,18 @@ class SignedIn extends Component {
    */
   loadGraph() {
     const { loadUsername } = this.state;
-    console.log(TAG, 'Loading', loadUsername, "'s data");
+    Log.info(TAG, 'Loading', loadUsername, "'s data");
     const options = { decrypt: false, username: loadUsername };
     this.userSession.getFile(GRAPH_FILENAME, options)
       .then((content) => {
         if (content && content.length > 0) {
           const { cy } = this.state;
-          // console.log(TAG, 'Loaded data:', content)
+          // Log.info(TAG, 'Loaded data:', content)
           const graph = JSON.parse(content);
           cy.json(graph); // edit local cy in place
 
-          console.log('Cy currently size', cy.elements().length);
+          Log.info('Cy currently size', cy.elements().length);
+          regroupCy(cy, false);
           regroupCy(cy);
 
           this.setState({ graphLoaded: true });
@@ -130,6 +133,28 @@ class SignedIn extends Component {
   }
 
   /**
+   * Support loading graph from user-uploaded JSON file
+   */
+  loadGraphFromFile(content) {
+    try {
+      console.log('CORRECT!!');
+      // console.log(TAG, 'Loaded data:', content)
+      const { cy } = this.state;
+      cy.json({
+        elements: content,
+        style: DEFL_GRAPH_STYLE,
+      });
+      regroupCy(cy, false);
+      regroupCy(cy);
+      this.setState({ graphLoaded: true });
+    } catch (err) {
+      // eslint-disable-next-line no-alert
+      alert('Invalid graph format');
+      this.setState({ unableToLoadGraph: true, loadUsername: 'default' });
+    }
+  }
+
+  /**
    * Save local cy instance to Gaia as json
    */
   saveGraph() {
@@ -139,7 +164,7 @@ class SignedIn extends Component {
     // var graph = this.state.cy.json()
     const graph = getExportableJson(cy);
     // var graph = {elements: this.state.graphElements, style: this.state.graphStyles}
-    console.log(TAG, 'SAVING...', graph);
+    Log.info(TAG, 'SAVING...', graph);
     this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(graph), options)
       .finally(() => {
         // this.setState({savingGraph: false})
@@ -187,6 +212,7 @@ class SignedIn extends Component {
       style: DEFL_GRAPH_STYLE,
     });
     this.setState({ graphLoaded: true, unableToLoadGraph: false });
+    regroupCy(cy, false);
     regroupCy(cy);
   }
 
@@ -241,8 +267,8 @@ class SignedIn extends Component {
               <p className="hidden-msg">p.s. refresh if the graph does not load</p>
               <div className="cy-overlay">
                 <Button className="btn btn-info btn-lg btn-util" onClick={() => toggleMeta(cy)}>Toggle meta-graph</Button>
-                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(cy)}>Regroup dagre</Button>
-                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(cy, true)}>Regroup cola</Button>
+                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(cy, false)}>Regroup dagre</Button>
+                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(cy)}>Regroup cola</Button>
               </div>
             </div>
           </div>
@@ -255,6 +281,7 @@ class SignedIn extends Component {
               cy={cy}
               onSaveClick={this.saveGraph}
               onDeleteClick={this.deleteGraph}
+              loadGraphHandler={this.loadGraphFromFile}
               guestMode={guestMode}
               graphLoaded={graphLoaded}
               setCurrNode={(node) => this.setState({ selectedNode: node })}
