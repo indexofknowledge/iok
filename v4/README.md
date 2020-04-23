@@ -8,6 +8,8 @@ https://index-of-knowledge.firebaseapp.com/
 
 To start as a dev, simply run the standard `npm install` and `npm run start` to launch in dev mode. Some auto-generated React docs below...
 
+We also provide two storage backends: Blockstack via Gaia, and IPFS via Pinata. Configuration will vary.
+
 ## old stuff below
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

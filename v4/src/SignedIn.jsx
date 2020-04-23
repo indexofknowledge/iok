@@ -17,6 +17,8 @@ import {
   appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE,
 } from './constants';
 import Log from './log';
+import loadBlockstackGraph from './storage/blockstack';
+import loadIPFSGraph from './storage/ipfs';
 import './styles/SignedIn.css';
 
 import {
@@ -50,11 +52,17 @@ class SignedIn extends Component {
     const url = new URL(window.location.href);
     const par = url.searchParams;
     let loadUsername = username;
+    // XXX: move query parsing somewhere else
     if (par.has('loaduser')) {
       loadUsername = par.get('loaduser');
     } else {
       par.set('loaduser', username);
       window.location.href = url;
+    }
+
+    let hash = '';
+    if (par.has('hash')) {
+      hash = par.get('hash');
     }
 
     this.state = {
@@ -63,6 +71,7 @@ class SignedIn extends Component {
       guestMode,
       username,
       loadUsername,
+      hash,
       selectedNode: {}, // XXX: UGLY, should use TS...
     };
 
@@ -74,6 +83,8 @@ class SignedIn extends Component {
     this.loadDefaultGraph = this.loadDefaultGraph.bind(this);
     this.loadEmptyGraph = this.loadEmptyGraph.bind(this);
     this.loadGraphFromFile = this.loadGraphFromFile.bind(this);
+    this.onSuccessLoadGraph = this.onSuccessLoadGraph.bind(this);
+    this.onErrorLoadGraph = this.onErrorLoadGraph.bind(this);
   }
 
   // since we're creating the cytoscape div in this component,
@@ -99,37 +110,43 @@ class SignedIn extends Component {
     this.loadGraph();
   }
 
+
+  onSuccessLoadGraph(jsonGraph) {
+    Log.info(jsonGraph);
+    const { cy } = this.state;
+    cy.json(jsonGraph); // edit local cy in place
+    Log.info('Cy currently size', cy.elements().length);
+    regroupCy(cy, false);
+    regroupCy(cy);
+    this.setState({ graphLoaded: true });
+  }
+
+  onErrorLoadGraph(e) {
+    Log.error('Failed to load graph', e);
+    this.setState({ unableToLoadGraph: true, loadUsername: 'default' });
+  }
+
   // this is important since we want to re-render each time the user changes
   changeLoadUser(newUser) {
     this.setState({ loadUsername: newUser });
   }
 
+
   /**
    * Load cy instance from Gaia into local state
    */
   loadGraph() {
-    const { loadUsername } = this.state;
-    Log.info(TAG, 'Loading', loadUsername, "'s data");
-    const options = { decrypt: false, username: loadUsername };
-    this.userSession.getFile(GRAPH_FILENAME, options)
-      .then((content) => {
-        if (content && content.length > 0) {
-          const { cy } = this.state;
-          // Log.info(TAG, 'Loaded data:', content)
-          const graph = JSON.parse(content);
-          cy.json(graph); // edit local cy in place
-
-          Log.info('Cy currently size', cy.elements().length);
-          regroupCy(cy, false);
-          regroupCy(cy);
-
-          this.setState({ graphLoaded: true });
-        } else {
-          this.setState({ unableToLoadGraph: true, loadUsername: 'default' });
-        } // deal with fail and err as same
-      }).catch(() => {
-        this.setState({ unableToLoadGraph: true, loadUsername: 'default' });
-      });
+    const { loadUsername, hash } = this.state;
+    if (hash) {
+      loadIPFSGraph(hash, this.onSuccessLoadGraph, this.onErrorLoadGraph);
+    } else {
+      loadBlockstackGraph(
+        this.userSession,
+        loadUsername, GRAPH_FILENAME,
+        this.onSuccessLoadGraph,
+        this.onErrorLoadGraph,
+      );
+    }
   }
 
   /**
