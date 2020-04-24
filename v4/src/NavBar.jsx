@@ -1,39 +1,125 @@
 // eslint-disable-line
-import React from 'react';
+/* eslint-disable guard-for-in */
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
+import { STORAGE_TYPES } from './types';
+import { DEFL_STORAGE, DEFL_STORAGE_OPTIONS } from './constants';
 import './styles/NavBar.css';
 
-const NavBar = function render(props) {
-  const {
-    username, loadName, changeLoadUser, signOut,
-  } = props;
-  return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-blue fixed-top">
-      <Link className="navbar-brand" onClick={() => changeLoadUser(username)} to="/">Index of Knowledge</Link>
+class NavBar extends Component {
+  static paramsBuilder(options) {
+    let str = '/';
 
-      <ul className="navbar-nav mr-auto">
-        <li className="nav-item">
-          {/* <Link className="nav-link" to='/me'>{username}</Link> */}
-        </li>
-      </ul>
-      <p className="navbar-nav mr-auto">
-        {`Viewing ${loadName}'s IoK, logged in as ${username}`}
-      </p>
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={signOut.bind(this)}
-      >
-        {`Sign ${username === 'guest' ? 'in' : 'out'}`}
-      </button>
-    </nav>
-  );
-};
+    // eslint-disable-next-line no-restricted-syntax
+    for (const key in options) {
+      if (str !== '') {
+        str += '&';
+      }
+      str += `${key}=${encodeURIComponent(options[key])}`;
+    }
+    return str;
+  }
+
+  static onHomeClick(storage, options, changeLoadUser) {
+    switch (storage) {
+      case STORAGE_TYPES.BLOCKSTACK:
+        changeLoadUser(options.username);
+        break;
+      case STORAGE_TYPES.IPFS:
+        window.location.href = NavBar.paramsBuilder(DEFL_STORAGE_OPTIONS);
+        break;
+      default:
+        break;
+    }
+  }
+
+  static greetingBuilder(storage, options) {
+    switch (storage) {
+      case STORAGE_TYPES.BLOCKSTACK:
+        return `Viewing ${options.loaduser}'s IoK, logged in as ${options.username}`;
+      case STORAGE_TYPES.IPFS:
+        return options.hash;
+      default:
+        return 'Hello';
+    }
+  }
+
+  static signOutBuilder(storage, options, signOutHandler) {
+    switch (storage) {
+      case STORAGE_TYPES.BLOCKSTACK:
+        return (
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={signOutHandler}
+          >
+          Sign
+            {options.username === 'guest' ? ' in' : ' out'}
+
+          </button>
+        );
+      case STORAGE_TYPES.IPFS:
+        return '';
+      default:
+        return 'Hello';
+    }
+  }
+
+  static selectStorageBuilder(storage) {
+    switch (storage) {
+      case STORAGE_TYPES.BLOCKSTACK:
+        return (
+          <button
+            type="button"
+            className="btn btn-info btn-lg btn-util"
+            onClick={() => { window.location.href = '/?storage='.concat(STORAGE_TYPES.IPFS); }}
+          >
+          Try IPFS!
+          </button>
+        );
+      case STORAGE_TYPES.IPFS:
+        return (
+          <button
+            type="button"
+            className="btn btn-info btn-lg btn-util"
+            onClick={() => { window.location.href = '/?storage='.concat(STORAGE_TYPES.BLOCKSTACK); }}
+          >
+          Try Blockstack!
+          </button>
+        );
+      default:
+        return 'Hello';
+    }
+  }
+
+
+  render() {
+    const {
+      storage, options, changeLoadUser, signOut,
+    } = this.props;
+    return (
+      <nav className="navbar navbar-expand-md navbar-dark bg-blue fixed-top">
+        <Link className="navbar-brand" onClick={() => NavBar.onHomeClick(storage, options, changeLoadUser)} to="/">Index of Knowledge</Link>
+
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item">
+            {NavBar.greetingBuilder(storage, options)}
+          </li>
+        </ul>
+        <p className="navbar-nav mr-auto">
+          {}
+        </p>
+        {NavBar.selectStorageBuilder(storage)}
+        {NavBar.signOutBuilder(storage, options, signOut.bind(this))}
+      </nav>
+    );
+  }
+}
 
 NavBar.defaultProps = {
-  username: 'default',
-  loadName: 'default',
+  storage: DEFL_STORAGE,
+  options: DEFL_STORAGE_OPTIONS,
   // XXX: replace these alerts
   // eslint-disable-next-line no-alert
   changeLoadUser: () => alert('ERROR: changeLoadUser() invalid'),
@@ -42,8 +128,9 @@ NavBar.defaultProps = {
 };
 
 NavBar.propTypes = {
-  username: PropTypes.string,
-  loadName: PropTypes.string,
+  storage: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  options: PropTypes.object,
   changeLoadUser: PropTypes.func,
   signOut: PropTypes.func,
 };
