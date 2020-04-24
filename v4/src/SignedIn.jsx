@@ -14,25 +14,35 @@ import edgehandles from 'cytoscape-edgehandles';
 import NavBar from './NavBar';
 import IokText from './IokText';
 import {
-  appConfig, GRAPH_FILENAME, DEFL_GRAPH_ELEMENTS, DEFL_GRAPH_STYLE,
+  appConfig,
+  GRAPH_FILENAME,
+  DEFL_GRAPH_ELEMENTS,
+  DEFL_GRAPH_STYLE,
+  DEFL_STORAGE_OPTIONS,
+  DEFL_STORAGE,
 } from './constants';
 import Log from './log';
-import loadBlockstackGraph from './storage/blockstack';
-import loadIPFSGraph from './storage/ipfs';
+import { loadBlockstackGraph, saveBlockstackGraph } from './storage/blockstack';
+import { loadIPFSGraph, saveIPFSGraph } from './storage/ipfs';
 import './styles/SignedIn.css';
 
 import {
-  regroupCy, registerNodeTap, registerEdgeHandles, addNode, toggleMeta, getExportableJson,
+  regroupCy,
+  registerNodeTap,
+  registerEdgeHandles,
+  toggleMeta,
+  getExportableJson,
 } from './listen';
 
-const TAG = 'SignedIn';
+import { STORAGE_TYPES } from './types';
 
 Cytoscape.use(dagre);
 Cytoscape.use(cola);
 Cytoscape.use(edgehandles);
 
 class SignedIn extends Component {
-  static overrideGutterStyle() { // override somehow
+  static overrideGutterStyle() {
+    // override somehow
     return {
       width: '8px',
       height: '100vh',
@@ -42,36 +52,15 @@ class SignedIn extends Component {
 
   constructor(props) {
     super(props);
-    const { guestMode } = this.props;
+    const { storage, options } = this.props;
 
     this.userSession = new UserSession({ appConfig });
-    let username = 'guest';
-    if (!guestMode) {
-      username = this.userSession.loadUserData().username;
-    }
-    const url = new URL(window.location.href);
-    const par = url.searchParams;
-    let loadUsername = username;
-    // XXX: move query parsing somewhere else
-    if (par.has('loaduser')) {
-      loadUsername = par.get('loaduser');
-    } else {
-      par.set('loaduser', username);
-      window.location.href = url;
-    }
-
-    let hash = '';
-    if (par.has('hash')) {
-      hash = par.get('hash');
-    }
 
     this.state = {
+      storage,
+      options,
       graphLoaded: false,
       unableToLoadGraph: false,
-      guestMode,
-      username,
-      loadUsername,
-      hash,
       selectedNode: {}, // XXX: UGLY, should use TS...
     };
 
@@ -91,29 +80,32 @@ class SignedIn extends Component {
   // only create the cy instance (and load data into it) after
   // we've rendered
   componentDidMount() {
-    this.setState({
-      cy: Cytoscape({
-        container: document.getElementById('cy'),
-        layout: {
-          name: 'dagre',
-          animate: true,
-        },
-        style: DEFL_GRAPH_STYLE,
-      }),
-    }, () => {
-      const { cy } = this.state;
-      registerNodeTap(cy, (node) => {
-        this.setState({ selectedNode: node });
-      });
-      registerEdgeHandles(cy);
-    }); // trace...
+    this.setState(
+      {
+        cy: Cytoscape({
+          container: document.getElementById('cy'),
+          layout: {
+            name: 'dagre',
+            animate: true,
+          },
+          style: DEFL_GRAPH_STYLE,
+        }),
+      },
+      () => {
+        const { cy } = this.state;
+        registerNodeTap(cy, (node) => {
+          this.setState({ selectedNode: node });
+        });
+        registerEdgeHandles(cy);
+      },
+    ); // trace...
     this.loadGraph();
   }
-
 
   onSuccessLoadGraph(jsonGraph) {
     Log.info(jsonGraph);
     const { cy } = this.state;
+    Log.info(cy);
     cy.json(jsonGraph); // edit local cy in place
     Log.info('Cy currently size', cy.elements().length);
     regroupCy(cy, false);
@@ -123,29 +115,38 @@ class SignedIn extends Component {
 
   onErrorLoadGraph(e) {
     Log.error('Failed to load graph', e);
-    this.setState({ unableToLoadGraph: true, loadUsername: 'default' });
+    const { options } = this.state;
+    this.setState({
+      unableToLoadGraph: true,
+      options: { ...options, loaduser: 'default' },
+    });
   }
 
   // this is important since we want to re-render each time the user changes
   changeLoadUser(newUser) {
-    this.setState({ loadUsername: newUser });
+    const { options } = this.state;
+    this.setState({ options: { ...options, loaduser: newUser } });
   }
-
 
   /**
    * Load cy instance from Gaia into local state
    */
   loadGraph() {
-    const { loadUsername, hash } = this.state;
-    if (hash) {
-      loadIPFSGraph(hash, this.onSuccessLoadGraph, this.onErrorLoadGraph);
-    } else {
-      loadBlockstackGraph(
-        this.userSession,
-        loadUsername, GRAPH_FILENAME,
-        this.onSuccessLoadGraph,
-        this.onErrorLoadGraph,
-      );
+    const { storage, options } = this.state;
+    switch (storage) {
+      case STORAGE_TYPES.IPFS:
+        loadIPFSGraph(options.hash, this.onSuccessLoadGraph, this.onErrorLoadGraph);
+        break;
+      case STORAGE_TYPES.BLOCKSTACK:
+        loadBlockstackGraph(
+          this.userSession,
+          options.loaduser,
+          this.onSuccessLoadGraph,
+          this.onErrorLoadGraph,
+        );
+        break;
+      default:
+        break;
     }
   }
 
@@ -153,10 +154,8 @@ class SignedIn extends Component {
    * Support loading graph from user-uploaded JSON file
    */
   loadGraphFromFile(content) {
+    const { cy, options } = this.state;
     try {
-      console.log('CORRECT!!');
-      // console.log(TAG, 'Loaded data:', content)
-      const { cy } = this.state;
       cy.json({
         elements: content,
         style: DEFL_GRAPH_STYLE,
@@ -167,7 +166,7 @@ class SignedIn extends Component {
     } catch (err) {
       // eslint-disable-next-line no-alert
       alert('Invalid graph format');
-      this.setState({ unableToLoadGraph: true, loadUsername: 'default' });
+      this.setState({ unableToLoadGraph: true, options: { ...options, loaduser: 'default' } });
     }
   }
 
@@ -175,50 +174,61 @@ class SignedIn extends Component {
    * Save local cy instance to Gaia as json
    */
   saveGraph() {
-    const { cy } = this.state;
-    // this.setState({savingGraph: true}) // XXX: might not need this to rerender
-    const options = { encrypt: false };
-    // var graph = this.state.cy.json()
+    const { cy, storage } = this.state;
     const graph = getExportableJson(cy);
-    // var graph = {elements: this.state.graphElements, style: this.state.graphStyles}
-    Log.info(TAG, 'SAVING...', graph);
-    this.userSession.putFile(GRAPH_FILENAME, JSON.stringify(graph), options)
-      .finally(() => {
-        // this.setState({savingGraph: false})
-      });
+
+    switch (storage) {
+      case STORAGE_TYPES.IPFS:
+        saveIPFSGraph(graph);
+        break;
+      case STORAGE_TYPES.BLOCKSTACK:
+        saveBlockstackGraph(graph, this.userSession);
+        break;
+      default:
+        break;
+    }
   }
 
   /**
    * a cheap delete func based off save empty
    */
   deleteGraph() {
-    const { cy } = this.state;
-    this.userSession.deleteFile(GRAPH_FILENAME)
-      .finally(() => {
-        cy.json({
-          elements: [],
-          style: DEFL_GRAPH_STYLE,
+    const { cy, storage, options } = this.state;
+    switch (storage) {
+      case STORAGE_TYPES.IPFS:
+        Log.error('IPFS delete not implemented');
+        break;
+      case STORAGE_TYPES.BLOCKSTACK:
+        this.userSession.deleteFile(GRAPH_FILENAME).finally(() => {
+          cy.json({
+            elements: [],
+            style: DEFL_GRAPH_STYLE,
+          });
+          this.setState({
+            graphLoaded: false,
+            unableToLoadGraph: true,
+            options: { ...options, loaduser: 'default' },
+          });
+          this.loadGraph();
         });
-        this.setState({
-          graphLoaded: false,
-          unableToLoadGraph: true,
-          loadUsername: 'default',
-        });
-        this.loadGraph();
-      });
+        break;
+      default:
+        break;
+    }
   }
 
   signOut(e) {
-    e.preventDefault();
-    this.userSession.signUserOut();
-    window.location = '/';
+    const { storage } = this.state;
+    if (storage === STORAGE_TYPES.BLOCKSTACK) {
+      e.preventDefault();
+      this.userSession.signUserOut();
+      window.location = '/?storage='.concat(STORAGE_TYPES.BLOCKSTACK);
+    }
   }
 
   loadEmptyGraph() {
     const { cy } = this.state;
     this.setState({ graphLoaded: true, unableToLoadGraph: false });
-    addNode(cy, { name: 'delet this' });
-    addNode(cy, { name: 'delet this too' });
     regroupCy(cy);
   }
 
@@ -233,40 +243,78 @@ class SignedIn extends Component {
     regroupCy(cy);
   }
 
+  NavOrNot() {
+    const { storage, options } = this.state;
+    if (storage === STORAGE_TYPES.IPFS) {
+      return (null);
+    }
+
+    return (
+      <NavBar
+
+        username={options.username}
+        loadName={options.loaduser}
+        changeLoadUser={this.changeLoadUser}
+        signOut={this.signOut}
+      />
+    );
+  }
+
   render() {
     const {
-      cy, graphLoaded, unableToLoadGraph, username, loadUsername,
-      changeLoadUser, selectedNode, guestMode,
+      cy,
+      storage,
+      options,
+      graphLoaded,
+      unableToLoadGraph,
+      selectedNode,
     } = this.state;
+
+    const { guest } = options;
+
     return (
       <div className="SignedIn">
-
         <Modal className="Modal" show={!graphLoaded && !unableToLoadGraph}>
           <Modal.Header>
-            <Modal.Title>Loading graph from blockstack</Modal.Title>
+            <Modal.Title>
+              {'Loading graph from '.concat(storage)}
+            </Modal.Title>
           </Modal.Header>
-          <Modal.Footer>
-          </Modal.Footer>
+          <Modal.Footer></Modal.Footer>
         </Modal>
 
-        <Modal className="Modal" show={unableToLoadGraph} onHide={this.loadEmptyGraph}>
+        <Modal
+          className="Modal"
+          show={unableToLoadGraph}
+          onHide={this.loadEmptyGraph}
+        >
           <Modal.Header>
             <Modal.Title>Unable to fetch graph</Modal.Title>
           </Modal.Header>
           <Modal.Footer>
-            <Button style={{ backgroundColor: '#a9a8a8' }} variant="secondary" type="submit" onClick={this.loadEmptyGraph}>
+            <Button
+              style={{ backgroundColor: '#a9a8a8' }}
+              variant="secondary"
+              type="submit"
+              onClick={this.loadEmptyGraph}
+            >
               Load empty
             </Button>
-            <Button style={{ backgroundColor: '#a9a8a8' }} variant="primary" type="submit" onClick={this.loadDefaultGraph}>
+            <Button
+              style={{ backgroundColor: '#a9a8a8' }}
+              variant="primary"
+              type="submit"
+              onClick={this.loadDefaultGraph}
+            >
               Load default
             </Button>
           </Modal.Footer>
         </Modal>
 
         <NavBar
-          username={username}
-          loadName={loadUsername}
-          changeLoadUser={changeLoadUser}
+          storage={storage}
+          options={options}
+          changeLoadUser={this.changeLoadUser}
           signOut={this.signOut}
         />
 
@@ -281,11 +329,28 @@ class SignedIn extends Component {
           {/* first split */}
           <div className="split split-horizontal">
             <div className="split content" id="cy">
-              <p className="hidden-msg">p.s. refresh if the graph does not load</p>
+              <p className="hidden-msg">
+                p.s. refresh if the graph does not load
+              </p>
               <div className="cy-overlay">
-                <Button className="btn btn-info btn-lg btn-util" onClick={() => toggleMeta(cy)}>Toggle meta-graph</Button>
-                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(cy, false)}>Regroup dagre</Button>
-                <Button className="btn btn-info btn-lg btn-util" onClick={() => regroupCy(cy)}>Regroup cola</Button>
+                <Button
+                  className="btn btn-info btn-lg btn-util"
+                  onClick={() => toggleMeta(cy)}
+                >
+                  Toggle meta-graph
+                </Button>
+                <Button
+                  className="btn btn-info btn-lg btn-util"
+                  onClick={() => regroupCy(cy, false)}
+                >
+                  Regroup dagre
+                </Button>
+                <Button
+                  className="btn btn-info btn-lg btn-util"
+                  onClick={() => regroupCy(cy)}
+                >
+                  Regroup cola
+                </Button>
               </div>
             </div>
           </div>
@@ -299,7 +364,7 @@ class SignedIn extends Component {
               onSaveClick={this.saveGraph}
               onDeleteClick={this.deleteGraph}
               loadGraphHandler={this.loadGraphFromFile}
-              guestMode={guestMode}
+              guestMode={guest}
               graphLoaded={graphLoaded}
             />
           </div>
@@ -310,12 +375,14 @@ class SignedIn extends Component {
 }
 
 SignedIn.defaultProps = {
-  guestMode: false,
+  storage: DEFL_STORAGE,
+  options: DEFL_STORAGE_OPTIONS,
 };
 
 SignedIn.propTypes = {
-  guestMode: PropTypes.bool,
-
+  storage: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  options: PropTypes.object,
 };
 
 export default SignedIn;

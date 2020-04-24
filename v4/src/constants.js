@@ -1,9 +1,16 @@
 // eslint-disable-line
 import { AppConfig } from 'blockstack';
+import { STORAGE_TYPES } from './types';
 
 export const appConfig = new AppConfig(['store_write', 'publish_data']);
 
 export const GRAPH_FILENAME = 'graph.json';
+
+export const DEFL_STORAGE = STORAGE_TYPES.IPFS;
+
+export const DEFL_STORAGE_OPTIONS = {
+  hash: 'QmWm3A6EdXYD12eaEjADs7iPnraEaYmK788QEHumQZ7yrH',
+};
 
 export const IOKS = [
   {
@@ -15,17 +22,6 @@ export const IOKS = [
     app: 'https://index-of-knowledge-beta.firebaseapp.com/?loaduser=rustielintest.id.blockstack',
   },
 ];
-
-/** Types of nodes on the graph */
-export const NTYPE = {
-  TOPIC: 1,
-  RESO: 2,
-};
-/** Types of resources on the graph */
-export const RTYPE = {
-  DESC: 1,
-  LINK: 4,
-};
 
 // TODO: change all the id's since cytoscape will crash if collision
 // TODO: change all id's to hashes

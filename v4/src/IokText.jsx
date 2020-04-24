@@ -14,7 +14,8 @@ import './styles/IokText.css';
 import {
   regroupCy, toggleDrawMode, toggleMeta, addNode, getNodesEdgesJson,
 } from './listen';
-import { GRAPH_FILENAME, NTYPE } from './constants';
+import { GRAPH_FILENAME } from './constants';
+import { NTYPE } from './types';
 
 class IokText extends Component {
   constructor(props) {
