@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@pinata/sdk": "^1.1.8"
+    "@pinata/sdk": "^1.1.8",
+    "cors": "^2.8.5"
   }
 }

@@ -10,7 +10,7 @@ echo "Pinned with hash $test_hash"
 echo "Trying to fetch now..."
 echo 
 
-curl -s https://us-central1-index-of-knowledge.cloudfunctions.net/retrieveGraph\?hash\=$test_hash | grep nodes
+curl -s https://ipfs.io/ipfs/$test_hash | grep nodes
 
 echo
 

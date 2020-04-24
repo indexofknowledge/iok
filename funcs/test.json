@@ -1,14 +1,16 @@
 {
-    "graph": {
-        "nodes": [
-            {
-                "data": 420
-            }
-        ],
-        "edges": [
-            {
-                "data": 69
-            }
-        ]
+    "elements" : {
+        "graph": {
+            "nodes": [
+                {
+                    "data": 420
+                }
+            ],
+            "edges": [
+                {
+                    "data": 69
+                }
+            ]
+        }
     }
 }
