@@ -32,10 +32,12 @@ class IokText extends Component {
     this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
     this.onMetaClick = this.onMetaClick.bind(this);
     this.onRegroupClick = this.onRegroupClick.bind(this);
-    this.onAddClick = this.onRegroupClick.bind(this);
+    this.onAddClick = this.onAddClick.bind(this);
     this.addNodeToCy = this.addNodeToCy.bind(this);
     this.downloadGraph = this.downloadGraph.bind(this);
     this.onFileUploadHandler = this.onFileUploadHandler.bind(this);
+    this.removeNodeFromCy = this.removeNodeFromCy.bind(this);
+    this.updateEdgesFromCy = this.updateEdgesFromCy.bind(this);
 
     this.state = {
       drawEnabled: false,
@@ -117,12 +119,17 @@ class IokText extends Component {
     }
 
     Log.info('DATA', dataWithHash);
-    addNode(cy, dataWithHash);
+    return addNode(cy, dataWithHash);
   }
 
   toggleDeleteModal() {
     const { showDeleteModal } = this.state;
     this.setState({ showDeleteModal: !showDeleteModal });
+  }
+
+  toggleSaveModal() {
+    const { showSaveModal } = this.state;
+    this.setState({ showSaveModal: !showSaveModal });
   }
 
   removeNodeFromCy(node) {
@@ -137,10 +144,6 @@ class IokText extends Component {
     cy.remove(oldNode.connectedEdges());
   }
 
-  toggleSaveModal() {
-    const { showSaveModal } = this.state;
-    this.setState({ showSaveModal: !showSaveModal });
-  }
 
   render() {
     // XXX: makes the linter happy, but hard to read...
@@ -318,7 +321,7 @@ IokText.defaultProps = {
   onDeleteClick: () => alert('ERROR: onDeleteClick() invalid'),
   loadGraphHandler: () => alert('ERROR: loadGraphHandler() invalid'),
   cy: {}, // XXX: UGLY!!!!
-  currNode: {},
+  currNode: null,
   graphLoaded: false,
   guestMode: false,
   setCurrNode: () => alert('ERROR: setCurrNode() invalid'),
