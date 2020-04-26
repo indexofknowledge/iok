@@ -88,6 +88,7 @@ class EditNodeModal extends Component {
     // take existing edges and put newNode
     updateEdges(node, newNode);
     newNode.shift(node.position());
+    newNode.trigger('tap');
 
     // delete n
     removeNode(node);

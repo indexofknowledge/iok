@@ -116,82 +116,82 @@ class AddNodeModal extends Component {
                     <Form.Group>
                       <Form.Label>Resource data</Form.Label>
                       <Form.Group>
-                        <Form.Check type="radio" name="radioResourceType" label="Description" onClick={() => this.setState({ resourceType: 1, resourceData: '' })} />
+                        <Form.Check type="radio" name="radioResourceType" label="Description" onClick={() => this.setState({ resourceType: 1, resourceData: {} })} />
                         <Form.Check type="radio" name="radioResourceType" label="Article" onClick={() => this.setState({ resourceType: 2, resourceData: {} })} />
                         <Form.Check type="radio" name="radioResourceType" label="Video" onClick={() => this.setState({ resourceType: 3, resourceData: {} })} />
                         <Form.Check type="radio" name="radioResourceType" label="Paper" onClick={() => this.setState({ resourceType: 4, resourceData: {} })} />
                       </Form.Group>
 
                       {
-                      resourceType === 0 || resourceType === 1
-                        ? (
-                          <div>
-                            <Form.Control id="abc" name="abc" type="text" placeholder="Bitcoin is a p2p cash system" onChange={(ev) => this.setState({ resourceData: ev.target.value })} />
-                            <Form.Control.Feedback type="invalid">
-                            Please provide valid resource data
-                            </Form.Control.Feedback>
-                            <Form.Text>
-                            Resource data can be a description or hyperlink
-                            </Form.Text>
-                          </div>
-                        )
-                        : (
-                          <div>
-                            <Form.Control
-                              type="text"
-                              placeholder="Bitcoin whitepaper"
-                              onChange={(ev) => {
-                                const val = ev.target.value; // to save the virtual event
-                                this.setState((prevState) => ({
-                                  resourceData: {
-                                    ...prevState.resourceData,
-                                    text: val,
-                                  },
-                                }));
-                              }}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                            Please provide valid resource link name
-                            </Form.Control.Feedback>
-                            <Form.Text>
-                            Resource link name
-                            </Form.Text>
+                        resourceType === 0 || resourceType === 1
+                          ? (
+                            <div>
+                              <Form.Control id="abc" name="abc" type="text" placeholder="Bitcoin is a p2p cash system" onChange={(ev) => this.setState({ resourceData: ev.target.value })} />
+                              <Form.Control.Feedback type="invalid">
+                                Please provide valid resource data
+                              </Form.Control.Feedback>
+                              <Form.Text>
+                                Resource data can be a description or hyperlink
+                              </Form.Text>
+                            </div>
+                          )
+                          : (
+                            <div>
+                              <Form.Control
+                                type="text"
+                                placeholder="Bitcoin whitepaper"
+                                onChange={(ev) => {
+                                  const val = ev.target.value; // to save the virtual event
+                                  this.setState((prevState) => ({
+                                    resourceData: {
+                                      ...prevState.resourceData,
+                                      text: val,
+                                    },
+                                  }));
+                                }}
+                              />
+                              <Form.Control.Feedback type="invalid">
+                                Please provide valid resource link name
+                              </Form.Control.Feedback>
+                              <Form.Text>
+                                Resource link name
+                              </Form.Text>
 
-                            <Form.Control
-                              type="url"
-                              placeholder="https://bitcoin.org/bitcoin.pdf"
-                              onChange={(ev) => {
-                                const val = ev.target.value;
-                                this.setState((prevState) => ({
-                                  resourceData: {
-                                    ...prevState.resourceData,
-                                    link: val,
-                                  },
-                                }));
-                              }}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                            Please provide valid resource link
-                            </Form.Control.Feedback>
-                            <Form.Text>
-                            Resource link URL
-                            </Form.Text>
-                          </div>
-                        )
-                    }
+                              <Form.Control
+                                type="url"
+                                placeholder="https://bitcoin.org/bitcoin.pdf"
+                                onChange={(ev) => {
+                                  const val = ev.target.value;
+                                  this.setState((prevState) => ({
+                                    resourceData: {
+                                      ...prevState.resourceData,
+                                      link: val,
+                                    },
+                                  }));
+                                }}
+                              />
+                              <Form.Control.Feedback type="invalid">
+                                Please provide valid resource link
+                              </Form.Control.Feedback>
+                              <Form.Text>
+                                Resource link URL
+                              </Form.Text>
+                            </div>
+                          )
+                      }
 
 
                     </Form.Group>
                   )
 
               )
-              }
+            }
 
           </Modal.Body>
 
           <Modal.Footer>
             <Button style={{ backgroundColor: '#a9a8a8' }} variant="primary" type="submit" onClick={this.handleSubmit}>
-                Add node
+              Add node
             </Button>
           </Modal.Footer>
 
