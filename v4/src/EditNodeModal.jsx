@@ -1,13 +1,12 @@
 // eslint-disable-line
 /* eslint-disable no-alert */
-/* eslint-disable no-nested-ternary */ // XXX: !!!!!!!!PLEASE FIX THIS!!!!!!!
 import React, { Component } from 'react';
 import {
   Button, Modal, Form, ToggleButtonGroup, ToggleButton,
 } from 'react-bootstrap';
 
 import { PropTypes } from 'prop-types';
-import { NTYPE, RTYPE } from './constants';
+import { NTYPE, RTYPE } from './types';
 
 import './styles/EditNodeModal.css';
 
@@ -29,6 +28,9 @@ class EditNodeModal extends Component {
     this.handleOpen = this.handleOpen.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setResourceType = this.setResourceType.bind(this);
+
+    this.topicOrResource = this.topicOrResource.bind(this);
+    this.descOrLink = this.descOrLink.bind(this);
   }
 
   setResourceType(resourceType) {
@@ -94,10 +96,10 @@ class EditNodeModal extends Component {
     removeNode(node);
   }
 
-  topicOrResource = () => {
+  topicOrResource() {
     const { node } = this.props;
     const {
-      isOpen, topicName, resourceType, resourceData,
+      topicName, resourceType,
     } = this.state;
     if (node.data('node_type') === NTYPE.TOPIC) {
       return (
@@ -106,29 +108,27 @@ class EditNodeModal extends Component {
           <Form.Control type="text" placeholder="Bitcoin" value={topicName} onChange={(ev) => this.setState({ topicName: ev.target.value })} />
         </Form.Group>
       );
-    } else {
-      return (
-        <Form.Group>
-          <Form.Label>Resource data</Form.Label>
-
-          <ToggleButtonGroup type="radio" name="idk" value={resourceType} onChange={this.setResourceType}>
-            <ToggleButton value={1}>Description</ToggleButton>
-            <ToggleButton value={2}>Article</ToggleButton>
-            <ToggleButton value={3}>Video</ToggleButton>
-            <ToggleButton value={4}>Paper</ToggleButton>
-          </ToggleButtonGroup>
-
-          {this.descOrLink()}
-
-        </Form.Group>
-      );
     }
+    return (
+      <Form.Group>
+        <Form.Label>Resource data</Form.Label>
+
+        <ToggleButtonGroup type="radio" name="idk" value={resourceType} onChange={this.setResourceType}>
+          <ToggleButton value={1}>Description</ToggleButton>
+          <ToggleButton value={2}>Article</ToggleButton>
+          <ToggleButton value={3}>Video</ToggleButton>
+          <ToggleButton value={4}>Paper</ToggleButton>
+        </ToggleButtonGroup>
+
+        {this.descOrLink()}
+
+      </Form.Group>
+    );
   }
 
-  descOrLink = () => {
-    const { node } = this.props;
+  descOrLink() {
     const {
-      isOpen, topicName, resourceType, resourceData,
+      resourceType, resourceData,
     } = this.state;
     if (resourceType === 0 || resourceType === RTYPE.DESC) {
       return (
@@ -151,66 +151,66 @@ class EditNodeModal extends Component {
           />
           <Form.Control.Feedback type="invalid">
             Please provide valid resource data
-        </Form.Control.Feedback>
+          </Form.Control.Feedback>
           <Form.Text>
             Resource data can be a description or hyperlink
-        </Form.Text>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Form.Control
-            type="text"
-            placeholder="Bitcoin whitepaper"
-            value={resourceData ? resourceData.text : null}
-            onChange={(ev) => {
-              const val = ev.target.value; // to save the virtual event
-              this.setState((prevState) => ({
-                resourceData: {
-                  ...prevState.resourceData,
-                  text: val,
-                },
-              }));
-            }}
-          />
-          <Form.Control.Feedback type="invalid">
-            Please provide valid resource link name
-                </Form.Control.Feedback>
-          <Form.Text>
-            Resource link name
-                </Form.Text>
-
-          <Form.Control
-            type="url"
-            placeholder="https://bitcoin.org/bitcoin.pdf"
-            value={resourceData ? resourceData.link : null}
-            onChange={(ev) => {
-              const val = ev.target.value;
-              this.setState((prevState) => ({
-                resourceData: {
-                  ...prevState.resourceData,
-                  link: val,
-                },
-              }));
-            }}
-          />
-          <Form.Control.Feedback type="invalid">
-            Please provide valid resource link
-                </Form.Control.Feedback>
-          <Form.Text>
-            Resource link URL
-                </Form.Text>
+          </Form.Text>
         </div>
       );
     }
+
+    return (
+      <div>
+        <Form.Control
+          type="text"
+          placeholder="Bitcoin whitepaper"
+          value={resourceData ? resourceData.text : null}
+          onChange={(ev) => {
+            const val = ev.target.value; // to save the virtual event
+            this.setState((prevState) => ({
+              resourceData: {
+                ...prevState.resourceData,
+                text: val,
+              },
+            }));
+          }}
+        />
+        <Form.Control.Feedback type="invalid">
+          Please provide valid resource link name
+        </Form.Control.Feedback>
+        <Form.Text>
+          Resource link name
+        </Form.Text>
+
+        <Form.Control
+          type="url"
+          placeholder="https://bitcoin.org/bitcoin.pdf"
+          value={resourceData ? resourceData.link : null}
+          onChange={(ev) => {
+            const val = ev.target.value;
+            this.setState((prevState) => ({
+              resourceData: {
+                ...prevState.resourceData,
+                link: val,
+              },
+            }));
+          }}
+        />
+        <Form.Control.Feedback type="invalid">
+          Please provide valid resource link
+        </Form.Control.Feedback>
+        <Form.Text>
+          Resource link URL
+        </Form.Text>
+      </div>
+    );
   }
 
 
   render() {
     const { node } = this.props;
     const {
-      isOpen
+      isOpen,
     } = this.state;
     if (!node) return <span />;
     return (
