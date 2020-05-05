@@ -140,11 +140,17 @@ class IokText extends Component {
   updateEdgesFromCy(oldNode, newNode) {
     const { cy } = this.state;
     oldNode.incomers((el) => el.isNode()).map(
-      (neighbor) => cy.add(
-        { group: 'edges', data: { source: neighbor.id(), target: newNode.id() } }));
+      (neighbor) => cy.add({ 
+          group: 'edges', 
+          data: { source: neighbor.id(), target: newNode.id() } 
+      }));
     oldNode.outgoers((el) => el.isNode()).map(
       (neighbor) => cy.add(
-        { group: 'edges', data: { source: newNode.id(), target: neighbor.id() } }));
+        { 
+          group: 'edges', 
+          data: { source: newNode.id(), target: neighbor.id() } 
+        })
+      );
     cy.remove(oldNode.connectedEdges());
   }
 

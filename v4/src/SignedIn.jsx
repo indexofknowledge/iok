@@ -61,7 +61,7 @@ class SignedIn extends Component {
       options,
       graphLoaded: false,
       unableToLoadGraph: false,
-      selectedNode: {}, // XXX: UGLY, should use TS...
+      selectedNode: null,
     };
 
     this.loadGraph = this.loadGraph.bind(this);
