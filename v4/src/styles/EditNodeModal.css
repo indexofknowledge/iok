@@ -1,0 +1,12 @@
+.Modal {
+    color: black;
+}
+
+.btn.btn-info.btn-lg.btn-mod {
+    border-color: #f8be35;
+}
+
+.btn-cancel {
+    border-color: #a9a8a8;
+    background-color: #a9a8a8;
+}

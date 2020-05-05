@@ -85,6 +85,103 @@ class AddNodeModal extends Component {
     this.toggleModal();
   }
 
+  pickedNode = () => {
+    const { nodeType } = this.state;
+    if (nodeType === 0) {
+      return (<p>Pick a node type please</p>);
+    } else {
+      return this.fillInNode();
+    }
+  }
+
+  fillInNode = () => {
+    const { nodeType } = this.state;
+    if (nodeType === 1) {
+      return (
+        <Form.Group>
+          <Form.Label>Topic Name</Form.Label>
+          <Form.Control type="text" placeholder="Bitcoin" onChange={(ev) => this.setState({ topicName: ev.target.value })} />
+        </Form.Group>
+      );
+    } else {
+      return (
+        <Form.Group>
+          <Form.Label>Resource data</Form.Label>
+          <Form.Group>
+            <Form.Check type="radio" name="radioResourceType" label="Description" onClick={() => this.setState({ resourceType: 1, resourceData: {} })} />
+            <Form.Check type="radio" name="radioResourceType" label="Article" onClick={() => this.setState({ resourceType: 2, resourceData: {} })} />
+            <Form.Check type="radio" name="radioResourceType" label="Video" onClick={() => this.setState({ resourceType: 3, resourceData: {} })} />
+            <Form.Check type="radio" name="radioResourceType" label="Paper" onClick={() => this.setState({ resourceType: 4, resourceData: {} })} />
+          </Form.Group>
+          {this.topicOrResource()}
+        </Form.Group>
+      );
+    }
+  }
+
+  topicOrResource = () => {
+    const { resourceType } = this.state;
+    if (resourceType === 0 || resourceType === 1) {
+      return (
+        <div>
+          <Form.Control id="abc" name="abc" type="text" placeholder="Bitcoin is a p2p cash system" onChange={(ev) => this.setState({ resourceData: ev.target.value })} />
+          <Form.Control.Feedback type="invalid">
+            Please provide valid resource data
+          </Form.Control.Feedback>
+          <Form.Text>
+            Resource data can be a description or hyperlink
+          </Form.Text>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Form.Control
+            type="text"
+            placeholder="Bitcoin whitepaper"
+            onChange={(ev) => {
+              const val = ev.target.value; // to save the virtual event
+              this.setState((prevState) => ({
+                resourceData: {
+                  ...prevState.resourceData,
+                  text: val,
+                },
+              }));
+            }}
+          />
+          <Form.Control.Feedback type="invalid">
+            Please provide valid resource link name
+          </Form.Control.Feedback>
+          <Form.Text>
+            Resource link name
+          </Form.Text>
+
+          <Form.Control
+            type="url"
+            placeholder="https://bitcoin.org/bitcoin.pdf"
+            onChange={(ev) => {
+              const val = ev.target.value;
+              this.setState((prevState) => ({
+                resourceData: {
+                  ...prevState.resourceData,
+                  link: val,
+                },
+              }));
+            }}
+          />
+          <Form.Control.Feedback type="invalid">
+            Please provide valid resource link
+          </Form.Control.Feedback>
+          <Form.Text>
+            Resource link URL
+          </Form.Text>
+        </div>
+      );
+    }
+
+  }
+
+
   render() {
     const { isOpen, nodeType, resourceType } = this.state;
     return (
@@ -101,92 +198,7 @@ class AddNodeModal extends Component {
               <Form.Check type="radio" name="radioNodeType" label="Topic" onClick={() => this.setState({ nodeType: 1 })} />
               <Form.Check type="radio" name="radioNodeType" label="Resource" onClick={() => this.setState({ nodeType: 2 })} />
             </Form.Group>
-
-            {/* so lazy */}
-            {
-              nodeType === 0 ? <p>Pick a node type please</p> : (
-                nodeType === 1
-                  ? (
-                    <Form.Group>
-                      <Form.Label>Topic Name</Form.Label>
-                      <Form.Control type="text" placeholder="Bitcoin" onChange={(ev) => this.setState({ topicName: ev.target.value })} />
-                    </Form.Group>
-                  )
-                  : (
-                    <Form.Group>
-                      <Form.Label>Resource data</Form.Label>
-                      <Form.Group>
-                        <Form.Check type="radio" name="radioResourceType" label="Description" onClick={() => this.setState({ resourceType: 1, resourceData: {} })} />
-                        <Form.Check type="radio" name="radioResourceType" label="Article" onClick={() => this.setState({ resourceType: 2, resourceData: {} })} />
-                        <Form.Check type="radio" name="radioResourceType" label="Video" onClick={() => this.setState({ resourceType: 3, resourceData: {} })} />
-                        <Form.Check type="radio" name="radioResourceType" label="Paper" onClick={() => this.setState({ resourceType: 4, resourceData: {} })} />
-                      </Form.Group>
-
-                      {
-                        resourceType === 0 || resourceType === 1
-                          ? (
-                            <div>
-                              <Form.Control id="abc" name="abc" type="text" placeholder="Bitcoin is a p2p cash system" onChange={(ev) => this.setState({ resourceData: ev.target.value })} />
-                              <Form.Control.Feedback type="invalid">
-                                Please provide valid resource data
-                              </Form.Control.Feedback>
-                              <Form.Text>
-                                Resource data can be a description or hyperlink
-                              </Form.Text>
-                            </div>
-                          )
-                          : (
-                            <div>
-                              <Form.Control
-                                type="text"
-                                placeholder="Bitcoin whitepaper"
-                                onChange={(ev) => {
-                                  const val = ev.target.value; // to save the virtual event
-                                  this.setState((prevState) => ({
-                                    resourceData: {
-                                      ...prevState.resourceData,
-                                      text: val,
-                                    },
-                                  }));
-                                }}
-                              />
-                              <Form.Control.Feedback type="invalid">
-                                Please provide valid resource link name
-                              </Form.Control.Feedback>
-                              <Form.Text>
-                                Resource link name
-                              </Form.Text>
-
-                              <Form.Control
-                                type="url"
-                                placeholder="https://bitcoin.org/bitcoin.pdf"
-                                onChange={(ev) => {
-                                  const val = ev.target.value;
-                                  this.setState((prevState) => ({
-                                    resourceData: {
-                                      ...prevState.resourceData,
-                                      link: val,
-                                    },
-                                  }));
-                                }}
-                              />
-                              <Form.Control.Feedback type="invalid">
-                                Please provide valid resource link
-                              </Form.Control.Feedback>
-                              <Form.Text>
-                                Resource link URL
-                              </Form.Text>
-                            </div>
-                          )
-                      }
-
-
-                    </Form.Group>
-                  )
-
-              )
-            }
-
+            {this.pickedNode()}
           </Modal.Body>
 
           <Modal.Footer>
