@@ -13,13 +13,11 @@ import './styles/EditNodeModal.css';
 class EditNodeModal extends Component {
   constructor(props) {
     super(props);
-    const { addNode, node } = this.props;
+    const { addNode } = this.props;
 
     this.state = {
       isOpen: false,
-      topicName: (node ? node.data('name') : ''),
-      resourceType: (node ? node.data('resource_type') : 0),
-      resourceData: (node ? node.data('data') : {}),
+      ...this.setStateFromNode(),
     };
 
     this.addNode = addNode;
@@ -28,9 +26,15 @@ class EditNodeModal extends Component {
     this.handleOpen = this.handleOpen.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setResourceType = this.setResourceType.bind(this);
+  }
 
-    this.topicOrResource = this.topicOrResource.bind(this);
-    this.descOrLink = this.descOrLink.bind(this);
+  setStateFromNode() {
+    const { node } = this.props;
+    return ({
+      topicName: (node ? node.data('name') : ''),
+      resourceType: (node ? node.data('resource_type') : 0),
+      resourceData: (node ? node.data('data') : {}),
+    });
   }
 
   setResourceType(resourceType) {
@@ -43,12 +47,9 @@ class EditNodeModal extends Component {
   }
 
   handleOpen() {
-    const { node } = this.props;
     this.setState({ // make it default again
       isOpen: true,
-      topicName: (node ? node.data('name') : ''),
-      resourceType: (node ? node.data('resource_type') : 0),
-      resourceData: (node ? node.data('data') : {}),
+      ...this.setStateFromNode(),
     });
   }
 
