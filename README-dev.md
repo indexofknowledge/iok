@@ -1,32 +1,28 @@
 # Index of Knowledge (IoK)
 
-Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency. Currently working to support graph visualization and awesome-list clients.
-
-Previous iterations of the IoK failed in part due to centralization of control. Sounds like a good use of blockchain :thonk:, at least to a certain extent. 
+This is a general overview of each of the modules. READMEs in their respective folders should be more up-to-date.
 
 ## Project structure
 
-Description of folders and the projects they contain. Most will have their own READMEs.
+Description of folders and the projects they contain. In general, it's somewhat of a mono repo, where each directory in root contains code, config, and env to build each module. Root contains general deployment configs and scripts.
 
 ### `v4`
 
-The `v4` folder contains a ReactJS app that uses Blockstack to allow users to create, view, and share others' own IoKs. For example, the link below allows you to see my personal IoK from a guest mode:
-
-https://index-of-knowledge.firebaseapp.com/?guest=true&loaduser=rustielin.id.blockstack
-
-Currently, you can create and share your own IoKs, as well as copy other public IoKs as an authenticated user. As a guest, you can view all public IoKs and add nodes/edges, but none of your changes will persist (naturally).
-
-### `legacy` 
-
-This contains the old IoK client using CommonJS and Cytoscape. Storage happens on GitHub. There was also a mechanism for taking IoK data and linearizing it to programatically generate the README, in the format of an awesome-list. 
-
-Mostly deprecated, but there's some bits we can salvage into v4. 
+The `v4` folder contains a ReactJS app that allow users to create, view, and share IoKs. It uses an adjacency list graph as its main source of truth, fetched from some storage backend (e.g. Blockstack, IPFS, local file, etc.) and populates an interactive graph using CytoscapeJS.
 
 ### `scraper`
 
-This contains an experimental webscraper based off of puppeteer that waits for the react app in `v4` to fully render before collecting graph data to JSON. We can then use some of our old scripts from `legacy` retrofitted to regenerate our other static clients.
+This contains an old experimental webscraper based off of puppeteer that scrapes IoK graph data from the web. It also contains retrofitted scripts from `legacy` that linearize the scraped graph data into an awesome-list.
 
-Still need some testing to see how well puppeteer works on gcp (e.g. cloud functions) but this beats running our own gaia node and setting up watchman etc.
+### `md-scraper`
 
+Handy webscraper that turns statically hosted markdown files (e.g. awesome-lists on GitHub) into our graph representation. It infers dependency greedily based on heading and text hierarchy.
 
+### `funcs`
+
+Cloud functions that we use primarily to interface with our various storage backends.
+
+### `legacy` 
+
+This contains the old IoK client using CommonJS and Cytoscape. Storage happens on GitHub. There was also a mechanism for taking IoK data and linearizing it to programatically generate the README, in the format of an awesome-list. Mostly deprecated, but there's some bits we can salvage. 
 

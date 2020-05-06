@@ -3,11 +3,6 @@
 # Simple script to scrape the given blockstack app URL, fully render, grab the json, and linearize it
 #
 
-case "$DEPLOY_TARGET" in
-    prod) export SCRAPE_APP='https://index-of-knowledge.firebaseapp.com/?loaduser=rustielin.id.blockstack&guest=true' ;;
-    beta) export SCRAPE_APP='https://index-of-knowledge-beta.firebaseapp.com/?loaduser=rustielin.id.blockstack&guest=true' ;;
-    *) exit ;;
-esac
 
 export GRAPH_FILE='graph.json'
 export TEMP='.temp'
@@ -39,6 +34,12 @@ while getopts 'fvh' flag; do
         h) print_usage ;;
     esac
 done
+
+case "$DEPLOY_TARGET" in
+    prod) export SCRAPE_APP='https://index-of-knowledge.firebaseapp.com/?loaduser=rustielin.id.blockstack&guest=true' ;;
+    beta) export SCRAPE_APP='https://index-of-knowledge-beta.firebaseapp.com/?loaduser=rustielin.id.blockstack&guest=true' ;;
+    *) exit ;;
+esac
 
 if [[ -z $file ]] 
 then 

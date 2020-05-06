@@ -1,82 +1,33 @@
 # IoK Client v4
 
-This is a hacky ReactJS app that uses cytoscape and Blockstack. You can either use it as a guest or login with your Blockstack ID, but it must have a username!
+This is a hacky ReactJS app that fetches IoK data from a storage backend and allows manipulation via [CytoscapeJS](https://js.cytoscape.org/) graph visualization library.
 
-Currently, a live version (not necessarily up-to-date) is hosted on Firebase:
+## Frontend
 
-https://index-of-knowledge.firebaseapp.com/
+Feature smainly a nav bar and a vertical split-screen main panel. Nav bar, `NavBar.jsx`, displays some metadata about the storage configuration (e.g. Blockstack ID/loaduser, IPFS hash, toggles). For legacy reasons, most of the app is in `SignedIn.jsx`. This renders after query params for storage backends are parsed and handled.
 
-To start as a dev, simply run the standard `npm install` and `npm run start` to launch in dev mode. Some auto-generated React docs below...
+A quick rundown of some notable files/directories:
 
-We also provide two storage backends: Blockstack via Gaia, and IPFS via Pinata. Configuration will vary.
+* `constants.js` contains some configurations and default IoK to be loaded from file
+* `listen.js` contains listeners for the cytoscape graph for adding nodes and edges
+* `log.js` allows us to use the console log to debug, but hide it from production
+* `types.js` contains some basic types. This needs to be more flushed out or we can migrate to TypeScript.
+* `storage` contains our storage backends
 
-## old stuff below
+## Storage Backends
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+We currently support both Blockstack and IPFS storage backends. Basic operations are `load` and `save`. On the web client, we parse query params for storage and storage options.
 
-### Available Scripts
+### Blockstack
 
-In the project directory, you can run:
+Usage of Blockstack storage backend is specified by `storage=blockstack` in query params. Blockstack can be used with and without authentication, with `guest=true`. `loaduser` param tells the client where to load IoK data from. All data is stored unencrypted so it's a simple query from the Blockstack SDK.
 
-#### `npm start`
+### IPFS
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Usage of IPFS storage backend is specified by `storage=ipfs` in query params. We don't need authentication for IPFS. To load data from IPFS, we can simply fetch from the IPFS official gateway: `ipfs.io/ipfs/<hash>`. We expect the `hash` query param for this client. To save data, we POST our current graph to one of our cloud functions that pins that file.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Dev Setup
 
-#### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-#### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-#### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-### Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-#### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-#### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-#### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-#### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-#### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-#### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+* `npm install` and `npm run start` to launch in dev mode
+* `npm run build` to make a production build
+* `npm run lint` to lint using ESlint
