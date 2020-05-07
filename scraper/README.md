@@ -11,11 +11,11 @@ Since Blockstack (and by extension its storage system, Gaia) is designed to have
 npm install
 
 # using a venv
-venv venv
+python3 -m venv venv
 source venv/bin/activate
 
 # install everything
-pip install requirements.txt
+pip install -r requirements.txt
 
 # then you can try scraping
 ./scrape-awesome.sh
