@@ -10,6 +10,9 @@
         ],
         "prod": [
           "index-of-knowledge"
+        ],
+        "susan": [
+          "iok-susan"
         ]
       }
     }
