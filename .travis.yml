@@ -6,30 +6,24 @@ node_js:
 stages:
 - name: deploy-v4
   if: branch = master AND sender != "Travis CI" AND type IN (push)
-- name: deploy-v4-beta
+- name: compile-v4
   if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
-- name: deploy-scraper
-  if: branch = master AND sender != "Travis CI" AND type IN (push)
-- name: deploy-scraper-beta
-  if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
+- name: scrape-awesome
+  if: branch = master AND sender != "Travis CI" AND type IN (cron)
 jobs:
   include:
     - stage: deploy-v4
       env:
         - DEPLOY_TARGET=prod
       script: "./compile_v4.sh && ./deploy_v4.sh"
-    - stage: deploy-v4-beta
+    - stage: compile-v4
       env:
         - DEPLOY_TARGET=beta
-      script: "./compile_v4.sh && ./deploy_v4.sh"
-    - stage: deploy-scraper
+      script: "./compile_v4.sh"
+    - stage: scrape-awesome
       env:
         - DEPLOY_TARGET=prod
       script: "./deploy_scraper.sh && ./push.sh"
-    - stage: deploy-scraper-beta
-      env:
-        - DEPLOY_TARGET=beta
-      script: "./deploy_scraper.sh"
       
 env:
   global:
