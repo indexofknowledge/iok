@@ -4,14 +4,20 @@ language: node_js
 node_js:
 - '13'
 stages:
-- name: deploy-v4
+- name: deploy-v4-beta
   if: branch = master AND sender != "Travis CI" AND type IN (push)
+- name: deploy-v4
+  if: branch = master AND sender != "Travis CI" AND type in (cron)
 - name: compile-v4
   if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
 - name: scrape-awesome
   if: branch = master AND sender != "Travis CI" AND type IN (cron)
 jobs:
   include:
+    - stage: deploy-v4-beta
+      env:
+        - DEPLOY_TARGET=beta
+      script: "./compile_v4.sh && ./deploy_v4.sh"
     - stage: deploy-v4
       env:
         - DEPLOY_TARGET=prod
