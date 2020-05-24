@@ -7,11 +7,11 @@ stages:
 - name: deploy-v4-beta
   if: branch = master AND sender != "Travis CI" AND type IN (push)
 - name: deploy-v4
-  if: branch = master AND sender != "Travis CI" AND type in (cron)
+  if: branch = master AND type in (cron)
 - name: compile-v4
   if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
 - name: scrape-awesome
-  if: branch = master AND sender != "Travis CI" AND type IN (cron)
+  if: branch = master AND type IN (cron)
 jobs:
   include:
     - stage: deploy-v4-beta
