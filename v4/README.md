@@ -31,3 +31,11 @@ Usage of IPFS storage backend is specified by `storage=ipfs` in query params. We
 * `npm install` and `npm run start` to launch in dev mode
 * `npm run build` to make a production build
 * `npm run lint` to lint using ESlint
+
+## Firebase
+
+An easy way to get started deploying is with Firebase Hosting. We use a Firebase Hosting [multi-site setup](https://firebase.google.com/docs/hosting/multisites) as seen in `firebase.json`. This allows us to deploy to various hosting targets depending on the type of build, e.g. `firebase deploy --project index-of-knowledge --only hosting:susan`. Once your Firebase project is registered with your email, and you have CLI properly configured and authenticated, it needs to be added as a target in our `firebase.json` and `.firebaserc` to be tracked. You may also need to be added to the parent `index-of-knowledge` Firebase project we use to host our prod builds.
+
+Since we don't have many unit tests, and no one has the time to write any of them, we can do a minimal amount of QA before wrecking anything by hosting a personal build such as on https://iok-susan.web.app/ and linking that in your PR. Then reviewers can do a mini-bug bash to make sure that the added features work and that nothing too terrible has broken. :)
+
+
