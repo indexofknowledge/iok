@@ -16,15 +16,18 @@ DESCRIPTION = "The Decentralized Index of Knowledge (DIoK) is a curated collecti
 
 TRAVIS = '[![Build Status](https://travis-ci.com/rustielin/iok.svg?branch=master)](https://travis-ci.com/rustielin/iok)'
 
+
 class NodeType(IntEnum):
     TOPIC = 1
     RESOURCE = 2
+
 
 class ResourceType(IntEnum):
     DESCRIPTION = 1
     ARTICLE = 2
     VIDEO = 3
     PAPER = 4
+
 
 LINK_TYPES = [ResourceType.ARTICLE, ResourceType.VIDEO, ResourceType.PAPER]
 
@@ -35,25 +38,28 @@ RESOURCE_HEADINGS = {
     ResourceType.PAPER: 'Papers'
 }
 
+
 class KnowledgeGraph:
 
-    def __init__(self, filename, debug=False):
-        logging.info("Trying to read graph from {}".format(filename))
-        self.graph = nx.DiGraph()
-        self.read_from_file(filename)
+    def __init__(self, filename="", obj={}, debug=False):
+        if filename:
+            logging.info(f"Trying to read graph from file {filename}")
+            self.graph = nx.DiGraph()
+            self.read_from_file(filename)
+        elif obj:
+            logging.info("Trying to read graph from obj")
+            self.graph = nx.DiGraph()
+            self.read_from_json_obj(obj)
         # create new one if not
-
 
     def write_graph(self, filename):
         """For debugging mostly, write graph to png"""
         nx.draw(self.graph, with_labels=True)
         plt.savefig(filename)
 
-
-    def read_from_file(self, filename):
-        """Reads graph from JSON file in data link format"""
-        with open(filename, 'r') as f:
-            elements = json.load(f)
+    def read_from_json_obj(self, obj):
+        """Reads graph from JSON object"""
+        elements = obj['elements']
         nodes = elements['nodes']
         edges = elements['edges']
         for node in nodes:
@@ -68,14 +74,20 @@ class KnowledgeGraph:
             if 'name' in dat:
                 name = dat['name']
 
-            self.add_knowledge_node(dat['id'], NodeType(dat['node_type']), name=name, data=data, resource_type=resource_type)
+            self.add_knowledge_node(dat['id'], NodeType(
+                dat['node_type']), name=name, data=data, resource_type=resource_type)
 
         for edge in edges:
             dat = edge['data']
             self.graph.add_edge(dat['source'], dat['target'])
 
+    def read_from_file(self, filename):
+        """Reads graph from JSON file in data link format"""
+        with open(filename, 'r') as f:
+            elements = json.load(f)
+            self.read_from_json_obj(elements)
 
-    def add_knowledge_node(self, id: str, node_type: NodeType, name=None, data=None, resource_type: ResourceType=None):
+    def add_knowledge_node(self, id: str, node_type: NodeType, name=None, data=None, resource_type: ResourceType = None):
         self.graph.add_node(id)
         node = self.graph.nodes[id]
         node['node_type'] = node_type
@@ -85,7 +97,6 @@ class KnowledgeGraph:
             node['data'] = data
         if name:
             node['name'] = name
-
 
     def get_graph(self):
         return self.graph
@@ -104,7 +115,7 @@ class AwesomeClient():
         for id in list(reversed(list(nx.topological_sort(self.knowledge.graph)))):
             node = self.knowledge.graph.nodes[id]
             name = node['name']
-            if node['node_type'] == NodeType.TOPIC: # if sorted, topics always before resources
+            if node['node_type'] == NodeType.TOPIC:  # if sorted, topics always before resources
                 dic[name] = {'name': name}  # XXX: a placeholder
                 dic[name][ResourceType.PAPER] = []
                 dic[name][ResourceType.VIDEO] = []
@@ -134,7 +145,6 @@ class AwesomeClient():
                     elif t == ResourceType.DESCRIPTION:
                         dic[parent][ResourceType.DESCRIPTION].append(dat)
                         logging.debug("Adding description")
-
 
         self.mindmap = dic
         return dic
