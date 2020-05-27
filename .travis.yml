@@ -2,16 +2,18 @@ sudo: required
 dist: xenial
 language: node_js
 node_js:
-- '13'
+  - "13"
 stages:
-- name: deploy-v4-beta
-  if: branch = master AND sender != "Travis CI" AND type IN (push)
-- name: deploy-v4
-  if: branch = master AND type in (cron)
-- name: compile-v4
-  if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
-- name: scrape-awesome
-  if: branch = master AND type IN (cron)
+  - name: deploy-v4-beta
+    if: branch = master AND sender != "Travis CI" AND type IN (push)
+  - name: deploy-v4
+    if: branch = master AND type in (cron)
+  - name: compile-v4
+    if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
+  - name: build-and-test-scraper
+    if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
+  - name: scrape-awesome
+    if: branch = master AND type IN (cron)
 jobs:
   include:
     - stage: deploy-v4-beta
@@ -27,12 +29,18 @@ jobs:
         - DEPLOY_TARGET=beta
       script: "./compile_v4.sh"
     - stage: scrape-awesome
+      language: python
+      python: 3.7
       env:
         - DEPLOY_TARGET=prod
       script: "./deploy_scraper.sh && ./push.sh"
-      
+    - stage: build-and-test-scraper
+      language: python
+      python: 3.7
+      script: "./build_and_test_scraper.sh"
+
 env:
   global:
-  - secure: j1fo43+OeLz+r5CHowIx8ifPswJJquWCAhzeyUqQWEIzR9DW4E/VUjZZiI1UYnghpINan3qm6k2GCNxJ6Rn4Cu74bWEsIkp8/Pa/DDzyKoTwHquTsexdZ1nP+ixXcrOueEQ2p5gVyQt2joxIoNN9wjx5OZ5Oit+psGdLRH3cNg36hDRisXwaMg6VNvsGRH33/R6/dMeZHQpF5nd79wZQh8e9Bo4ieAG5Mikrtgycv2mSxzoY3zVxTXXwFwHMZKTD2i0n3sozkv7ymynDvuPg+JGrXsnR/03KafK6FkCOPeoCUCHBxsOoqo+MSBRUA9wexTw0dzUVv6oz+P4nEcRmPY8fzt9H0FSXB9gv4nlCjXIoccuuyTJspFI+ecMxAIcfOP7+xF5JuchMpEEw+fxSLtQmiPRnN2moHkp13GGcnaNt1LzYcnRu6TfoV6fxrd7G1msB3J46+n4vVtUjZfHjPrv0yhLeNBiMKew+NpZqYprHYMcmcBH6tH0AP53RYiwypqmYeKVAqEZ1ZmdGMq46xA3uSvnELvV5+xYuJGvF5tW6+sLoUizRRDEm+sXFfCKixFYCbm6JP1MIy1l+FX42yw1Itk782mExQpCNBX3sLrhDNd5xvtdWelQPT+KnW/axqstFh6BOm7Y62UGagwqVTSnF037JXThJ041TjKMtN2Y=
-  # firebase
-  - secure: g1W2hrdIQBpgKEtSzansQdh3ha5L5eLFVstOauNFqf5r8olfzxCewI5ys1tZvfGmZZCY013/PPhmKzNLCPsZUiYHU5BRVzLWigCBHSHAbvtmYwr8dLnzbGWQOeBZ1CGm9oddNIHxTTMlbfwufW9i7dZziNDuFdyrJ9C9KgfFCRg4l4W0IjgBkWwqIr+2VnPcag4SkIRWV/UrDRzGe9bjgbZIjMPPN7KLtH/Swg3QQOIh+IY4HwIki7Ue1TCg2EjERxWqrfVUY+//68Lwyy7NwzGWIrhXwvH7RltxC0s+7fyZfypZFnSu/YicZke6hniAbNEN/xiuFtfxfbNgC0qslOmBE/x6LZuedcwkJEiU+LbZcnQEkcLcmIKhoa+yV83qhxFNACkw4dqLCWbcKDYdFK86E2L3tNHOZHM72wo1AaLx9+OGE47xUv0Ld2G4JiWKyyLgFTpn2HkZt7sAlZfnOkMxAx5G7Mq2vSFXjstjSD/Yg+uDd/v0WDDaU6N4y4R4DhxJgt3khTK8HaglvVg8uNqGgbT3w1xcYj2FZ9JvZaLr9wnM9N/ovXxUJ9zosLcZFC1ZBv61uTzsJ03mtaQr1qZFw3lt5nVDSy/If8eKfI7d5CO5aCcUgLc2+8aHnErelb2NLIsTLgMhqhmUpyXN0t5cQxVJNcEjUEP6OESqEGc=
+    - secure: j1fo43+OeLz+r5CHowIx8ifPswJJquWCAhzeyUqQWEIzR9DW4E/VUjZZiI1UYnghpINan3qm6k2GCNxJ6Rn4Cu74bWEsIkp8/Pa/DDzyKoTwHquTsexdZ1nP+ixXcrOueEQ2p5gVyQt2joxIoNN9wjx5OZ5Oit+psGdLRH3cNg36hDRisXwaMg6VNvsGRH33/R6/dMeZHQpF5nd79wZQh8e9Bo4ieAG5Mikrtgycv2mSxzoY3zVxTXXwFwHMZKTD2i0n3sozkv7ymynDvuPg+JGrXsnR/03KafK6FkCOPeoCUCHBxsOoqo+MSBRUA9wexTw0dzUVv6oz+P4nEcRmPY8fzt9H0FSXB9gv4nlCjXIoccuuyTJspFI+ecMxAIcfOP7+xF5JuchMpEEw+fxSLtQmiPRnN2moHkp13GGcnaNt1LzYcnRu6TfoV6fxrd7G1msB3J46+n4vVtUjZfHjPrv0yhLeNBiMKew+NpZqYprHYMcmcBH6tH0AP53RYiwypqmYeKVAqEZ1ZmdGMq46xA3uSvnELvV5+xYuJGvF5tW6+sLoUizRRDEm+sXFfCKixFYCbm6JP1MIy1l+FX42yw1Itk782mExQpCNBX3sLrhDNd5xvtdWelQPT+KnW/axqstFh6BOm7Y62UGagwqVTSnF037JXThJ041TjKMtN2Y=
+    # firebase
+    - secure: g1W2hrdIQBpgKEtSzansQdh3ha5L5eLFVstOauNFqf5r8olfzxCewI5ys1tZvfGmZZCY013/PPhmKzNLCPsZUiYHU5BRVzLWigCBHSHAbvtmYwr8dLnzbGWQOeBZ1CGm9oddNIHxTTMlbfwufW9i7dZziNDuFdyrJ9C9KgfFCRg4l4W0IjgBkWwqIr+2VnPcag4SkIRWV/UrDRzGe9bjgbZIjMPPN7KLtH/Swg3QQOIh+IY4HwIki7Ue1TCg2EjERxWqrfVUY+//68Lwyy7NwzGWIrhXwvH7RltxC0s+7fyZfypZFnSu/YicZke6hniAbNEN/xiuFtfxfbNgC0qslOmBE/x6LZuedcwkJEiU+LbZcnQEkcLcmIKhoa+yV83qhxFNACkw4dqLCWbcKDYdFK86E2L3tNHOZHM72wo1AaLx9+OGE47xUv0Ld2G4JiWKyyLgFTpn2HkZt7sAlZfnOkMxAx5G7Mq2vSFXjstjSD/Yg+uDd/v0WDDaU6N4y4R4DhxJgt3khTK8HaglvVg8uNqGgbT3w1xcYj2FZ9JvZaLr9wnM9N/ovXxUJ9zosLcZFC1ZBv61uTzsJ03mtaQr1qZFw3lt5nVDSy/If8eKfI7d5CO5aCcUgLc2+8aHnErelb2NLIsTLgMhqhmUpyXN0t5cQxVJNcEjUEP6OESqEGc=
