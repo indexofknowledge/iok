@@ -5,6 +5,8 @@ graph_output.log*
 __pycache__/
 venv/
 .DS_store
+.eggs
+*.egg-info
 
 node_modules
 
