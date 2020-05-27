@@ -3,7 +3,7 @@
 import requests
 import argparse
 import sys
-from iok import KnowledgeGraph, AwesomeClient
+from iok.meta import KnowledgeGraph, AwesomeClient
 
 
 parser = argparse.ArgumentParser()

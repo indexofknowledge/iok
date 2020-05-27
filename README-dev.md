@@ -10,11 +10,19 @@ Description of folders and the projects they contain. In general, it's somewhat 
 
 The `v4` folder contains a ReactJS app that allow users to create, view, and share IoKs. It uses an adjacency list graph as its main source of truth, fetched from some storage backend (e.g. Blockstack, IPFS, local file, etc.) and populates an interactive graph using CytoscapeJS.
 
-### `scraper`
+### `src`
+
+Contains various python util modules. To build, you'll need `pipenv`, and then `./build.sh`.
+
+#### `iok`
+
+The main utils that put data into meta representations in graph and awesomelist-client.
+
+#### `scraper`
 
 This contains an old experimental webscraper based off of puppeteer that scrapes IoK graph data from the web. It also contains retrofitted scripts from `legacy` that linearize the scraped graph data into an awesome-list.
 
-### `md-scraper`
+#### `mdscraper`
 
 Handy webscraper that turns statically hosted markdown files (e.g. awesome-lists on GitHub) into our graph representation. It infers dependency greedily based on heading and text hierarchy.
 
