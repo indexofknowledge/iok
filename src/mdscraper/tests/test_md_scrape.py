@@ -1,9 +1,7 @@
-# pyre-strict
-
 from ..md_scrape import cmp_hierarchy, Scope
 
 
-def test_cmp_hierarchy():
+def test_cmp_hierarchy() -> None:
     s1, s2 = r"^[A-Za-z]", r"^###"
     ret = cmp_hierarchy(s1, s2)
     assert ret < 0
@@ -19,7 +17,7 @@ def test_cmp_hierarchy():
         pass
 
 
-def test_scope():
+def test_scope() -> None:
     scope = Scope(r"^###", "### Bitcoin")
     assert scope.get_name() == "Bitcoin"
 
