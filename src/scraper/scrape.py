@@ -7,9 +7,11 @@ from iok.meta import KnowledgeGraph, AwesomeClient
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--link", type=str, required=True, help="Link to IoK JSON graph file")
+parser.add_argument(
+    "--link", type=str, required=True, help="Link to IoK JSON graph file"
+)
 parser.add_argument("--out", type=str, required=True, help="Path of the output file")
-parser.add_argument('--debug', action='store_true')
+parser.add_argument("--debug", action="store_true")
 
 args = parser.parse_args()
 

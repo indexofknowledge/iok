@@ -20,6 +20,7 @@ HIERARCHY = [r"^[*-]", r"^[A-Za-z]", r"^###", r"^##", r"^#"]
 TOPICS = {r"^#", r"^##", r"^###"}
 RESOURCES = {r"^[A-Za-z]", r"^[*-]"}
 
+
 class Scope:
     def __init__(self, match: str, line: str):
         self.match = match
@@ -48,7 +49,7 @@ class Scope:
         # don't want to remove the first char of a description :)
         cleaned_line = line
         if match != r"^[A-Za-z]":
-            cleaned_line = re.sub(match, '', line).strip()
+            cleaned_line = re.sub(match, "", line).strip()
         if match in TOPICS:
             dat = {"name": cleaned_line, "node_type": 1}
         elif match in RESOURCES:
@@ -57,14 +58,22 @@ class Scope:
                 text, link = link_if_link
                 # TODO: borrow enums from scraper/iok.py, into utils module
                 # TODO: do something about not inferring resource_type 2 for links...
-                dat = {"data": {"text": text, "link": link}, "node_type": 2, "resource_type": 2}
+                dat = {
+                    "data": {"text": text, "link": link},
+                    "node_type": 2,
+                    "resource_type": 2,
+                }
             else:
-                dat = {"data": {"text": cleaned_line, "link": ""}, "node_type": 2, "resource_type": 1}
+                dat = {
+                    "data": {"text": cleaned_line, "link": ""},
+                    "node_type": 2,
+                    "resource_type": 1,
+                }
 
-        dats = json.dumps(dat).encode('utf-8')
+        dats = json.dumps(dat).encode("utf-8")
         dat["id"] = sha256(dats).hexdigest()
         if "name" not in dat:
-            dat["name"] = 'res-' + dat["id"][:10]
+            dat["name"] = "res-" + dat["id"][:10]
         return {"data": dat}
 
 
@@ -96,6 +105,7 @@ def match_hierarchy(line: str) -> str:
         if x:
             return h
     return ""
+
 
 def update_scopes(match: str, line: str, scopes: list, graph: nx.DiGraph) -> list:
     """
@@ -156,7 +166,7 @@ def main(link: str) -> nx.DiGraph:
     f = requests.get(link)
     text = f.text
     textlines = text.splitlines()
-    
+
     scopes = []
     graph = nx.DiGraph()
     for line in textlines:
@@ -165,11 +175,14 @@ def main(link: str) -> nx.DiGraph:
 
     return graph
 
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Missing link argument")
         print("Expected: md_scrape <raw md link>")
-        print("Example: md_scrape https://raw.githubusercontent.com/rustielin/iok/master/README.md")
+        print(
+            "Example: md_scrape https://raw.githubusercontent.com/rustielin/iok/master/README.md"
+        )
         exit(1)
 
     link = sys.argv[1]
@@ -189,5 +202,5 @@ if __name__ == "__main__":
         x["data"]["id"] = uuid.uuid1().hex
         del x["source"]
         del x["target"]
-    with open(JSON_FILE, 'w') as f:
-        json.dump(dat, f)    
+    with open(JSON_FILE, "w") as f:
+        json.dump(dat, f)

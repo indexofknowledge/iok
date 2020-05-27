@@ -3,7 +3,7 @@
 from iok import AwesomeClient, KnowledgeGraph, NodeType, ResourceType
 
 # adds a contribution to README.md with the proper format
-try: 
+try:
     g = KnowledgeGraph()
 except:
     raise Exception("Failed to load existing graph from file")
@@ -29,7 +29,9 @@ elif node_type == NodeType.RESOURCE:
     resource_type = -1
     while resource_type not in ResourceType.__members__.values():
         try:
-            resource_type = int(input("ResourceType? DESCRIPTION (1) ARTICLE (2) VIDEO (3) PAPER (4)"))
+            resource_type = int(
+                input("ResourceType? DESCRIPTION (1) ARTICLE (2) VIDEO (3) PAPER (4)")
+            )
         except:
             print("Please give me an int :(")
 
@@ -53,7 +55,3 @@ g.write_graph()
 a = AwesomeClient(g)
 a.build_map()
 a.write_to_file()
-
-
-
-
