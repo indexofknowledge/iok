@@ -5,14 +5,3 @@ This directory holds some source files for scraping graph data and generating an
 ```
 python3 scrape.py --link $SCRAPE_LINK --out ../README.md
 ```
-## Dev
-
-```
-# using a venv
-venv venv
-source venv/bin/activate
-
-python3 install -r requirements.txt
-
-python3 scrape.py --link $SCRAPE_LINK --out ../README.md
-```

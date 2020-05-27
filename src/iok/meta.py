@@ -7,36 +7,10 @@ import re
 import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.readwrite import json_graph
-from enum import IntEnum
 # from logging import logging
 import logging
-
-# TODO: make this multiline nicer
-DESCRIPTION = "The Decentralized Index of Knowledge (DIoK) is a curated collection of resources for blockchain, grouped by topic and ordered by pedagogical dependency. We store data as a graph, allowing programmatic creation of front-ends such as interactive graph visualizations as well as awesome-lists."
-
-TRAVIS = '[![Build Status](https://travis-ci.com/rustielin/iok.svg?branch=master)](https://travis-ci.com/rustielin/iok)'
-
-
-class NodeType(IntEnum):
-    TOPIC = 1
-    RESOURCE = 2
-
-
-class ResourceType(IntEnum):
-    DESCRIPTION = 1
-    ARTICLE = 2
-    VIDEO = 3
-    PAPER = 4
-
-
-LINK_TYPES = [ResourceType.ARTICLE, ResourceType.VIDEO, ResourceType.PAPER]
-
-RESOURCE_HEADINGS = {
-    ResourceType.DESCRIPTION: 'Description',
-    ResourceType.ARTICLE: 'Articles',
-    ResourceType.VIDEO: 'Videos',
-    ResourceType.PAPER: 'Papers'
-}
+from .types import NodeType, ResourceType, RESOURCE_HEADINGS, LINK_TYPES
+from .constants import DESCRIPTION, TRAVIS
 
 
 class KnowledgeGraph:

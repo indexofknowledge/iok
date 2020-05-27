@@ -38,17 +38,3 @@ Since READMEs and awesome-lists have no native notion of dependency, we greedily
 
     """
 ```
-
-## Dev setup
-
-```
-# using a venv
-virtualenv venv
-source venv/bin/activate
-
-# install everything
-pip install -r requirements.txt
-
-# then we can try scraping
-python3 md_scrape.py https://raw.githubusercontent.com/sindresorhus/awesome/master/readme.md
-```
