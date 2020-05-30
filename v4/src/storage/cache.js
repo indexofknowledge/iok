@@ -30,6 +30,8 @@ export const loadCache = (onError) => {
         const options = JSON.parse(storedOptions);
         Log.info(TAG, 'Got from graph from localstorage');
         Log.info(TAG, graph);
+        Log.info(TAG, storage);
+        Log.info(TAG, options);
         return { graph, storage, options };
       }
       onError('cached graph is empty, skipping');
