@@ -24,6 +24,7 @@ import {
 import Log from './log';
 import { loadBlockstackGraph, saveBlockstackGraph } from './storage/blockstack';
 import { loadIPFSGraph, saveIPFSGraph } from './storage/ipfs';
+import { loadCache, saveCache, wipeCache } from './storage/cache';
 import './styles/SignedIn.css';
 
 import {
@@ -62,6 +63,7 @@ class SignedIn extends Component {
       graphLoaded: false,
       unableToLoadGraph: false,
       selectedNode: null,
+      timerID: 0,
     };
 
     this.loadGraph = this.loadGraph.bind(this);
@@ -74,43 +76,50 @@ class SignedIn extends Component {
     this.loadGraphFromFile = this.loadGraphFromFile.bind(this);
     this.onSuccessLoadGraph = this.onSuccessLoadGraph.bind(this);
     this.onErrorLoadGraph = this.onErrorLoadGraph.bind(this);
+    this.periodicallySaveCache = this.periodicallySaveCache.bind(this);
   }
 
   // since we're creating the cytoscape div in this component,
   // only create the cy instance (and load data into it) after
   // we've rendered
   componentDidMount() {
-    this.setState(
-      {
-        cy: Cytoscape({
-          container: document.getElementById('cy'),
-          layout: {
-            name: 'dagre',
-            animate: true,
-          },
-          style: DEFL_GRAPH_STYLE,
-        }),
+    const cy = Cytoscape({
+      container: document.getElementById('cy'),
+      layout: {
+        name: 'dagre',
+        animate: true,
       },
-      () => {
-        const { cy } = this.state;
-        registerNodeTap(cy, (node) => {
-          this.setState({ selectedNode: node });
-        });
-        registerEdgeHandles(cy);
-      },
-    ); // trace...
-    this.loadGraph();
+      style: DEFL_GRAPH_STYLE,
+    });
+    this.setState({ cy }, () => {
+      registerNodeTap(cy, (node) => {
+        this.setState({ selectedNode: node });
+      });
+      registerEdgeHandles(cy);
+      this.loadGraph();
+
+      // autosave every second
+      // to prevent interleaving interval calls, keep the timerID in state
+      // and clear it before setting a new interval
+      const { timerID } = this.state;
+      clearInterval(timerID);
+      const newTimerID = setInterval(this.periodicallySaveCache, 1000);
+      this.setState({ timerID: newTimerID });
+    });
   }
 
   onSuccessLoadGraph(jsonGraph) {
+    const { cy, storage, options } = this.state;
     Log.info(jsonGraph);
-    const { cy } = this.state;
     Log.info(cy);
     cy.json(jsonGraph); // edit local cy in place
     Log.info('Cy currently size', cy.elements().length);
     regroupCy(cy, false);
     regroupCy(cy);
     this.setState({ graphLoaded: true });
+
+    // save it to cache too
+    saveCache(jsonGraph, storage, options);
   }
 
   onErrorLoadGraph(e) {
@@ -122,6 +131,12 @@ class SignedIn extends Component {
     });
   }
 
+  periodicallySaveCache() {
+    const { cy, storage, options } = this.state;
+    const graph = getExportableJson(cy);
+    saveCache(graph, storage, options);
+  }
+
   // this is important since we want to re-render each time the user changes
   changeLoadUser(newUser) {
     const { options } = this.state;
@@ -129,10 +144,29 @@ class SignedIn extends Component {
   }
 
   /**
-   * Load cy instance from Gaia into local state
+   * Load cy instance from various storage providers
    */
   loadGraph() {
     const { storage, options } = this.state;
+
+    // only load from cache if it's valid and it's what we're requesting
+    const cached = loadCache((err) => { Log.error(err, 'cache invalid'); });
+    if (Object.keys(cached).length > 0) {
+      // cache is exactly what we're requesting if it's the same storage and options
+      // e.g. loading from a cached IoK copied from someone's blockstack storage
+      if ((cached.storage === storage
+        && JSON.stringify(cached.options) === JSON.stringify(options))) {
+        this.onSuccessLoadGraph(cached.graph);
+        return;
+      }
+      // if we're loading the default graph, check cache first
+      if (storage === DEFL_STORAGE
+        && JSON.stringify(options) === JSON.stringify(DEFL_STORAGE_OPTIONS)) {
+        this.onSuccessLoadGraph(cached.graph);
+        return;
+      }
+    }
+
     switch (storage) {
       case STORAGE_TYPES.IPFS:
         loadIPFSGraph(options.hash, this.onSuccessLoadGraph, this.onErrorLoadGraph);
@@ -174,12 +208,15 @@ class SignedIn extends Component {
    * Save local cy instance to Gaia as json
    */
   saveGraph() {
-    const { cy, storage } = this.state;
+    const { cy, storage, options } = this.state;
     const graph = getExportableJson(cy);
+
+    saveCache(graph, storage, options);
 
     switch (storage) {
       case STORAGE_TYPES.IPFS:
-        saveIPFSGraph(graph);
+        // might result in invalid state if cache is not updated after onHashChange
+        saveIPFSGraph(graph, (hash) => { this.setState({ options: { hash } }); alert(hash); });
         break;
       case STORAGE_TYPES.BLOCKSTACK:
         saveBlockstackGraph(graph, this.userSession);
@@ -215,6 +252,8 @@ class SignedIn extends Component {
       default:
         break;
     }
+
+    wipeCache();
   }
 
   signOut(e) {

@@ -44,6 +44,10 @@ export const getNodesEdgesJson = (cy) => {
   const j = cy.json();
   const { nodes } = j.elements;
   const { edges } = j.elements;
+  if (!nodes || !edges) {
+    return { nodes: [], edges: [] };
+    // return null; // XXX: this might be easier to propagate errors
+  }
   for (let i = 0; i < nodes.length; i += 1) {
     nodes[i] = { data: nodes[i].data };
   }
