@@ -54,6 +54,9 @@ class SignedIn extends Component {
   constructor(props) {
     super(props);
     const { storage, options } = this.props;
+    Log.info('storage/options');
+    Log.info(storage);
+    Log.info(options);
 
     this.userSession = new UserSession({ appConfig });
 
@@ -156,12 +159,14 @@ class SignedIn extends Component {
       // e.g. loading from a cached IoK copied from someone's blockstack storage
       if ((cached.storage === storage
         && JSON.stringify(cached.options) === JSON.stringify(options))) {
+        Log.info('Load request cache');
         this.onSuccessLoadGraph(cached.graph);
         return;
       }
       // if we're loading the default graph, check cache first
       if (storage === DEFL_STORAGE
         && JSON.stringify(options) === JSON.stringify(DEFL_STORAGE_OPTIONS)) {
+        Log.info('Load DEFL request cache');
         this.onSuccessLoadGraph(cached.graph);
         return;
       }
