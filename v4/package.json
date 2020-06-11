@@ -35,7 +35,8 @@
     "lint": "./node_modules/.bin/eslint src/*.js src/*.jsx",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts build",
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -54,6 +55,7 @@
     ]
   },
   "devDependencies": {
+    "babel-jest": "^26.0.1",
     "bootstrap": "^4.4.1",
     "react-test-renderer": "^16.8.6"
   }
