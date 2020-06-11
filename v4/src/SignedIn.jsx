@@ -324,7 +324,7 @@ class SignedIn extends Component {
               {'Loading graph from '.concat(storage)}
             </Modal.Title>
           </Modal.Header>
-          <Modal.Footer></Modal.Footer>
+          <Modal.Footer />
         </Modal>
 
         <Modal

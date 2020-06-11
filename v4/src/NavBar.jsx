@@ -54,7 +54,7 @@ class NavBar extends Component {
             className="btn btn-primary"
             onClick={signOutHandler}
           >
-          Sign
+            Sign
             {options.username === 'guest' ? ' in' : ' out'}
 
           </button>
@@ -75,7 +75,7 @@ class NavBar extends Component {
             className="btn btn-info btn-lg btn-util"
             onClick={() => { window.location.href = '/?storage='.concat(STORAGE_TYPES.IPFS); }}
           >
-          Try IPFS!
+            Try IPFS!
           </button>
         );
       case STORAGE_TYPES.IPFS:
@@ -85,7 +85,7 @@ class NavBar extends Component {
             className="btn btn-info btn-lg btn-util"
             onClick={() => { window.location.href = '/?storage='.concat(STORAGE_TYPES.BLOCKSTACK); }}
           >
-          Try Blockstack!
+            Try Blockstack!
           </button>
         );
       default:
