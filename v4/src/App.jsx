@@ -26,7 +26,7 @@ class App extends Component {
      * and related options
      * */
     let storage = DEFL_STORAGE;
-    let options = DEFL_STORAGE_OPTIONS;
+    let options = JSON.parse(JSON.stringify(DEFL_STORAGE_OPTIONS));
     if (par.has('storage')) {
       switch (par.get('storage')) {
         case STORAGE_TYPES.BLOCKSTACK:
@@ -49,7 +49,7 @@ class App extends Component {
           break;
         default:
           storage = DEFL_STORAGE;
-          options = DEFL_STORAGE_OPTIONS;
+          options = JSON.parse(JSON.stringify(DEFL_STORAGE_OPTIONS));
       }
     }
     return { storage, options };

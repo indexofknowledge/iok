@@ -28,14 +28,14 @@ class Landing extends Component {
             className="btn btn-lg btn-primary btn-block"
             onClick={this.signIn.bind(this)}
           >
-Sign in with Blockstack
+            Sign in with Blockstack
           </button>
           <button
             type="button"
             className="btn btn-lg btn-primary btn-block"
             onClick={guestModeHandler}
           >
-Continue as guest
+            Continue as guest
           </button>
         </div>
       </div>

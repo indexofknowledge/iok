@@ -3,44 +3,19 @@
 import json
 import random
 import string
+from typing import Optional
 import re
 import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.readwrite import json_graph
-from enum import IntEnum
+
 # from logging import logging
 import logging
-
-# TODO: make this multiline nicer
-DESCRIPTION = "The Decentralized Index of Knowledge (DIoK) is a curated collection of resources for blockchain, grouped by topic and ordered by pedagogical dependency. We store data as a graph, allowing programmatic creation of front-ends such as interactive graph visualizations as well as awesome-lists."
-
-TRAVIS = '[![Build Status](https://travis-ci.com/rustielin/iok.svg?branch=master)](https://travis-ci.com/rustielin/iok)'
-
-
-class NodeType(IntEnum):
-    TOPIC = 1
-    RESOURCE = 2
-
-
-class ResourceType(IntEnum):
-    DESCRIPTION = 1
-    ARTICLE = 2
-    VIDEO = 3
-    PAPER = 4
-
-
-LINK_TYPES = [ResourceType.ARTICLE, ResourceType.VIDEO, ResourceType.PAPER]
-
-RESOURCE_HEADINGS = {
-    ResourceType.DESCRIPTION: 'Description',
-    ResourceType.ARTICLE: 'Articles',
-    ResourceType.VIDEO: 'Videos',
-    ResourceType.PAPER: 'Papers'
-}
+from .types import NodeType, ResourceType, RESOURCE_HEADINGS, LINK_TYPES
+from .constants import DESCRIPTION, TRAVIS
 
 
 class KnowledgeGraph:
-
     def __init__(self, filename="", obj={}, debug=False):
         if filename:
             logging.info(f"Trying to read graph from file {filename}")
@@ -59,50 +34,62 @@ class KnowledgeGraph:
 
     def read_from_json_obj(self, obj):
         """Reads graph from JSON object"""
-        elements = obj['elements']
-        nodes = elements['nodes']
-        edges = elements['edges']
+        elements = obj["elements"]
+        nodes = elements["nodes"]
+        edges = elements["edges"]
         for node in nodes:
-            dat = node['data']
+            dat = node["data"]
             data = None
             resource_type = None
             name = None
-            if 'data' in dat:
-                data = dat['data']
-            if 'resource_type' in dat:
-                resource_type = dat['resource_type']
-            if 'name' in dat:
-                name = dat['name']
+            if "data" in dat:
+                data = dat["data"]
+            if "resource_type" in dat:
+                resource_type = dat["resource_type"]
+            if "name" in dat:
+                name = dat["name"]
 
-            self.add_knowledge_node(dat['id'], NodeType(
-                dat['node_type']), name=name, data=data, resource_type=resource_type)
+            self.add_knowledge_node(
+                dat["id"],
+                NodeType(dat["node_type"]),
+                name=name,
+                data=data,
+                resource_type=resource_type,
+            )
 
         for edge in edges:
-            dat = edge['data']
-            self.graph.add_edge(dat['source'], dat['target'])
+            dat = edge["data"]
+            self.graph.add_edge(dat["source"], dat["target"])
 
     def read_from_file(self, filename):
         """Reads graph from JSON file in data link format"""
-        with open(filename, 'r') as f:
+        with open(filename, "r") as f:
             elements = json.load(f)
             self.read_from_json_obj(elements)
 
-    def add_knowledge_node(self, id: str, node_type: NodeType, name=None, data=None, resource_type: ResourceType = None):
+    def add_knowledge_node(
+        self,
+        id: str,
+        node_type: NodeType,
+        name=None,
+        data=None,
+        resource_type: Optional[ResourceType] = None,
+    ):
         self.graph.add_node(id)
         node = self.graph.nodes[id]
-        node['node_type'] = node_type
+        node["node_type"] = node_type
         if resource_type:
-            node['resource_type'] = resource_type
+            node["resource_type"] = resource_type
         if data:
-            node['data'] = data
+            node["data"] = data
         if name:
-            node['name'] = name
+            node["name"] = name
 
     def get_graph(self):
         return self.graph
 
 
-class AwesomeClient():
+class AwesomeClient:
     """Makes an awesome-list from the given graph"""
 
     def __init__(self, graph: KnowledgeGraph):
@@ -114,9 +101,11 @@ class AwesomeClient():
         dic = {}  # XXX: throw it into dict so we can sort it later??
         for id in list(reversed(list(nx.topological_sort(self.knowledge.graph)))):
             node = self.knowledge.graph.nodes[id]
-            name = node['name']
-            if node['node_type'] == NodeType.TOPIC:  # if sorted, topics always before resources
-                dic[name] = {'name': name}  # XXX: a placeholder
+            name = node["name"]
+            if (
+                node["node_type"] == NodeType.TOPIC
+            ):  # if sorted, topics always before resources
+                dic[name] = {"name": name}  # XXX: a placeholder
                 dic[name][ResourceType.PAPER] = []
                 dic[name][ResourceType.VIDEO] = []
                 dic[name][ResourceType.ARTICLE] = []
@@ -126,11 +115,11 @@ class AwesomeClient():
                 # put it in parents
                 logging.debug("Adding resource {}".format(name))
                 for p_id in self.knowledge.graph.successors(id):
-                    parent = self.knowledge.graph.nodes[p_id]['name']
+                    parent = self.knowledge.graph.nodes[p_id]["name"]
                     logging.debug(f"{name} has parent {parent}")
-                    dat = node['data']  # XXX: only desc for now
+                    dat = node["data"]  # XXX: only desc for now
                     # articles, papers,
-                    t = node['resource_type']
+                    t = node["resource_type"]
                     logging.debug("Building map for type {}".format(t))
 
                     if t == ResourceType.PAPER:
@@ -151,59 +140,59 @@ class AwesomeClient():
 
     def get_link(self, dat):
         # TODO: get separate alt text
-        text = dat['text']
-        link = dat['link']
-        return f'* [{text}]({link})\n'
+        text = dat["text"]
+        link = dat["link"]
+        return f"* [{text}]({link})\n"
 
     def get_nodedata(self, dat):
         """Formats a node's data.
         Like get_s or get_link, but handles any type of node data."""
         if isinstance(dat, str):
             return self.get_s(dat)
-        if 'link' in dat:
+        if "link" in dat:
             return self.get_link(dat)
-        return self.get_s(dat['text'])
+        return self.get_s(dat["text"])
 
     def escape_toc_link_txt(self, s):
         """spaces in toc link need to be escaped, among others"""
-        return re.sub(r"\s+", '%20', s)
+        return re.sub(r"\s+", "%20", s)
 
     def get_toc_link(self, title):
         """Generate link that references title on the same doc"""
-        return f'* [{title}](#{self.escape_toc_link_txt(title)})\n'
+        return f"* [{title}](#{self.escape_toc_link_txt(title)})\n"
 
     def get_h(self, s: str, level=1):
         """Generates markdown string for header of variable level"""
-        return '#' * level + ' ' + s + '\n\n'
+        return "#" * level + " " + s + "\n\n"
 
     def get_s(self, s: str):
         """Generate markdown string for single line of text"""
-        return f'{s}\n\n'
+        return f"{s}\n\n"
 
     def build_str(self):
         """Create a markdown representing the whole iok."""
-        head = ''
-        head += self.get_h('Index of Knowledge')
+        head = ""
+        head += self.get_h("Index of Knowledge")
         head += self.get_s(TRAVIS)
         head += self.get_s(DESCRIPTION)
 
-        s = ''
+        s = ""
         for key in self.mindmap:
             s += self.get_h(key, level=2)
             s += self.build_node_str(self.mindmap[key])
 
         # TODO: write a ToC
-        toc = ''
-        toc += self.get_h('Table of Contents', level=2)
+        toc = ""
+        toc += self.get_h("Table of Contents", level=2)
         for key in self.mindmap:
             toc += self.get_toc_link(key)
-        toc += '\n'
+        toc += "\n"
 
         return head + toc + s
 
     def build_node_str(self, node):
         """Create a markdown representing a node on the iok."""
-        s = ''
+        s = ""
         for hkey, hname in RESOURCE_HEADINGS.items():
             if len(node[hkey]):
                 s += self.get_h(hname, level=3)
@@ -213,7 +202,7 @@ class AwesomeClient():
 
     def write_to_file(self, filename):
         """Writes awesome-list"""
-        with open(filename, 'w') as f:
+        with open(filename, "w") as f:
             f.write(self.build_str())
 
     # def read_from_file(self, filename=AWESOME_FILE):

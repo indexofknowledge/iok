@@ -1,0 +1,29 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+decorator = "==4.4.2"
+kiwisolver = "==1.2.0"
+matplotlib = "==3.2.1"
+networkx = "==2.4"
+numpy = "==1.18.3"
+pyparsing = "==2.4.7"
+python-dateutil = "==2.8.1"
+six = "==1.14.0"
+Cycler = "==0.10.0"
+certifi = "==2020.4.5.1"
+chardet = "==3.0.4"
+idna = "==2.9"
+requests = "==2.23.0"
+urllib3 = "==1.25.9"
+black = "*"
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
