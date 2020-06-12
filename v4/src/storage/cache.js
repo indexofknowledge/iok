@@ -45,9 +45,9 @@ export const loadCache = (onError) => {
 
 /**
  * Saves graph, storage, options to cache in localstorage
- * @param {*} graph 
- * @param {*} storage 
- * @param {*} options 
+ * @param {*} graph
+ * @param {*} storage
+ * @param {*} options
  */
 export const saveCache = (graph, storage, options) => {
   // Log.info(TAG, 'Saving graph to localstorage');

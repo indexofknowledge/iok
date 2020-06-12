@@ -21,9 +21,9 @@ export const saveIPFSGraph = (graph, onHashChange) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(graph),
   };
-  Log.info("GRAPH", graph)
+  Log.info('GRAPH', graph);
   fetch(pinataProxy, requestOptions)
-    .then((response) => {Log.info("RESPONSE", response); return response.json()})
+    .then((response) => { Log.info('RESPONSE', response); return response.json(); })
     .then((data) => onHashChange(data.IpfsHash))
     .catch((err) => Log.error(err));
 };
