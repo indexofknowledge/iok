@@ -1,26 +1,25 @@
-/* eslint-disable */
-import { graphFromText } from './md_scraper';
+import { graphFromText } from './md_scraper'; // eslint-disable-line
 
 function createTestNode(nodeType, name, id, resType, text, link) {
   if (nodeType === 1) {
     return {
       id: expect.toStartWith(id),
-      name: name,
+      name,
       node_type: nodeType,
     };
-  } else if (nodeType === 2) {
+  }
+  if (nodeType === 2) {
     return {
       data: {
-        text: text,
-        link: link,
+        text, link,
       },
       id: expect.toStartWith(id),
-      name: name,
+      name,
       node_type: nodeType,
       resource_type: resType,
     };
   }
-  return null
+  return null;
 }
 
 function createTestEdge(id, source, target) {
@@ -31,20 +30,18 @@ function createTestEdge(id, source, target) {
   };
 }
 
-//compare just the beginning for id hashes
+// compare just the beginning for id hashes
 expect.extend({
   toStartWith(received, beginning) {
     return {
-      message: () =>
-        `${received} should equal ${beginning}`,
+      message: () => `${received} should equal ${beginning}`,
       pass: beginning.slice(0, 10) === (received.slice(0, 10)),
     };
-  }
+  },
 });
 
-//Tests
+// Tests
 describe('markdown scraper', () => {
-
   it('should parse an empty markdown', () => {
     expect(graphFromText('')).toEqual({
       nodes: [],
@@ -67,7 +64,7 @@ describe('markdown scraper', () => {
     expect(graphFromText(
       `- [linkTitle1](insertLink1) extra
       \n- [linkTitle2](insertLink2) extra text
-      \n- [linkTitle3](insertLink3) extra text idk`
+      \n- [linkTitle3](insertLink3) extra text idk`,
     )).toEqual({
       nodes: [
         createTestNode(2, 'linkTitle1', '40f38118359d044116aa7954b8c223b', 2, 'linkTitle1', 'insertLink1'),
@@ -102,7 +99,7 @@ describe('markdown scraper', () => {
 
   it('nested topic nodes', () => {
     expect(graphFromText(
-      '# First Topic \n# SecondTopic \n## Second Topic Nested \n### Second Topic Nested Nested \n# Third Topic'
+      '# First Topic \n# SecondTopic \n## Second Topic Nested \n### Second Topic Nested Nested \n# Third Topic',
     )).toEqual({
       nodes: [
         createTestNode(1, 'First Topic', 'e00194285639baedc6dc1785038', null, null, null),
@@ -122,7 +119,7 @@ describe('markdown scraper', () => {
     expect(graphFromText(
       `# Topic1 \n- [Topic1ResLink](Link1)
       \n## Topic2 \n- Topic2ResDesc 
-      \n## Topic2Nested`
+      \n## Topic2Nested`,
     )).toEqual({
       nodes: [
         createTestNode(1, 'Topic1', 'ddc41a6256b8d5582119ff7b4b702d5', null, null, null),
