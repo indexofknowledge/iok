@@ -51,10 +51,9 @@ class KnowledgeGraph:
 
         for x in dat["nodes"]:
             x["data"] = x.copy()
-            if x["node_type"] == NodeType.TOPIC:
-                del x["name"]
-            elif x["node_type"] == NodeType.RESOURCE:
+            if x["node_type"] == NodeType.RESOURCE:
                 del x["resource_type"]
+            del x["name"]
             del x["node_type"]
             del x["id"]
 
@@ -146,7 +145,11 @@ class KnowledgeGraph:
             self.graph.add_node(id, name=name, node_type=node_type)
         elif node_type == NodeType.RESOURCE:
             self.graph.add_node(
-                id, data=data, resource_type=resource_type, node_type=node_type
+                id,
+                name=f"res-{id[:7]}",  # XXX: get rid of this eventually
+                data=data,
+                resource_type=resource_type,
+                node_type=node_type,
             )
 
         return id
