@@ -8,13 +8,8 @@ import requests
 import matplotlib.pyplot as plt
 from hashlib import sha256
 import json
-import sys
 import uuid
 from networkx.readwrite import json_graph
-
-# configs
-JSON_FILE = "graph.json"
-GRAPH_FILE = "graph.png"
 
 # regex for ordering lines based on hierarchy
 HIERARCHY = [r"^[*-]", r"^[A-Za-z]", r"^###", r"^##", r"^#"]
@@ -153,35 +148,21 @@ def match_line(match: str, line: str, scopes: list, graph: KnowledgeGraph) -> li
             return scopes_cpy
 
 
+def graphFromText(text: str):
+  textlines = text.splitlines()
+  scopes = []
+  graph = KnowledgeGraph(0)
+  for line in textlines:
+      match = match_hierarchy(line)
+      scopes = match_line(match, line, scopes, graph)
+  return graph
+
 # returns the graph for debugging
 def main(link: str) -> KnowledgeGraph:
-
     f = requests.get(link)
     text = f.text
-    textlines = text.splitlines()
-
-    scopes = []
-    graph = KnowledgeGraph(0)
-    for line in textlines:
-        match = match_hierarchy(line)
-        scopes = match_line(match, line, scopes, graph)
-
-    return graph
+    return graphFromText(text)
 
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Missing link argument")
-        print("Expected: md_scrape <raw md link>")
-        print(
-            "Example: md_scrape https://raw.githubusercontent.com/rustielin/iok/master/README.md"
-        )
-        exit(1)
 
-    link = sys.argv[1]
-    g = main(link)
-
-    # draw to file for debugging
-    g.write_graph(GRAPH_FILE)
-
-    g.write_to_json(JSON_FILE)
+    

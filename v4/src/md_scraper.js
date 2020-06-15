@@ -28,7 +28,7 @@ class Scope {
 
     // create id
     const hash = sha256.create();
-    hash.update(JSON.stringify(this.node));
+    hash.update(this.node.name + (JSON.stringify(this.data) || ''));
     this.node.id = this.id = hash.hex(); // eslint-disable-line
 
     // set level for comparing hierarchy
@@ -61,7 +61,7 @@ function updateScopes(newScope, scopes, graph) {
   // eslint-disable-next-line
   let scopesCpy = [...scopes];
 
-  graph.nodes.push(newScope.node);
+  graph.nodes.push({ data: newScope.node });
   // console.log("Adding ", new_scope.node, "\n")
 
   if (scopesCpy.length) {
@@ -73,9 +73,11 @@ function updateScopes(newScope, scopes, graph) {
 
     graph.edges.push(
       {
-        source: newScope.id,
-        target: targetId,
-        id: hash.hex(),
+        data: {
+          source: newScope.id,
+          target: targetId,
+          id: hash.hex(),
+        }
       },
     );
   }

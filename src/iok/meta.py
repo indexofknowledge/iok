@@ -56,7 +56,10 @@ class KnowledgeGraph:
             del x["name"]
             del x["node_type"]
             del x["id"]
-
+        
+        del dat["directed"]        
+        del dat["graph"]        
+        del dat["multigraph"]        
         if filename:
             with open(filename, "w") as f:
                 json.dump(dat, f)
@@ -121,14 +124,15 @@ class KnowledgeGraph:
         id: str = "",
         resource_type: Optional[ResourceType] = ResourceType.DESCRIPTION,
     ) -> str:
+        name = text[:10]
+        data = {"text": text, "link": link}
         if not id:
             m = hashlib.sha256()
-            m.update(text.encode())
-            m.update(link.encode())
+            input = name + json.dumps(data, separators=(',', ':'))
+            m.update(input.encode())
             id = m.hexdigest()
-        data = {"text": text, "link": link}
         return self._add_knowledge_node(
-            NodeType.RESOURCE, id=id, data=data, resource_type=resource_type
+            NodeType.RESOURCE, id=id, name=name, data=data, resource_type=resource_type
         )
 
     def _add_knowledge_node(
@@ -146,7 +150,8 @@ class KnowledgeGraph:
         elif node_type == NodeType.RESOURCE:
             self.graph.add_node(
                 id,
-                name=f"res-{id[:7]}",  # XXX: get rid of this eventually
+                # name=f"res-{id[:7]}",  # XXX: get rid of this eventually
+                name=data["text"][:10],
                 data=data,
                 resource_type=resource_type,
                 node_type=node_type,
