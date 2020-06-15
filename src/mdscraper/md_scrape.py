@@ -50,8 +50,11 @@ class Scope:
         cleaned_line = line
         if match != r"^[A-Za-z]":
             cleaned_line = re.sub(match, "", line).strip()
+        m = sha256()
         if match in TOPICS:
+            m.update(cleaned_line.encode())
             dat = {"name": cleaned_line, "node_type": 1}
+            node_id = m.hexdigest()
         elif match in RESOURCES:
             link_if_link = self.get_link(cleaned_line)
             if link_if_link:
@@ -69,9 +72,11 @@ class Scope:
                     "node_type": 2,
                     "resource_type": 1,
                 }
+            m.update(dat["data"]["text"].encode())
+            m.update(dat["data"]["link"].encode())
+            node_id = m.hexdigest()
 
-        dats = json.dumps(dat).encode("utf-8")
-        dat["id"] = sha256(dats).hexdigest()
+        dat["id"] = node_id
         if "name" not in dat:
             dat["name"] = "res-" + dat["id"][:10]
         return {"data": dat}
