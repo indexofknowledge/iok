@@ -56,10 +56,10 @@ class KnowledgeGraph:
             del x["name"]
             del x["node_type"]
             del x["id"]
-        
-        del dat["directed"]        
-        del dat["graph"]        
-        del dat["multigraph"]        
+
+        del dat["directed"]
+        del dat["graph"]
+        del dat["multigraph"]
         if filename:
             with open(filename, "w") as f:
                 json.dump(dat, f)
@@ -128,7 +128,7 @@ class KnowledgeGraph:
         data = {"text": text, "link": link}
         if not id:
             m = hashlib.sha256()
-            input = name + json.dumps(data, separators=(',', ':'))
+            input = name + json.dumps(data, separators=(",", ":"))
             m.update(input.encode())
             id = m.hexdigest()
         return self._add_knowledge_node(

@@ -14,7 +14,7 @@ if len(sys.argv) < 2:
     )
     exit(1)
 
-if (str(sys.argv[1])[0]=='-'):
+if str(sys.argv[1])[0] == "-":
     print(json.dumps(graphFromText(sys.stdin.read()).write_to_json()))
 else:
     link = sys.argv[1]
