@@ -43,7 +43,7 @@ jobs:
     - stage: javascript-md-scraper
       language: node_js
       before_install: 
-      - pip install pipenv
+      - sudo pip3 install pipenv
       - pipenv install --dev
       - cd v4
       script:
