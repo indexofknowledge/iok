@@ -1,7 +1,8 @@
-import { graphFromText } from './md_scraper'; // eslint-disable-line
-import childProcess from 'child_process';
+import childProcess from 'child_process'; // eslint-disable-line
+import { jsGraphFromText } from './md_scraper'; // eslint-disable-line
 
-const wrapData = (x) => ({ data: x })
+const wrapData = (x) => ({ data: x });
+const path = require('path');
 
 function createTestNode(nodeType, name, id, resType, text, link) {
   if (nodeType === 1) {
@@ -36,7 +37,7 @@ function createTestEdge(id, source, target) {
 // compare just the beginning for id hashes
 expect.extend({
   toStartWith(received, beginning) {
-    if (beginning.length != 10) console.error(`${beginning} is length ${beginning.length}, not 10`)
+    // if (beginning.length !== 10) console.error(`${beginning} is length ${beginning.length}`)
     return {
       message: () => `${received} should equal ${beginning}`,
       pass: beginning.slice(0, 10) === (received.slice(0, 10)),
@@ -49,13 +50,13 @@ function pyGraphFromText(text) {
     'pipenv',
     ['run', 'python3', '-m', 'mdscraper', '-'],
     {
-      cwd: __dirname + '/../../src',
-      input: text
-    }
+      cwd: path.join(__dirname, '/../../src'),
+      input: text,
+    },
   );
-  if (output.status != 0) {
-    throw new Error('Python processes exited with code ' + output.status
-      + ' and error message ' + output.error + '. stderr was ' + output.stderr);
+  if (output.status !== 0) {
+    throw new Error(`Python processes exited with code ${output.status}
+      and error message ${output.error}. stderr was ${output.stderr}`);
   }
   return JSON.parse(output.stdout.toString());
 }
@@ -169,5 +170,5 @@ function testMarkdownScraper(name, graphFromText) {
   });
 }
 
-testMarkdownScraper('Javascript markdown scraper', graphFromText);
+testMarkdownScraper('Javascript markdown scraper', jsGraphFromText);
 testMarkdownScraper('Python markdown scraper', pyGraphFromText);

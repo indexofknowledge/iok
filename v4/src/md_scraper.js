@@ -77,7 +77,7 @@ function updateScopes(newScope, scopes, graph) {
           source: newScope.id,
           target: targetId,
           id: hash.hex(),
-        }
+        },
       },
     );
   }
@@ -137,7 +137,7 @@ export function graphFromUrl(link) {
   return g;
 }
 
-export function graphFromText(text) {
+export function jsGraphFromText(text) {
   const g = createGraph(text);
   // console.log(JSON.stringify(g, null, 2));
   return g;
