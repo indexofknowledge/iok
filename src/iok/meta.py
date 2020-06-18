@@ -5,6 +5,8 @@ import random
 import string
 from typing import Optional
 import re
+import hashlib
+import uuid
 import networkx as nx
 import matplotlib.pyplot as plt
 from networkx.readwrite import json_graph
@@ -26,11 +28,40 @@ class KnowledgeGraph:
             self.graph = nx.DiGraph()
             self.read_from_json_obj(obj)
         # create new one if not
+        self.graph = nx.DiGraph()
 
     def write_graph(self, filename):
         """For debugging mostly, write graph to png"""
         nx.draw(self.graph, with_labels=True)
         plt.savefig(filename)
+
+    def write_to_json(self, filename=""):
+        """
+        Write the graph to JSON file according to cytoscape format.
+        Returns if no filename provided.
+        """
+        dat = json_graph.node_link_data(self.graph)
+        # wrap everything in a "data" field
+        dat["edges"] = dat.pop("links")
+        for x in dat["edges"]:
+            x["data"] = x.copy()
+            del x["source"]
+            del x["target"]
+            del x["id"]
+
+        for x in dat["nodes"]:
+            x["data"] = x.copy()
+            if x["node_type"] == NodeType.RESOURCE:
+                del x["resource_type"]
+            del x["name"]
+            del x["node_type"]
+            del x["id"]
+
+        if filename:
+            with open(filename, "w") as f:
+                json.dump(dat, f)
+        else:
+            return dat
 
     def read_from_json_obj(self, obj):
         """Reads graph from JSON object"""
@@ -49,7 +80,7 @@ class KnowledgeGraph:
             if "name" in dat:
                 name = dat["name"]
 
-            self.add_knowledge_node(
+            self._add_knowledge_node(
                 dat["id"],
                 NodeType(dat["node_type"]),
                 name=name,
@@ -67,23 +98,61 @@ class KnowledgeGraph:
             elements = json.load(f)
             self.read_from_json_obj(elements)
 
-    def add_knowledge_node(
+    def add_edge(self, src_id: str, dst_id: str, id: str = ""):
+        if not id:
+            m = hashlib.sha256()
+            m.update(src_id.encode())
+            m.update(dst_id.encode())
+            id = m.hexdigest()
+        self.graph.add_edge(src_id, dst_id, id=id)
+        return id
+
+    def add_topic_node(self, name, id: str = "") -> str:
+        if not id:
+            m = hashlib.sha256()
+            m.update(name.encode())
+            id = m.hexdigest()
+        return self._add_knowledge_node(NodeType.TOPIC, id=id, name=name)
+
+    def add_resource_node(
         self,
-        id: str,
+        text: str,
+        link: str = "",
+        id: str = "",
+        resource_type: Optional[ResourceType] = ResourceType.DESCRIPTION,
+    ) -> str:
+        if not id:
+            m = hashlib.sha256()
+            m.update(text.encode())
+            m.update(link.encode())
+            id = m.hexdigest()
+        data = {"text": text, "link": link}
+        return self._add_knowledge_node(
+            NodeType.RESOURCE, id=id, data=data, resource_type=resource_type
+        )
+
+    def _add_knowledge_node(
+        self,
         node_type: NodeType,
-        name=None,
-        data=None,
+        id: str = "",
+        name: str = None,
+        data: str = None,
         resource_type: Optional[ResourceType] = None,
-    ):
+    ) -> str:
         self.graph.add_node(id)
-        node = self.graph.nodes[id]
-        node["node_type"] = node_type
-        if resource_type:
-            node["resource_type"] = resource_type
-        if data:
-            node["data"] = data
-        if name:
-            node["name"] = name
+
+        if node_type == NodeType.TOPIC:
+            self.graph.add_node(id, name=name, node_type=node_type)
+        elif node_type == NodeType.RESOURCE:
+            self.graph.add_node(
+                id,
+                name=f"res-{id[:7]}",  # XXX: get rid of this eventually
+                data=data,
+                resource_type=resource_type,
+                node_type=node_type,
+            )
+
+        return id
 
     def get_graph(self):
         return self.graph

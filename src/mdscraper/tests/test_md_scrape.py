@@ -1,4 +1,5 @@
 from ..md_scrape import cmp_hierarchy, Scope
+from iok.meta import KnowledgeGraph
 
 
 def test_cmp_hierarchy() -> None:
@@ -18,12 +19,13 @@ def test_cmp_hierarchy() -> None:
 
 
 def test_scope() -> None:
-    scope = Scope(r"^###", "### Bitcoin")
-    assert scope.get_name() == "Bitcoin"
+    kg = KnowledgeGraph()
+    scope = Scope(r"^###", "### Bitcoin", kg)
+    assert scope._get_name() == "Bitcoin"
 
     test_text = "Script - Bitcoin Wiki"
     test_link = "https://en.bitcoin.it/wiki/Script"
-    scope = Scope(r"^[*-]", f"* [{test_text}]({test_link})")
-    print(scope.node)
-    assert scope.node["data"]["data"]["text"] == test_text
-    assert scope.node["data"]["data"]["link"] == test_link
+    scope = Scope(r"^[*-]", f"* [{test_text}]({test_link})", kg)
+    data = scope._get_data()
+    assert data["text"] == test_text
+    assert data["link"] == test_link
