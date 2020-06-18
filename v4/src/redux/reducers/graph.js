@@ -1,5 +1,36 @@
 import Cytoscape from 'cytoscape';
 import { sha256 } from 'js-sha256';
+import { NTYPE } from '../../types';
+
+const incomers = (node) => node.incomers((el) => el.isNode());
+const outgoers = (node) => node.outgoers((el) => el.isNode());
+
+function nodeId(props, includeSource = true) {
+  const hash = sha256.create();
+  let hashStr = props.name + (JSON.stringify(props.data) || '');
+  if (includeSource) hashStr += props.source
+  hash.update(hashStr);
+  return hash.hex();
+}
+
+function createNode(props) {
+  if (!props.id) props.id = nodeId(props);
+  return {
+    group: 'nodes',
+    data: props
+  }
+}
+
+function createEdge(source, target) {
+  return {
+    group: 'edges',
+    data: {
+      id: edgeId(source.id(), target.id()),
+      source: source.id(),
+      target: target.id()
+    },
+  }
+}
 
 function edgeId(sourceId, targetId) {
   const hash = sha256.create();
@@ -9,19 +40,39 @@ function edgeId(sourceId, targetId) {
 
 /** Moves all edges from oldNode to newNode */
 function updateEdges(cy, oldNode, newNode) {
-  oldNode.incomers((el) => el.isNode()).map(
-    (neighbor) => cy.add({
-      group: 'edges',
-      data: { source: neighbor.id(), target: newNode.id() },
-    }),
-  );
-  oldNode.outgoers((el) => el.isNode()).map(
-    (neighbor) => cy.add({
-      group: 'edges',
-      data: { source: newNode.id(), target: neighbor.id() },
-    }),
-  );
+  incomers(oldNode).map(neighbor => cy.add(createEdge(neighbor, newNode)));
+  outgoers(oldNode).map(neighbor => cy.add(createEdge(newNode, neighbor)));
   cy.remove(oldNode.connectedEdges());
+}
+
+function merge(from, to, cy) {
+  // CONSIDER WHICH CONTRIBUTOR (if different) WE WANT TO KEEP
+  if (from.data('node_type') === NTYPE.RESO
+    || to.data('node_type') === NTYPE.RESO) return from;
+
+  // create new node, a mix of nodes From and To
+  const newNode = cy.add(createNode({
+    name: from.data('name') + " || " + to.data('name'),
+    node_type: NTYPE.TOPIC
+  }));
+  const nodes = {};
+
+  // if the node is repeated / in hashtable, merge it, else, add i
+
+  for (const node of incomers(from).union(incomers(to))) {
+    const id = nodeId(node.data(), false);
+    if (nodes[id]) {
+      nodes[id] = merge(node, nodes[id], cy);
+    } else {
+      nodes[id] = node;
+    }
+  }
+
+  from.remove();
+  to.remove();
+  Object.values(nodes).forEach(node => cy.add(createEdge(node, newNode)))
+
+  return newNode;
 }
 
 export default function graph(state = {}, action) {
@@ -32,22 +83,15 @@ export default function graph(state = {}, action) {
   const cy = Cytoscape({ elements: state });
   switch (action.type) {
     case 'ADD_NODE': {
-      const newNode = cy.add({ group: 'nodes', data: action.props });
+      const newNode = cy.add(createNode(action.props));
       if (action.parentId) {
-        cy.add({
-          group: 'edges',
-          data: {
-            id: edgeId(newNode.id(), action.parentId),
-            source: newNode.id(),
-            target: action.parentId,
-          },
-        });
+        cy.add(createEdge(newNode, cy.getElementById(action.parentId)));
       }
       break;
     }
     case 'EDIT_NODE': {
       const oldNode = cy.getElementById(action.id);
-      const newNode = cy.add({ group: 'nodes', data: action.props });
+      const newNode = cy.add(createNode({ ...oldNode.data(), ...action.props, id: undefined }));
       updateEdges(cy, oldNode, newNode);
       newNode.shift(oldNode.position());
       oldNode.remove();
@@ -58,11 +102,13 @@ export default function graph(state = {}, action) {
       break;
     }
     case 'MERGE_NODE': {
-      console.log("Huh? I can't hear you, honey. A little louder please?");
+      const from = cy.getElementById(action.fromId);
+      const to = cy.getElementById(action.toId);
+      merge(from, to, cy);
       break;
     }
     default:
-      return state;
+      break;
   }
   const j = cy.json().elements;
   if (j.nodes) j.nodes = j.nodes.map((n) => ({ data: n.data }));

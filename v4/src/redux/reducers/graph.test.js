@@ -1,5 +1,36 @@
-import { addNode } from '../actions';
+import { addNode, editNode, mergeNode } from '../actions';
 import graph from './graph';
+
+function edge(id, source, target) {
+  return {
+    data: { id, source, target }
+  };
+}
+
+function node(id, name) {
+  if (name) {
+    if (name.startsWith('TOPIC')) return {
+      data: { id, name, node_type: 1 }
+    }
+    if (name.startsWith('RES')) return {
+      data: { id, data: { text: name }, node_type: 2 }
+    }
+  } else {
+    return { data: { id } }
+  }
+}
+
+// compare just the beginning for id hashes
+expect.extend({
+  toStartWith(received, beginning) {
+    return {
+      message: () => `${received} should equal ${beginning}`,
+      pass: beginning.slice(0, 10) === (received.slice(0, 10)),
+    };
+  },
+});
+
+const sw = (x) => expect.toStartWith(x);
 
 describe('graphs reducer', () => {
   it('should return the initial state', () => {
@@ -7,28 +38,49 @@ describe('graphs reducer', () => {
   });
 
   it('should handle ADD_NODE', () => {
+    expect(graph({}, addNode(null, { id: 'test', name: 'TOPIC1', node_type: 1 })))
+      .toEqual({ nodes: [node('test', 'TOPIC1')], });
+
+    expect(graph({ nodes: [node('test')] }, addNode(null, { id: 'another' })))
+      .toEqual({ nodes: [node('test'), node('another')], });
+
+    expect(graph({ nodes: [node('test')] }, addNode('test', { id: 'another' })))
+      .toEqual({
+        nodes: [node('test'), node('another')],
+        edges: [edge(sw('9bb5bde1a74'), 'another', 'test')],
+      });
+  });
+
+  it('should handle EDIT_NODE', () => {
+    expect(graph({ nodes: [node('test', 'RESabc')] }, editNode('test', { data: { text: 'RES123' } })))
+      .toEqual({ nodes: [node(sw('f3f44b2cb5'), 'RES123')] });
+  });
+
+  it('should handle MERGE_NODE', () => {
     expect(
-      graph({}, addNode(null, { id: 'test', name: 'hello' })),
+      graph({
+        nodes: [node('test', 'TOPIC1'), node('test2', 'TOPIC2')],
+      }, mergeNode('test', 'test2')),
     ).toEqual({
-      nodes: [
-        { data: { id: 'test', name: 'hello' } },
-      ],
+      nodes: [node(sw('043f13a4c7'), 'TOPIC1 || TOPIC2')],
     });
 
     expect(
       graph({
         nodes: [
-          { data: { id: 'test' } },
+          node('test', 'TOPIC1'), node('test22', 'TOPIC2'), node('test333', 'TOPIC3'),
+          node('test4444', 'TOPIC4')
         ],
-      }, addNode('test', { id: 'another' })),
+        edges: [
+          edge('something', 'test333', 'test'), edge('something22', 'test4444', 'test22')
+        ]
+      }, mergeNode('test', 'test22')),
     ).toEqual({
-      nodes: [
-        { data: { id: 'test' } },
-        { data: { id: 'another' } },
+      nodes: [node(sw('043f13a4c72157198'), 'TOPIC1 || TOPIC2'), node('test4444', 'TOPIC4'), node('test333', 'TOPIC3'),
       ],
-      edges: [
-        { data: { id: '9bb5bde1a740465d012231e350aa8934f64d078ac1349d6a10852cbf1369d15f', target: 'test', source: 'another' } },
-      ],
+      edges: [edge(sw('81d0d8f25fe167f02'), 'test333', sw('043f13a4c7215')), edge(sw('2aae1faf79c'), 'test4444', sw('043f13a4c72'))],
     });
+
   });
+
 });
