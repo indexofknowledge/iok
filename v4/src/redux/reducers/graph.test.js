@@ -1,4 +1,6 @@
-import { addNode, editNode, mergeNode } from '../actions';
+import {
+  addNode, editNode, deleteNode, mergeNode,
+} from '../actions';
 import graph from './graph';
 
 function edge(id, source, target) {
@@ -19,6 +21,7 @@ function node(id, name) {
         data: { id, data: { text: name }, node_type: 2 },
       };
     }
+    throw new Error('Node name should start with TOPIC or RES');
   } else {
     return { data: { id } };
   }
@@ -58,6 +61,29 @@ describe('graphs reducer', () => {
   it('should handle EDIT_NODE', () => {
     expect(graph({ nodes: [node('test', 'RESabc')] }, editNode('test', { data: { text: 'RES123' } })))
       .toEqual({ nodes: [node(sw('f3f44b2cb5'), 'RES123')] });
+
+    const test2 = sw('e2fe3a8cfa'); // new id for modified node
+    expect(graph({
+      nodes: [node('test', 'TOPIC1'), node('test2', 'TOPIC2'), node('test3', 'TOPIC3')],
+      edges: [edge('edge2', 'test3', 'test2'), edge('edge', 'test2', 'test')],
+    }, editNode('test2', { name: 'TOPICmod' })))
+      .toEqual({
+        nodes: [node('test', 'TOPIC1'), node(test2, 'TOPICmod'), node('test3', 'TOPIC3')],
+        edges: [edge(sw('25b474ff33'), 'test3', test2), edge(sw('a38ea1c97b'), test2, 'test')],
+      });
+  });
+
+  it('should handle DELETE_NODE', () => {
+    expect(graph({ nodes: [node('test', 'RESabc')] }, deleteNode('test')))
+      .toEqual({});
+
+    expect(graph({
+      nodes: [node('test', 'TOPIC1'), node('test2', 'TOPIC2'), node('test3', 'TOPIC3')],
+      edges: [edge('edge2', 'test3', 'test2'), edge('edge', 'test2', 'test')],
+    }, deleteNode('test2')))
+      .toEqual({
+        nodes: [node('test', 'TOPIC1'), node('test3', 'TOPIC3')],
+      });
   });
 
   it('should handle MERGE_NODE', () => {

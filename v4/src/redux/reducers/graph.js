@@ -15,6 +15,7 @@ function nodeId(props, includeSource = true) {
 }
 
 function createNode(props) {
+  // eslint-disable-next-line no-param-reassign
   if (!props.id) props.id = nodeId(props);
   return {
     group: 'nodes',
@@ -59,7 +60,7 @@ function merge(from, to, cy) {
   const nodes = {};
 
   // if the node is repeated / in hashtable, merge it, else, add i
-
+  // eslint-disable-next-line no-restricted-syntax
   for (const node of incomers(from).union(incomers(to))) {
     const id = nodeId(node.data(), false);
     if (nodes[id]) {

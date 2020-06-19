@@ -1,9 +1,9 @@
 export const ACTION_TYPES = {
-    ADD_NODE: 'ADD_NODE',
-    EDIT_NODE: 'EDIT_NODE',
-    DELETE_NODE: 'DELETE_NODE',
-    MERGE_NODE: 'MERGE_NODE'
-}
+  ADD_NODE: 'ADD_NODE',
+  EDIT_NODE: 'EDIT_NODE',
+  DELETE_NODE: 'DELETE_NODE',
+  MERGE_NODE: 'MERGE_NODE',
+};
 
 export const addNode = (parentId, props) => ({
   type: ACTION_TYPES.ADD_NODE,
