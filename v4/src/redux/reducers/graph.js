@@ -1,6 +1,7 @@
 import Cytoscape from 'cytoscape';
 import { sha256 } from 'js-sha256';
 import { NTYPE } from '../../types';
+import { ACTION_TYPES } from '../actions';
 
 const incomers = (node) => node.incomers((el) => el.isNode());
 const outgoers = (node) => node.outgoers((el) => el.isNode());
@@ -82,14 +83,14 @@ export default function graph(state = {}, action) {
 
   const cy = Cytoscape({ elements: state });
   switch (action.type) {
-    case 'ADD_NODE': {
+    case ACTION_TYPES.ADD_NODE: {
       const newNode = cy.add(createNode(action.props));
       if (action.parentId) {
         cy.add(createEdge(newNode, cy.getElementById(action.parentId)));
       }
       break;
     }
-    case 'EDIT_NODE': {
+    case ACTION_TYPES.EDIT_NODE: {
       const oldNode = cy.getElementById(action.id);
       const newNode = cy.add(createNode({ ...oldNode.data(), ...action.props, id: undefined }));
       updateEdges(cy, oldNode, newNode);
@@ -97,11 +98,11 @@ export default function graph(state = {}, action) {
       oldNode.remove();
       break;
     }
-    case 'DELETE_NODE': {
+    case ACTION_TYPES.DELETE_NODE: {
       cy.getElementById(action.id).remove();
       break;
     }
-    case 'MERGE_NODE': {
+    case ACTION_TYPES.MERGE_NODE: {
       const from = cy.getElementById(action.fromId);
       const to = cy.getElementById(action.toId);
       merge(from, to, cy);
