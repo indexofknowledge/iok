@@ -3,20 +3,24 @@ import graph from './graph';
 
 function edge(id, source, target) {
   return {
-    data: { id, source, target }
+    data: { id, source, target },
   };
 }
 
 function node(id, name) {
   if (name) {
-    if (name.startsWith('TOPIC')) return {
-      data: { id, name, node_type: 1 }
+    if (name.startsWith('TOPIC')) {
+      return {
+        data: { id, name, node_type: 1 },
+      };
     }
-    if (name.startsWith('RES')) return {
-      data: { id, data: { text: name }, node_type: 2 }
+    if (name.startsWith('RES')) {
+      return {
+        data: { id, data: { text: name }, node_type: 2 },
+      };
     }
   } else {
-    return { data: { id } }
+    return { data: { id } };
   }
 }
 
@@ -39,10 +43,10 @@ describe('graphs reducer', () => {
 
   it('should handle ADD_NODE', () => {
     expect(graph({}, addNode(null, { id: 'test', name: 'TOPIC1', node_type: 1 })))
-      .toEqual({ nodes: [node('test', 'TOPIC1')], });
+      .toEqual({ nodes: [node('test', 'TOPIC1')] });
 
     expect(graph({ nodes: [node('test')] }, addNode(null, { id: 'another' })))
-      .toEqual({ nodes: [node('test'), node('another')], });
+      .toEqual({ nodes: [node('test'), node('another')] });
 
     expect(graph({ nodes: [node('test')] }, addNode('test', { id: 'another' })))
       .toEqual({
@@ -69,18 +73,16 @@ describe('graphs reducer', () => {
       graph({
         nodes: [
           node('test', 'TOPIC1'), node('test22', 'TOPIC2'), node('test333', 'TOPIC3'),
-          node('test4444', 'TOPIC4')
+          node('test4444', 'TOPIC4'),
         ],
         edges: [
-          edge('something', 'test333', 'test'), edge('something22', 'test4444', 'test22')
-        ]
+          edge('something', 'test333', 'test'), edge('something22', 'test4444', 'test22'),
+        ],
       }, mergeNode('test', 'test22')),
     ).toEqual({
       nodes: [node(sw('043f13a4c72157198'), 'TOPIC1 || TOPIC2'), node('test4444', 'TOPIC4'), node('test333', 'TOPIC3'),
       ],
       edges: [edge(sw('81d0d8f25fe167f02'), 'test333', sw('043f13a4c7215')), edge(sw('2aae1faf79c'), 'test4444', sw('043f13a4c72'))],
     });
-
   });
-
 });

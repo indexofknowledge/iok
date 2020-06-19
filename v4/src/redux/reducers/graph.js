@@ -8,7 +8,7 @@ const outgoers = (node) => node.outgoers((el) => el.isNode());
 function nodeId(props, includeSource = true) {
   const hash = sha256.create();
   let hashStr = props.name + (JSON.stringify(props.data) || '');
-  if (includeSource) hashStr += props.source
+  if (includeSource) hashStr += props.source;
   hash.update(hashStr);
   return hash.hex();
 }
@@ -17,19 +17,8 @@ function createNode(props) {
   if (!props.id) props.id = nodeId(props);
   return {
     group: 'nodes',
-    data: props
-  }
-}
-
-function createEdge(source, target) {
-  return {
-    group: 'edges',
-    data: {
-      id: edgeId(source.id(), target.id()),
-      source: source.id(),
-      target: target.id()
-    },
-  }
+    data: props,
+  };
 }
 
 function edgeId(sourceId, targetId) {
@@ -38,10 +27,21 @@ function edgeId(sourceId, targetId) {
   return hash.hex();
 }
 
+function createEdge(source, target) {
+  return {
+    group: 'edges',
+    data: {
+      id: edgeId(source.id(), target.id()),
+      source: source.id(),
+      target: target.id(),
+    },
+  };
+}
+
 /** Moves all edges from oldNode to newNode */
 function updateEdges(cy, oldNode, newNode) {
-  incomers(oldNode).map(neighbor => cy.add(createEdge(neighbor, newNode)));
-  outgoers(oldNode).map(neighbor => cy.add(createEdge(newNode, neighbor)));
+  incomers(oldNode).map((neighbor) => cy.add(createEdge(neighbor, newNode)));
+  outgoers(oldNode).map((neighbor) => cy.add(createEdge(newNode, neighbor)));
   cy.remove(oldNode.connectedEdges());
 }
 
@@ -52,8 +52,8 @@ function merge(from, to, cy) {
 
   // create new node, a mix of nodes From and To
   const newNode = cy.add(createNode({
-    name: from.data('name') + " || " + to.data('name'),
-    node_type: NTYPE.TOPIC
+    name: `${from.data('name')} || ${to.data('name')}`,
+    node_type: NTYPE.TOPIC,
   }));
   const nodes = {};
 
@@ -70,7 +70,7 @@ function merge(from, to, cy) {
 
   from.remove();
   to.remove();
-  Object.values(nodes).forEach(node => cy.add(createEdge(node, newNode)))
+  Object.values(nodes).forEach((node) => cy.add(createEdge(node, newNode)));
 
   return newNode;
 }
