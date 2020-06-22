@@ -24,6 +24,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.16",
+    "react-cytoscapejs": "^1.2.1",
     "react-dom": "^16.8.6",
     "react-modal": "^3.11.1",
     "react-redux": "^7.2.0",

@@ -1,0 +1,13 @@
+span {
+    display: block;
+    font-weight: 300;
+    font-size: 2em;
+    padding: 1rem 2rem;
+}
+
+pre {
+    background: #eee;
+    border-radius: 4px;
+    margin: 2rem;
+    padding: 1rem 2rem;
+}
