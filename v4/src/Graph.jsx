@@ -1,25 +1,27 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import IokEdit from './IokEdit';
-import { addNode, editNode, deleteNode, mergeNode } from '././redux/actions'
+import {
+  addNode, editNode, deleteNode, mergeNode, selectNode,
+} from './redux/actions';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   let elements = [];
   if (state.graph.nodes) elements = state.graph.nodes;
   if (state.graph.edges) elements = elements.concat(state.graph.edges);
   return {
-    graph: elements
-  }
-}
+    graph: elements,
+    selected: state.selected,
+  };
+};
 
-const mapDispatchToProps = dispatch => {
-  return {
-    addNode: (parentId, props) => dispatch(addNode(parentId, props)),
-    editNode: (id, props) => dispatch(editNode(id, props)),
-    deleteNode: (id) => dispatch(deleteNode(id)),
-    mergeNode: (fromId, toId) => dispatch(mergeNode(fromId, toId)),
-  }
-}
+const mapDispatchToProps = (dispatch) => ({
+  addNode: (parentId, props) => dispatch(addNode(parentId, props)),
+  editNode: (id, props) => dispatch(editNode(id, props)),
+  deleteNode: (id) => dispatch(deleteNode(id)),
+  mergeNode: (fromId, toId) => dispatch(mergeNode(fromId, toId)),
+  selectNode: (id) => dispatch(selectNode(id)),
+});
 
-const Graph = connect(mapStateToProps, mapDispatchToProps)(IokEdit)
+const Graph = connect(mapStateToProps, mapDispatchToProps)(IokEdit);
 
-export default Graph
+export default Graph;

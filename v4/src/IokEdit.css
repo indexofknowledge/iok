@@ -1,8 +1,11 @@
-span {
-    display: block;
+h1 {
     font-weight: 300;
     font-size: 2em;
     padding: 1rem 2rem;
+}
+
+p {
+    padding: 0 3rem;
 }
 
 pre {

@@ -3,6 +3,7 @@ export const ACTION_TYPES = {
   EDIT_NODE: 'EDIT_NODE',
   DELETE_NODE: 'DELETE_NODE',
   MERGE_NODE: 'MERGE_NODE',
+  SELECT_NODE: 'SELECT_NODE',
 };
 
 export const addNode = (parentId, props) => ({
@@ -26,4 +27,9 @@ export const mergeNode = (fromId, toId) => ({
   type: ACTION_TYPES.MERGE_NODE,
   fromId,
   toId,
+});
+
+export const selectNode = (node) => ({
+  type: ACTION_TYPES.SELECT_NODE,
+  node,
 });
