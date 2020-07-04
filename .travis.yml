@@ -16,6 +16,8 @@ stages:
     if: branch = master AND type IN (cron)
   - name: javascript-md-scraper
     if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
+  - name: ipfs-cytoscape
+    if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
 jobs:
   include:
     - stage: deploy-v4-beta
@@ -43,6 +45,11 @@ jobs:
     - stage: javascript-md-scraper
       language: node_js
       before_install: cd v4
+      script:
+      - npm test
+    - stage: ipfs-cytoscape
+      language: node_js
+      before_install: cd ipfs-cytoscape
       script:
       - npm test
 
