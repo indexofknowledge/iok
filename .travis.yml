@@ -10,8 +10,6 @@ stages:
     if: branch = master AND type in (cron)
   - name: compile-v4
     if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
-  - name: build-and-test-scraper
-    if: branch = master AND sender != "Travis CI" AND type IN (pull_request)
   - name: scrape-awesome
     if: branch = master AND type IN (cron)
   - name: javascript-md-scraper
@@ -36,10 +34,6 @@ jobs:
       env:
         - DEPLOY_TARGET=prod
       script: "./deploy_scraper.sh && ./push.sh"
-    - stage: build-and-test-scraper
-      language: python
-      python: 3.7
-      script: "./build_and_test_scraper.sh"
     - stage: javascript-md-scraper
       language: node_js
       before_install: cd v4
