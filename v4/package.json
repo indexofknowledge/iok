@@ -20,6 +20,7 @@
     "cytoscape-edgehandles": "^3.6.0",
     "debug": "^4.1.1",
     "eslint-config-airbnb": "^18.1.0",
+    "ipfs-cytoscape": "file:../ipfs-cytoscape",
     "js-sha256": "^0.9.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",

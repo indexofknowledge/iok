@@ -1,0 +1,17 @@
+{
+  "name": "ipfs-cytoscape",
+  "version": "1.0.0",
+  "description": "convert between cytoscape graphs and ipfs",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ipfs-http-client": "^44.3.0"
+  },
+  "devDependencies": {
+    "jest": "^26.1.0"
+  }
+}
