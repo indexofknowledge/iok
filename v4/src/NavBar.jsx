@@ -5,29 +5,17 @@ import { Link } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 import { STORAGE_TYPES } from './types';
 import { DEFL_STORAGE, DEFL_STORAGE_OPTIONS } from './constants';
+import { redirectStorage, redirectDefl } from './urlUtils';
 import './styles/NavBar.css';
 
 class NavBar extends Component {
-  static paramsBuilder(options) {
-    let str = '/';
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const key in options) {
-      if (str !== '') {
-        str += '&';
-      }
-      str += `${key}=${encodeURIComponent(options[key])}`;
-    }
-    return str;
-  }
-
   static onHomeClick(storage, options, changeLoadUser) {
     switch (storage) {
       case STORAGE_TYPES.BLOCKSTACK:
         changeLoadUser(options.username);
         break;
       case STORAGE_TYPES.IPFS:
-        window.location.href = NavBar.paramsBuilder(DEFL_STORAGE_OPTIONS);
+        redirectDefl();
         break;
       default:
         break;
@@ -73,7 +61,7 @@ class NavBar extends Component {
           <button
             type="button"
             className="btn btn-info btn-lg btn-util"
-            onClick={() => { window.location.href = '/?storage='.concat(STORAGE_TYPES.IPFS); }}
+            onClick={() => redirectStorage(STORAGE_TYPES.IPFS)}
           >
             Try IPFS!
           </button>
@@ -83,7 +71,7 @@ class NavBar extends Component {
           <button
             type="button"
             className="btn btn-info btn-lg btn-util"
-            onClick={() => { window.location.href = '/?storage='.concat(STORAGE_TYPES.BLOCKSTACK); }}
+            onClick={() => redirectStorage(STORAGE_TYPES.BLOCKSTACK)}
           >
             Try Blockstack!
           </button>
