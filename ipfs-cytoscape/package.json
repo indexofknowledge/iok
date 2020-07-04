@@ -4,7 +4,8 @@
   "description": "convert between cytoscape graphs and ipfs",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest", 
+    "lint": "./node_modules/.bin/eslint *.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +13,9 @@
     "ipfs-http-client": "^44.3.0"
   },
   "devDependencies": {
+    "eslint": "^7.4.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
     "jest": "^26.1.0"
   }
 }

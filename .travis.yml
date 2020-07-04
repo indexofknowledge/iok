@@ -51,6 +51,7 @@ jobs:
       language: node_js
       before_install: cd ipfs-cytoscape
       script:
+      - npm run lint
       - npm test
 
 
