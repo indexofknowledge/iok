@@ -1,6 +1,3 @@
-import React, { Component } from 'react';
-import './styles/Toolbar.css';
-
 // Plan?
 // Graph -> container component that links graph modifying
 // state + actions -> redux
@@ -15,9 +12,3 @@ import './styles/Toolbar.css';
 // Landing -> what even is this
 // AddNodeModal/EditNodeModal -> keeping until we figure out how to do this
 // ListIoksModal -> same thing
-
-class Toolbar extends Component {
-
-}
-
-export default Toolbar;

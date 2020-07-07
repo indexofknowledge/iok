@@ -1,6 +1,6 @@
 // eslint-disable-line
 import React, { Component } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap'; // eslint-disable-line
 import { IOKS } from './constants';
 import './styles/ListIoksModal.css';
 

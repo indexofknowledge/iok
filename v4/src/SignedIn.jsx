@@ -3,10 +3,10 @@
 import React, { Component } from 'react';
 import { UserSession } from 'blockstack';
 import Split from 'react-split';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap'; // eslint-disable-line
 import PropTypes from 'prop-types';
 
-import Cytoscape from 'cytoscape';
+import Cytoscape from 'cytoscape'; // eslint-disable-line
 import dagre from 'cytoscape-dagre';
 import cola from 'cytoscape-cola';
 import edgehandles from 'cytoscape-edgehandles';

@@ -77,6 +77,15 @@ function merge(from, to, cy) {
   return newNode;
 }
 
+function deleteNodeHelper(node, cy) {
+  // recursively send in a node, if theres no incomers, delete it
+  const nodes = incomers(node);
+  if (nodes) {
+    nodes.map((nodeIn) => deleteNodeHelper(nodeIn, cy));
+  }
+  cy.remove(node);
+}
+
 export default function graph(state = {}, action) {
   // Hack to make sure cytoscape doesn't add a default node for us
   // eslint-disable-next-line no-param-reassign
@@ -100,7 +109,9 @@ export default function graph(state = {}, action) {
       break;
     }
     case ACTION_TYPES.DELETE_NODE: {
-      cy.getElementById(action.id).remove();
+      // cy.getElementById(action.id).remove();
+      const node = cy.getElementById(action.id);
+      deleteNodeHelper(node, cy);
       break;
     }
     case ACTION_TYPES.MERGE_NODE: {
@@ -108,6 +119,9 @@ export default function graph(state = {}, action) {
       const to = cy.getElementById(action.toId);
       merge(from, to, cy);
       break;
+    }
+    case ACTION_TYPES.UPLOAD_GRAPH: {
+      return action.graph;
     }
     default:
       break;

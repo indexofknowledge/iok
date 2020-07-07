@@ -11,6 +11,8 @@ import './styles/App.css';
 // import { DEFL_STORAGE, DEFL_STORAGE_OPTIONS } from './constants';
 
 import Graph from './Graph';
+import Sidebar from './Sidebar';
+import './App.css';
 
 class App extends Component {
   // static changeToGuestMode() {
@@ -103,7 +105,12 @@ class App extends Component {
   //   );
   // }
   render() {
-    return <Graph />;
+    return (
+      <div className="alignedstuff">
+        <Graph />
+        <Sidebar />
+      </div>
+    );
   }
 }
 

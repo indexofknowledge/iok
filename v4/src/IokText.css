@@ -1,0 +1,14 @@
+.sidebar {
+    width: 350px;
+    font-family: cursive;
+    flex-shrink: 0;
+}
+
+.nodeid {
+    overflow: hidden;
+    font-family: monospace;
+}
+
+.nodisplay {
+    display: none;
+}
