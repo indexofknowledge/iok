@@ -1,5 +1,5 @@
+#!/usr/bin/env python
 import requests
-import sys
 from iok.meta import KnowledgeGraph, AwesomeClient
 
 
