@@ -7,7 +7,9 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 show_help() {
+  echo "setup_node        Install node if it\'s not present and npm install the utils"
   echo "get_full_graph    Print full graph json from CID"
+  echo "put_graph         Takes graph JSON from stdin and puts to IPFS"
 }
 
 setup_node() {

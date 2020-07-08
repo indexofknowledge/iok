@@ -27,8 +27,8 @@ class KnowledgeGraph:
             logging.info("Trying to read graph from obj")
             self.graph = nx.DiGraph()
             self.read_from_json_obj(obj)
-        # create new one if not
-        self.graph = nx.DiGraph()
+        else:
+            self.graph = nx.DiGraph()
 
     def write_graph(self, filename):
         """For debugging mostly, write graph to png"""
@@ -81,8 +81,8 @@ class KnowledgeGraph:
                 name = dat["name"]
 
             self._add_knowledge_node(
-                dat["id"],
                 NodeType(dat["node_type"]),
+                id=dat["id"],
                 name=name,
                 data=data,
                 resource_type=resource_type,
