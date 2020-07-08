@@ -6,46 +6,31 @@ The Decentralized Index of Knowledge (DIoK) is a curated collection of resources
 
 ## Table of Contents
 
-* [Pizza](#Pizza)
-* [Toppings](#Toppings)
-* [Pineapple](#Pineapple)
-* [Sauce](#Sauce)
-* [Tomato Sauce](#Tomato%20Sauce)
-* [Pesto Sauce](#Pesto%20Sauce)
-* [Crust](#Crust)
+* [bitcoin](#bitcoin)
+* [computer science](#computer%20science)
+* [economics](#economics)
+* [math](#math)
 
-## Pizza
+## bitcoin
 
 ### Description
 
-a dish of Italian origin consisting of a flat, round base of dough baked with a topping of tomato sauce and cheese, typically with added meat or vegetables.
+* [Bitcoin is an innovative payment network and a new kind of money.]()
+### Papers
 
-## Toppings
+* [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf)
+## computer science
 
-## Pineapple
+### Description
 
-### Articles
+* [Computer science is the study of processes that interact with data and that can be represented as data in the form of programs.]()
+## economics
 
-* [Grow Pineapple [WikiHow]](https://www.wikihow.com/Grow-a-Pineapple)
-### Videos
+### Description
 
-* [Grow a Pineapple](https://www.youtube.com/watch?v=OpvPGQI1xj8)
-## Sauce
+* [Economics is the social science that studies the production, distribution, and consumption of goods and services.]()
+## math
 
-## Tomato Sauce
+### Description
 
-### Articles
-
-* [Tomato Sauce [food network]](https://www.foodnetwork.com/how-to/articles/how-to-make-a-basic-tomato-sauce-a-step-by-step-guide)
-* [Tomato Sauce [Damn Delicious]](https://damndelicious.net/2020/03/14/quick-tomato-sauce/)
-## Pesto Sauce
-
-### Articles
-
-* [Pesto Sauce [Bon Appetit]](https://www.bonappetit.com/recipe/classic-pesto-sauce)
-* [Pesto Sauce [Damn Delicious]](https://damndelicious.net/2014/07/05/easy-homemade-pesto/)
-## Crust
-
-### Articles
-
-* [Pizza Crust [All Recipes]](https://www.allrecipes.com/recipe/20171/quick-and-easy-pizza-crust/)
+* [Mathematics is the study of abstract objects and structures that are often, but not always, abstracted from the physical world. It includes the study of such abstractions as quantity, structure, space and shapes, and change.]()
