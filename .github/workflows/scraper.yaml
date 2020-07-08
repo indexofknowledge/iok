@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  scape-to-readme:
+  scrape-to-readme:
     runs-on: ubuntu-latest
     strategy:
       matrix:

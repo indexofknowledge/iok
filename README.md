@@ -7,7 +7,7 @@ The Decentralized Index of Knowledge (DIoK) is a curated collection of resources
 ## Table of Contents
 
 * [bitcoin](#bitcoin)
-* [computer science](#computer%20science)
+* [computer science](#computer-science)
 * [economics](#economics)
 * [math](#math)
 
@@ -15,7 +15,8 @@ The Decentralized Index of Knowledge (DIoK) is a curated collection of resources
 
 ### Description
 
-* [Bitcoin is an innovative payment network and a new kind of money.]()
+Bitcoin is an innovative payment network and a new kind of money.
+
 ### Papers
 
 * [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf)
@@ -23,14 +24,17 @@ The Decentralized Index of Knowledge (DIoK) is a curated collection of resources
 
 ### Description
 
-* [Computer science is the study of processes that interact with data and that can be represented as data in the form of programs.]()
+Computer science is the study of processes that interact with data and that can be represented as data in the form of programs.
+
 ## economics
 
 ### Description
 
-* [Economics is the social science that studies the production, distribution, and consumption of goods and services.]()
+Economics is the social science that studies the production, distribution, and consumption of goods and services.
+
 ## math
 
 ### Description
 
-* [Mathematics is the study of abstract objects and structures that are often, but not always, abstracted from the physical world. It includes the study of such abstractions as quantity, structure, space and shapes, and change.]()
+Mathematics is the study of abstract objects and structures that are often, but not always, abstracted from the physical world. It includes the study of such abstractions as quantity, structure, space and shapes, and change.
+

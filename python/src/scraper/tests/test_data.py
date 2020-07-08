@@ -137,7 +137,10 @@ TEST_DATA = {
             {
                 "data": {
                     "resource_type": 1,
-                    "data": "a dish of Italian origin consisting of a flat, round base of dough baked with a topping of tomato sauce and cheese, typically with added meat or vegetables.",
+                    "data": {
+                        "link": "",
+                        "text": "a dish of Italian origin consisting of a flat, round base of dough baked with a topping of tomato sauce and cheese, typically with added meat or vegetables.",
+                    },
                     "node_type": 2,
                     "id": "512b6a3b60506b05da1d61426bd3214b58c2765d29c1db8d76460d23c3a40373",
                     "name": "res-512b6a3b60",
