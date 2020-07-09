@@ -57,6 +57,10 @@ class KnowledgeGraph:
             del x["node_type"]
             del x["id"]
 
+        dat["elements"] = {"nodes": dat["nodes"], "edges": dat["edges"]}
+        del dat["nodes"]
+        del dat["edges"]
+
         if filename:
             with open(filename, "w") as f:
                 json.dump(dat, f)
