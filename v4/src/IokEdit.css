@@ -1,6 +1,33 @@
 .graph {
+  display: flex;
   flex-grow: 1;
   overflow: hidden;
+}
+
+.toolbar {
+  width: 54px;
+  height: 1000px;
+  background: #fff;
+  box-shadow: 0px 0 4px rgba(0, 0, 0, 0.3);
+}
+
+.tool {
+  color: #202020;
+  margin: 15px;
+  padding: 0px;
+  border-width: 0px;
+  background: transparent;
+}
+
+.birb {
+  text-align: center;
+  font-size: 28px;
+  margin-top: 15px;
+  margin-bottom: 100px;
+}
+
+.innerGraph {
+  flex-grow: 1;
 }
 
 h1 {

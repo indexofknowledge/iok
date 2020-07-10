@@ -59,10 +59,17 @@ function merge(from, to, cy) {
   }));
   const nodes = {};
 
+  //handle cases where nodes are directly related
+  const testFromId = nodeId(from.data(), false);
+  const testToId = nodeId(to.data(), false);
+
   // if the node is repeated / in hashtable, merge it, else, add i
   // eslint-disable-next-line no-restricted-syntax
   for (const node of incomers(from).union(incomers(to))) {
     const id = nodeId(node.data(), false);
+    if (id == testFromId || id == testToId) {
+      continue;
+    }
     if (nodes[id]) {
       nodes[id] = merge(node, nodes[id], cy);
     } else {

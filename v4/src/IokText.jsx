@@ -68,106 +68,42 @@ class IokText extends Component {
 
       <div className="sidebar">
 
-        {/* <Modal className="Modal" show={showDeleteModal} onHide={this.toggleDeleteModal}>
-          <Modal.Header>
-            <Modal.Title>Delete your IoK?</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            This will delete all your IoK data from your Blockstack data locker.
-          </Modal.Body>
-          <Modal.Footer>
-            <Button className="btn btn-info btn-lg btn-delete" onClick={() => { this.onDeleteClick(); this.toggleDeleteModal(); }}>
-              Delete
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <h2 className="nodetitle">{data.name}</h2>
+        <p>From IoK</p>
+        <p className="nodeid">{data.id}</p>
+        <p id="nodesubtitle">{subtitle}</p>
 
-        <Modal className="Modal" show={showSaveModal} onHide={this.toggleSaveModal}>
-          <Modal.Header>
-            <Modal.Title>Save your IoK?</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            This will save your IoK data to your Blockstack data locker,
-            potentially overwriting previous versions.
-          </Modal.Body>
-          <Modal.Footer>
-            <Button className="btn btn-info btn-lg btn-save" onClick={() => { this.onSaveClick(); this.toggleSaveModal(); }}>
-              Save
-            </Button>
-          </Modal.Footer>
-        </Modal> */}
-
-        <div id="cytext" className="iok-text">
+        {depList.length !== 0 && (
           <div>
-            <h2 className="breaking" id="nodetitle">{data.name}</h2>
-
-            {/* used mainly to display info text to user */}
-            <p className="breaking" class="nodeid">{data.id}</p>
-            <p id="nodesubtitle">{subtitle}</p>
-
-            <hr className="hr-sep" />
-
-            {descList.length !== 0 && (
-              <div>
-                <h5>Description(s)</h5>
-                <ul id="nodedescs">
-                  {descList}
-                </ul>
-              </div>
-            )}
-
-            {linkList.length !== 0 && (
-              <div>
-                <h5>Links</h5>
-                <ul id="nodelinks">
-                  {linkList}
-                </ul>
-              </div>
-            )}
-
-            {depList.length !== 0 && (
-              <div>
-                <h5>Dependencies</h5>
-                <ul id="nodedeps">
-                  {depList}
-                </ul>
-              </div>
-            )}
-
-            <hr className="hr-sep" />
-
-            <div>
-              <div className="edit-div">
-                <h5>Edit</h5>
-                {/* <EditNodeModal
-                  node={node}
-                  addNode={this.addNodeToCy}
-                  removeNode={this.removeNodeFromCy}
-                  setNode={setCurrNode}
-                  updateEdges={this.updateEdgesFromCy}
-                />
-                <AddNodeModal addNode={this.addNodeToCy} /> */}
-
-                <div>
-                  <button type="button" className="btn btn-info btn-lg btn-save" onClick={this.toggleSaveModal}>Save</button>
-                  <button type="button" className="btn btn-info btn-lg btn-delete" onClick={this.toggleDeleteModal}>Delete</button>
-                </div>
-
-              </div>
-
-              <div className="misc-div">
-                <h5>Misc</h5>
-                {/* <ListIoksModal /> */}
-                <button type="button" id="downloadButton" className="btn btn-info btn-lg btn-util" onClick={this.downloadGraph}>Download</button>
-                :
-                <div />
-                <input className="btn btn-info btn-lg btn-upload" type="file" name="file" onChange={this.onFileUploadHandler} />
-              </div>
-
-            </div>
+            <h5>You'll first need to understand</h5>
+            <ul id="nodedeps">
+              {depList}
+            </ul>
           </div>
-        </div>
+        )}
+
+        {descList.length !== 0 && (
+          <div>
+            <h5>What is {data.name}?</h5>
+            <ul id="nodedescs">
+              {descList}
+            </ul>
+          </div>
+        )}
+
+        {linkList.length !== 0 && (
+          <div>
+            <h5>Learn more</h5>
+            <ul id="nodelinks">
+              {linkList}
+            </ul>
+          </div>
+        )}
+
+
+
       </div>
+
     );
   }
 }

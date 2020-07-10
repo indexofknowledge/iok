@@ -1,8 +1,9 @@
 .sidebar {
     width: 350px;
-    font-family: cursive;
     flex-shrink: 0;
+    padding: 20px;
 }
+
 
 .nodeid {
     overflow: hidden;
@@ -12,3 +13,5 @@
 .nodisplay {
     display: none;
 }
+
+
