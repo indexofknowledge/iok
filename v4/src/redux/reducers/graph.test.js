@@ -82,7 +82,7 @@ describe('graphs reducer', () => {
       edges: [edge('edge2', 'test3', 'test2'), edge('edge', 'test2', 'test')],
     }, deleteNode('test2')))
       .toEqual({
-        nodes: [node('test', 'TOPIC1'), node('test3', 'TOPIC3')],
+        nodes: [node('test', 'TOPIC1')]
       });
   });
 
