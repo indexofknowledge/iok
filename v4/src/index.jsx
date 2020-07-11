@@ -7,7 +7,7 @@ import App from './App';
 
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
-import rootReducer from '././redux/reducers/index'
+import rootReducer from '././redux/reducers/index2'
 
 // Require Sass file so webpack can build it
 // import 'bootstrap/dist/css/bootstrap.min.css';

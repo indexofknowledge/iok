@@ -84,18 +84,13 @@ class IokEdit extends Component {
   }
 
   addNode() {
-    const { addNode, selected } = this.props;
-    const parent = selected || {};
+    const { addNode } = this.props;
     this.setState({ submitFunc: addNode })
-    console.log(this.state)
   }
 
   editNode() {
     const { editNode } = this.props;
     this.setState({ submitFunc: editNode })
-    console.log(this.state)
-    // ask for edits
-    // editNode();
   }
 
   deleteNode() {

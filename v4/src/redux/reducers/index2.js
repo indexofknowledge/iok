@@ -3,6 +3,8 @@ import { sha256 } from 'js-sha256';
 import { NTYPE } from '../../types';
 import { ACTION_TYPES } from '../actions';
 
+import calcCurrentNode from '../../calcCurrNode';
+
 const incomers = (node) => node.incomers((el) => el.isNode());
 const outgoers = (node) => node.outgoers((el) => el.isNode());
 
@@ -94,24 +96,26 @@ function deleteNodeHelper(node, cy) {
 }
 
 function graphHelper(cy) {
+
   const j = cy.json().elements;
   if (j.nodes) j.nodes = j.nodes.map((n) => ({ data: n.data }));
   if (j.edges) j.edges = j.edges.map((e) => ({ data: e.data }));
+  console.log(j)
   return j;
+
 }
-
-export default function graph(state = {}, action) {
-  // Hack to make sure cytoscape doesn't add a default node for us
-  // eslint-disable-next-line no-param-reassign
-  if (!state.nodes || !state.nodes.length) state = [];
-
-  const cy = Cytoscape({ elements: state });
+export default function graph(state = { graph: { nodes: [], edges: [] }, selected: null, mergingNode: null }, action) {
+  let { graph, selected, mergingNode } = state
+  if (!state.graph.nodes || !state.graph.nodes.length) state.graph = [];
+  const cy = Cytoscape({ elements: state.graph });
   switch (action.type) {
     case ACTION_TYPES.ADD_NODE: {
       const newNode = cy.add(createNode(action.props));
       if (action.parentId) {
         cy.add(createEdge(newNode, cy.getElementById(action.parentId)));
       }
+      graph = graphHelper(cy);
+      selected = calcCurrentNode(newNode);
       break;
     }
     case ACTION_TYPES.EDIT_NODE: {
@@ -120,25 +124,43 @@ export default function graph(state = {}, action) {
       updateEdges(cy, oldNode, newNode);
       newNode.shift(oldNode.position());
       oldNode.remove();
+      console.log(newNode)
+      graph = graphHelper(cy);
+      selected = calcCurrentNode(newNode);
       break;
     }
     case ACTION_TYPES.DELETE_NODE: {
-      // cy.getElementById(action.id).remove();
       const node = cy.getElementById(action.id);
       deleteNodeHelper(node, cy);
+      graph = graphHelper(cy);
       break;
     }
     case ACTION_TYPES.MERGE_NODE: {
       const from = cy.getElementById(action.fromId);
       const to = cy.getElementById(action.toId);
       merge(from, to, cy);
+      graph = graphHelper(cy);
       break;
     }
     case ACTION_TYPES.UPLOAD_GRAPH: {
-      return action.graph;
+      graph = action.graph
+      break;
+    }
+    case ACTION_TYPES.SELECT_NODE: {
+      selected = action.node
+      mergingNode = null
+      break;
+    }
+    case ACTION_TYPES.SELECT_MERGE_NODE: {
+      mergingNode = action.node;
+      break;
     }
     default:
       break;
   }
-  return graphHelper(cy);
+  return {
+    graph,
+    selected,
+    mergingNode
+  };
 }

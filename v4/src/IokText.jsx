@@ -5,16 +5,10 @@ import React, { Component } from 'react';
 // import { Button, Modal } from 'react-bootstrap';
 // import { sha256 } from 'js-sha256';
 import { PropTypes } from 'prop-types';
-// import AddNodeModal from './AddNodeModal';
-// import EditNodeModal from './EditNodeModal';
-// import ListIoksModal from './ListIoksModal';
 // import Log from './log';
 // import './styles/IokText.css';
 import './IokText.css';
 
-// import {
-//   regroupCy, toggleDrawMode, toggleMeta, addNode, getNodesEdgesJson,
-// } from './listen';
 // import { GRAPH_FILENAME } from './constants';
 import { NTYPE } from './types';
 
@@ -26,7 +20,7 @@ class IokText extends Component {
   }
 
   render() {
-    const { node } = this.props;
+    const { node, selected } = this.props;
     const data = node ? node.data : {
       name: 'Overview',
       data: { text: 'Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency.' },
@@ -40,8 +34,9 @@ class IokText extends Component {
     } else if (data.node_type === NTYPE.RESO) {
       subtitle = 'NOTE: Resource node. Displaying own contents';
     }
-
     const neighbors = node ? node.neighbors : [data];
+
+    console.log("SHOULD BE CALCED", node, "BUT data IS ", data);
     const depList = [];
     const descList = [];
     const linkList = [];
