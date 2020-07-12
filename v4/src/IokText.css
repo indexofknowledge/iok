@@ -1,9 +1,10 @@
 .sidebar {
     width: 350px;
     flex-shrink: 0;
-    padding: 20px;
+    padding: 30px;
+    box-shadow: 0px 0 4px rgba(0, 0, 0, 0.3);
+    height: 100%;
 }
-
 
 .nodeid {
     overflow: hidden;
@@ -14,4 +15,22 @@
     display: none;
 }
 
+.nodetitle {
+    font-size: 2em;
+    font-weight: 400;
+    margin-top: 0;
+}
 
+.heading {
+  font-size: 1.25em;
+  font-weight: 500;
+}
+
+.circle {
+  height: 25px;
+  width: 25px;
+  border-radius:25px;
+  background-color: #a123a1;
+  display: inline-block;
+  text-align: center;
+}

@@ -13,14 +13,8 @@ import './IokText.css';
 import { NTYPE } from './types';
 
 class IokText extends Component {
-  static getDerivedStateFromProps(props) {
-    return { // TODO: figure out why this is called twice
-      cy: props.cy,
-    };
-  }
-
   render() {
-    const { node, selected } = this.props;
+    const { node, } = this.props;
     const data = node ? node.data : {
       name: 'Overview',
       data: { text: 'Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency.' },
@@ -36,7 +30,6 @@ class IokText extends Component {
     }
     const neighbors = node ? node.neighbors : [data];
 
-    console.log("SHOULD BE CALCED", node, "BUT data IS ", data);
     const depList = [];
     const descList = [];
     const linkList = [];
@@ -64,13 +57,13 @@ class IokText extends Component {
       <div className="sidebar">
 
         <h2 className="nodetitle">{data.name}</h2>
-        <p>From IoK</p>
-        <p className="nodeid">{data.id}</p>
+        <p>From <a href="http://localhost:3000/">Rustie's IoK</a> by Rustie</p>
+        <div className="circle">#</div> <div className="circle">@</div> <div className="circle">!</div>
         <p id="nodesubtitle">{subtitle}</p>
 
         {depList.length !== 0 && (
           <div>
-            <h5>You'll first need to understand</h5>
+            <h3 className="heading">You'll first need to understand</h3>
             <ul id="nodedeps">
               {depList}
             </ul>
@@ -79,7 +72,7 @@ class IokText extends Component {
 
         {descList.length !== 0 && (
           <div>
-            <h5>What is {data.name}?</h5>
+            <h3 className="heading">What is {data.name}?</h3>
             <ul id="nodedescs">
               {descList}
             </ul>
@@ -88,13 +81,15 @@ class IokText extends Component {
 
         {linkList.length !== 0 && (
           <div>
-            <h5>Learn more</h5>
+            <h3 className="heading">Learn more</h3>
             <ul id="nodelinks">
               {linkList}
             </ul>
           </div>
         )}
 
+        <h3 className="heading">Debugging</h3>
+        <p className="nodeid">{data.id}</p>
 
 
       </div>
@@ -122,9 +117,6 @@ IokText.propTypes = {
   cy: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
   node: PropTypes.object, // XXX: a good excuse to use TypeScript...
-  // graphLoaded: PropTypes.bool,
-  // guestMode: PropTypes.bool,
-  // setCurrNode: PropTypes.func,
 };
 
 export default IokText;

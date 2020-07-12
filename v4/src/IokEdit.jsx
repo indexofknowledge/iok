@@ -4,6 +4,7 @@ import CytoscapeComponent from 'react-cytoscapejs';
 import './IokEdit.css';
 import calcCurrentNode from './calcCurrNode';
 import NodeProperties from './NodeProperties';
+import { saveIPFSGraph } from '../src/storage/ipfs'
 
 const IokStyle = (zoom) => [
   {
@@ -47,20 +48,24 @@ class IokEdit extends Component {
     this.nodeProps = React.createRef();
     this.state = {
       zoom: 1,
-      submitFunc: this.props.addNode,
+      submitFunc: null,
     };
+    this.addNode = this.addNode.bind(this);
+    this.editNode = this.editNode.bind(this);
   }
 
   onNodeTap(evt, cy) {
     const { selected, selectNode } = this.props;
     if (evt.target === cy) {
-      if (selected) selectNode(null);
-      this.nodeProps.current.setStateFromNode({});
+      if (selected) {
+        selectNode(null);
+        this.setState({ submitFunc: null })
+      }
     } else if (evt.target.isNode()) {
       const id = evt.target.id();
       if (!selected || selected.id !== id) {
         selectNode(calcCurrentNode(evt.target));
-        this.nodeProps.current.setStateFromNode(evt.target.data());
+        console.log("CLICKY", evt.target.data())
       }
     }
   }
@@ -83,14 +88,26 @@ class IokEdit extends Component {
     cy.on('zoom', (evt) => this.setState({ zoom: cy.zoom() }));
   }
 
-  addNode() {
-    const { addNode } = this.props;
-    this.setState({ submitFunc: addNode })
+  openAddNode() {
+    this.setState({ submitFunc: this.addNode });
   }
 
-  editNode() {
+  addNode(id, props) {
+    const { addNode } = this.props;
+    addNode(id, props);
+    this.setState({ submitFunc: null })
+  }
+
+  openEditNode() {
+    const { selected } = this.props;
+    this.nodeProps.current.setStateFromNode(selected.data);
+    this.setState({ submitFunc: this.editNode });
+  }
+
+  editNode(id, props) {
     const { editNode } = this.props;
-    this.setState({ submitFunc: editNode })
+    editNode(id, props);
+    this.setState({ submitFunc: null })
   }
 
   deleteNode() {
@@ -133,6 +150,26 @@ class IokEdit extends Component {
     if (event.target.files) reader.readAsText(event.target.files[0]);
   }
 
+  publishGraph() {
+    const { graph } = this.props;
+    console.log("PUBLISHING", { elements: graph });
+
+    // saveCache(graph, storage, options);
+
+    // switch (storage) {
+    // case STORAGE_TYPES.IPFS:
+    // might result in invalid state if cache is not updated after onHashChange
+    saveIPFSGraph({ elements: graph }, (hash) => { this.setState({ options: { hash } }); alert(hash); });
+    // break;
+    // case STORAGE_TYPES.BLOCKSTACK:
+    //   saveBlockstackGraph(graph, this.userSession);
+    //   break;
+    // default:
+    //   break;
+    //}
+
+  }
+
   downloadGraph() {
     const { graph } = this.props;
     const exportName = 'file.json';
@@ -150,18 +187,18 @@ class IokEdit extends Component {
   }
 
   render() {
-    const { elements, selected, mergingNode, editNode, addNode } = this.props;
-    const { zoom, submitFunc, editing } = this.state;
+    const { elements, selected, mergingNode } = this.props;
+    const { zoom, submitFunc } = this.state;
     return (
       <div className="graph">
         <div className="toolbar">
           <div className="birb">🐦</div>
-          <button className="tool" type="button" onClick={() => this.addNode()}>
+          <button className="tool" type="button" onClick={() => this.openAddNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
             </svg>
           </button>
-          <button className="tool" type="button" onClick={() => this.editNode()}>
+          <button className="tool" type="button" onClick={() => this.openEditNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20.1346 5.62957C20.5138 6.01957 20.5138 6.64957 20.1346 7.03957L18.3554 8.86957L14.7096 5.11957L16.4888 3.28957C16.8679 2.89957 17.4804 2.89957 17.8596 3.28957L20.1346 5.62957ZM2.9165 20.9995V17.2495L13.6693 6.18953L17.3151 9.93953L6.56234 20.9995H2.9165Z" />
             </svg>
@@ -188,7 +225,7 @@ class IokEdit extends Component {
               <path d="M13 13H16L12 17L8 13H11V3H13V13ZM4 21V19H20V21H4Z" />
             </svg>
           </button>
-          <button className="tool" type="button" onClick={() => this.mergeNode()}>
+          <button className="tool" type="button" onClick={() => this.publishGraph()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 4C15.64 4 18.67 6.59 19.35 10.04C21.95 10.22 24 12.36 24 15C24 17.76 21.76 20 19 20H6C2.69 20 0 17.31 0 14C0 10.91 2.34 8.36 5.35 8.04C6.6 5.64 9.11 4 12 4ZM13.9999 17V13H16.9999L11.9999 7.99997L6.99992 13H9.99992V17H13.9999Z" />
             </svg>
@@ -207,17 +244,17 @@ class IokEdit extends Component {
           <CytoscapeComponent
             cy={(cy) => this.initCy(cy)}
             elements={elements}
-            style={{ width: '100%', height: '400px' }}
+            style={{ width: '100%', height: '100%' }}
             stylesheet={IokStyle(zoom)}
           />
-          <p>
+          {/* <p>
             <code>
               Selected:
             {selected ? selected.id : 'null'}
             </code>
-          </p>
-          <NodeProperties title="Hello node" node={selected} ref={this.nodeProps} submit={submitFunc} editing={submitFunc === this.props.editNode} />
-          <pre><code>{JSON.stringify(elements, null, 2)}</code></pre>
+          </p> */}
+          <NodeProperties title="Hello node" node={selected} ref={this.nodeProps} submit={submitFunc} editing={submitFunc === this.editNode} />
+          {/* <pre><code>{JSON.stringify(elements, null, 2)}</code></pre> */}
         </div>
       </div>
     );
@@ -225,7 +262,8 @@ class IokEdit extends Component {
 }
 
 IokEdit.propTypes = {
-  graph: PropTypes.arrayOf(PropTypes.object).isRequired,
+  graph: PropTypes.object.isRequired,
+  elements: PropTypes.arrayOf(PropTypes.object).isRequired,
   addNode: PropTypes.func.isRequired,
   editNode: PropTypes.func.isRequired,
   deleteNode: PropTypes.func.isRequired,

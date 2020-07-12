@@ -2,11 +2,11 @@
   display: flex;
   flex-grow: 1;
   overflow: hidden;
+  height: 100%;
 }
 
 .toolbar {
   width: 54px;
-  height: 1000px;
   background: #fff;
   box-shadow: 0px 0 4px rgba(0, 0, 0, 0.3);
 }
@@ -34,10 +34,7 @@ h1 {
     font-weight: 300;
     font-size: 2em;
     padding: 1rem 2rem;
-}
-
-p {
-    padding: 0 3rem;
+    position: absolute;
 }
 
 pre {
@@ -45,4 +42,16 @@ pre {
     border-radius: 4px;
     margin: 2rem;
     padding: 1rem 2rem;
+}
+
+.dialog {
+  position: absolute;
+  left: 60px;
+  top: 200px;
+  padding: 30px;
+  height: 200px;
+  width: 400px;
+  background-color: #eee;
+  border-color: aqua;
+  border-width: 10px;
 }

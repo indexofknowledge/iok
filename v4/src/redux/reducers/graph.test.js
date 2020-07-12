@@ -1,7 +1,7 @@
 import {
   addNode, editNode, deleteNode, mergeNode,
 } from '../actions';
-import graph from './graph';
+import graph from './index2';
 
 function edge(id, source, target) {
   return {

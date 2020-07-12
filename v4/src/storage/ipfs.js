@@ -1,29 +1,18 @@
 // eslint-disable-line
+import { getFullGraph, putGraph } from 'ipfs-cytoscape';
 import Log from '../log';
 
 const TAG = 'storage.ipfs';
-const base = 'https://ipfs.io/ipfs/';
-const pinataProxy = 'https://us-central1-index-of-knowledge.cloudfunctions.net/storeGraph';
 
 export const loadIPFSGraph = (hash, onSuccess, onError) => {
   Log.info(TAG, 'Loading from IPFS', hash);
-  const url = base + hash;
-  fetch(url).then((response) => response.json()).then((data) => {
-    onSuccess(data);
-  }).catch((err) => {
-    onError(err);
-  });
+  getFullGraph(hash)
+    .then((data) => onSuccess(data))
+    .catch((err) => onError(err));
 };
 
 export const saveIPFSGraph = (graph, onHashChange) => {
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(graph),
-  };
-  Log.info('GRAPH', graph);
-  fetch(pinataProxy, requestOptions)
-    .then((response) => { Log.info('RESPONSE', response); return response.json(); })
-    .then((data) => onHashChange(data.IpfsHash))
-    .catch((err) => Log.error(err));
+  putGraph(graph)
+    .then((data) => { console.info(TAG, data); onHashChange(data); })
+    .catch((err) => console.error(err));
 };

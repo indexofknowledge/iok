@@ -1,9 +1,14 @@
 body {
-  margin: 0; 
+  margin: 0;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
 }
 
 .alignedstuff {
-   display: flex;    
+   display: flex;
+   overflow: hidden;    
 }
 
+html, body, #root, .alignedstuff {
+  height: 100%;
+}
 

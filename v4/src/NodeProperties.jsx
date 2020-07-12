@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { PropTypes } from 'prop-types';
 import { NTYPE, RTYPE } from './types';
-
+import './IokEdit.css';
 class NodeProperties extends Component {
   constructor(props) {
     super(props);
@@ -14,15 +14,12 @@ class NodeProperties extends Component {
   }
 
   setStateFromNode(node) {
-    const { editing } = this.props;
-    if (editing) {
-      this.setState({
-        name: (node ? node.name : ''),
-        nodeType: (node ? node.node_type : null),
-        resourceType: (node ? node.resource_type : null),
-        resourceData: (node ? node.data || {} : {}),
-      })
-    }
+    this.setState({
+      name: (node ? node.name : ''),
+      nodeType: (node ? node.node_type : null),
+      resourceType: (node ? node.resource_type : null),
+      resourceData: (node ? node.data || {} : {}),
+    })
   }
 
   setNodeType(evt) {
@@ -63,16 +60,16 @@ class NodeProperties extends Component {
     if (editing) {
       if (!node) return <span />;
       return (
-        <>
+        <div className="dialog">
           <h2>Edit Node</h2>
           <p>{node.name}</p>
           {this.topicOrResource()}
           <button onClick={() => this.handleSubmit()}>Submit</button>
-        </>
+        </div>
       );
     }
     return (
-      <>
+      <div className="dialog">
         <h2>Add Node</h2>
         <div className="formgroup">
           <label>Type of Node</label>
@@ -87,7 +84,7 @@ class NodeProperties extends Component {
           {this.topicOrResource()}
           <button onClick={() => this.handleSubmit()}>Submit</button>
         </div>
-      </>
+      </div>
     );
 
   }
@@ -200,7 +197,9 @@ class NodeProperties extends Component {
   }
 
   render() {
-    return this.addOrEdit();
+    const { submit } = this.props;
+    if (submit) return this.addOrEdit();
+    return '';
   }
 }
 
@@ -211,7 +210,7 @@ NodeProperties.defaultProps = {
 NodeProperties.propTypes = {
   title: PropTypes.string.isRequired,
   node: PropTypes.object,
-  submit: PropTypes.func.isRequired,
+  submit: PropTypes.func,
 };
 
 export default NodeProperties;
