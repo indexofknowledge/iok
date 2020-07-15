@@ -258,7 +258,6 @@ export const validURL = (str) => {
 //     }
 //     document.getElementById('nodeid').innerText = node.data('id')
 
-
 //     const ulNodeLinks = document.getElementById('nodelinks');
 //     const ulNodeDeps = document.getElementById('nodedeps')
 //     const ulNodeDescs = document.getElementById('nodedescs')

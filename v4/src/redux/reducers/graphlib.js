@@ -1,4 +1,3 @@
-
 import { sha256 } from 'js-sha256';
 import { NTYPE } from '../../types';
 
@@ -58,7 +57,7 @@ function merge(from, to, cy) {
   }));
   const nodes = {};
 
-  //handle cases where nodes are directly related
+  // handle cases where nodes are directly related
   const testFromId = nodeId(from.data(), false);
   const testToId = nodeId(to.data(), false);
 
@@ -66,13 +65,12 @@ function merge(from, to, cy) {
   // eslint-disable-next-line no-restricted-syntax
   for (const node of incomers(from).union(incomers(to))) {
     const id = nodeId(node.data(), false);
-    if (id == testFromId || id == testToId) {
-      continue;
-    }
-    if (nodes[id]) {
-      nodes[id] = merge(node, nodes[id], cy);
-    } else {
-      nodes[id] = node;
+    if (id !== testFromId && id !== testToId) {
+      if (nodes[id]) {
+        nodes[id] = merge(node, nodes[id], cy);
+      } else {
+        nodes[id] = node;
+      }
     }
   }
 
@@ -96,9 +94,12 @@ function graphHelper(cy) {
   const j = cy.json().elements;
   if (j.nodes) j.nodes = j.nodes.map((n) => ({ data: n.data }));
   if (j.edges) j.edges = j.edges.map((e) => ({ data: e.data }));
-  console.log(j)
   return j;
-
 }
 
-export { incomers, outgoers, nodeId, createNode, edgeId, createEdge, updateEdges, merge, deleteNodeHelper, graphHelper }
+export {
+  incomers, outgoers,
+  nodeId, createNode,
+  edgeId, createEdge, updateEdges,
+  merge, deleteNodeHelper, graphHelper,
+};

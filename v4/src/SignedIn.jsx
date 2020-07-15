@@ -25,7 +25,7 @@ import Log from './log';
 import { loadBlockstackGraph, saveBlockstackGraph } from './storage/blockstack';
 import { loadIPFSGraph, saveIPFSGraph } from './storage/ipfs';
 import { loadCache, saveCache, wipeCache } from './storage/cache';
-import './styles/SignedIn.css';
+// import './styles/SignedIn.css';
 
 import {
   regroupCy,

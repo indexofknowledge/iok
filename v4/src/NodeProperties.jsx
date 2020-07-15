@@ -1,13 +1,23 @@
 import React, { Component } from 'react';
-
 import { PropTypes } from 'prop-types';
 import { NTYPE, RTYPE } from './types';
 import './IokEdit.css';
+
 class NodeProperties extends Component {
+  static resetState() {
+    return ({
+      name: '',
+      id: undefined,
+      nodeType: null,
+      resourceType: null,
+      resourceData: {},
+    });
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      ...this.resetState()
+      ...NodeProperties.resetState(),
     };
     this.setResourceType = this.setResourceType.bind(this);
     this.setNodeType = this.setNodeType.bind(this);
@@ -19,7 +29,7 @@ class NodeProperties extends Component {
       nodeType: (node ? node.node_type : null),
       resourceType: (node ? node.resource_type : null),
       resourceData: (node ? node.data || {} : {}),
-    })
+    });
   }
 
   setNodeType(evt) {
@@ -32,29 +42,22 @@ class NodeProperties extends Component {
 
   handleSubmit() {
     const { submit, node } = this.props;
-    let newPropsToPassIn = {
-      name: this.state.name,
-      node_type: this.state.nodeType,
-      resource_type: this.state.resourceType,
-      data: this.state.resourceData
-    }
-    let id = node ? node.id : null;
+    const {
+      name, nodeType, resourceType, resourceData,
+    } = this.state;
+    const newPropsToPassIn = {
+      name,
+      node_type: nodeType,
+      resource_type: resourceType,
+      data: resourceData,
+    };
+    const id = node ? node.id : null;
     submit(id, newPropsToPassIn);
-    this.setState({ ...this.resetState() });
-  }
-
-  resetState() {
-    return ({
-      name: '',
-      id: undefined, //id for some reason becomes a property after submitting??
-      nodeType: null,
-      resourceType: null,
-      resourceData: {},
-    });
+    this.setState(NodeProperties.resetState());
   }
 
   addOrEdit() {
-    //ADD CHECKS FOR SUBMIT BUTTON????
+    // TODO: ADD CHECKS FOR SUBMIT BUTTON
     const { node, editing } = this.props;
     const { nodeType } = this.state;
     if (editing) {
@@ -64,7 +67,7 @@ class NodeProperties extends Component {
           <h2>Edit Node</h2>
           <p>{node.name}</p>
           {this.topicOrResource()}
-          <button onClick={() => this.handleSubmit()}>Submit</button>
+          <button type="button" onClick={() => this.handleSubmit()}>Submit</button>
         </div>
       );
     }
@@ -72,21 +75,20 @@ class NodeProperties extends Component {
       <div className="dialog">
         <h2>Add Node</h2>
         <div className="formgroup">
-          <label>Type of Node</label>
+          Type of Node
           <label>
             <input type="radio" value="1" checked={nodeType === 1} onChange={this.setNodeType} />
-          Topic
-        </label>
+            Topic
+          </label>
           <label>
             <input type="radio" value="2" checked={nodeType === 2} onChange={this.setNodeType} />
-          Resource
-        </label>
+            Resource
+          </label>
           {this.topicOrResource()}
-          <button onClick={() => this.handleSubmit()}>Submit</button>
+          <button type="button" onClick={() => this.handleSubmit()}>Submit</button>
         </div>
       </div>
     );
-
   }
 
   topicOrResource() {
@@ -95,14 +97,17 @@ class NodeProperties extends Component {
     if (nodeType === NTYPE.TOPIC) {
       return (
         <div className="formgroup">
-          <label>Topic Name</label>
-          <input type="text" placeholder="Bitcoin" value={name} onChange={(ev) => this.setState({ name: ev.target.value })} />
+          <label>
+            Topic Name
+            <input type="text" placeholder="Bitcoin" value={name} onChange={(ev) => this.setState({ name: ev.target.value })} />
+          </label>
         </div>
       );
-    } else if (nodeType === NTYPE.RESO) {
+    }
+    if (nodeType === NTYPE.RESO) {
       return (
         <div className="formgroup">
-          <label>Resource Type</label>
+          Resource Type
           <label>
             <input type="radio" value="1" checked={resourceType === 1} onChange={this.setResourceType} />
             Description
@@ -115,7 +120,7 @@ class NodeProperties extends Component {
         </div>
       );
     }
-
+    return <div />;
   }
 
   descOrLink() {
@@ -147,7 +152,8 @@ class NodeProperties extends Component {
           {/* Resource data can be a description or hyperlink */}
         </div>
       );
-    } else if (resourceType === RTYPE.LINK) {
+    }
+    if (resourceType === RTYPE.LINK) {
       return (
         <div>
           <input
@@ -194,6 +200,7 @@ class NodeProperties extends Component {
         </div>
       );
     }
+    return (<div />);
   }
 
   render() {
@@ -208,9 +215,9 @@ NodeProperties.defaultProps = {
 };
 
 NodeProperties.propTypes = {
-  title: PropTypes.string.isRequired,
-  node: PropTypes.object,
-  submit: PropTypes.func,
+  editing: PropTypes.bool.isRequired,
+  node: PropTypes.object, // eslint-disable-line
+  submit: PropTypes.func.isRequired,
 };
 
 export default NodeProperties;

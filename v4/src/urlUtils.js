@@ -1,7 +1,6 @@
 import { STORAGE_TYPES } from './types';
 import { DEFL_STORAGE, DEFL_STORAGE_OPTIONS } from './constants';
 
-
 export const redirectStorage = (storage, options = {}) => {
   const url = new URL(window.location.origin);
   url.pathname = storage;

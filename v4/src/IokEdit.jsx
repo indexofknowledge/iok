@@ -4,7 +4,7 @@ import CytoscapeComponent from 'react-cytoscapejs';
 import './IokEdit.css';
 import calcCurrentNode from './calcCurrNode';
 import NodeProperties from './NodeProperties';
-import { saveIPFSGraph } from '../src/storage/ipfs'
+import { saveIPFSGraph } from './storage/ipfs';
 
 const IokStyle = (zoom) => [
   {
@@ -12,7 +12,7 @@ const IokStyle = (zoom) => [
     style: {
       'background-color': '#f8be35',
       label: 'data(name)',
-      'font-size': 15 / Math.sqrt(zoom) + 'px',
+      'font-size': `${15 / Math.sqrt(zoom)}px`,
     },
   },
   {
@@ -59,13 +59,12 @@ class IokEdit extends Component {
     if (evt.target === cy) {
       if (selected) {
         selectNode(null);
-        this.setState({ submitFunc: null })
+        this.setState({ submitFunc: null });
       }
     } else if (evt.target.isNode()) {
       const id = evt.target.id();
       if (!selected || selected.id !== id) {
         selectNode(calcCurrentNode(evt.target));
-        console.log("CLICKY", evt.target.data())
       }
     }
   }
@@ -85,7 +84,7 @@ class IokEdit extends Component {
     cy.autounselectify(true);
     cy.autoungrabify(true);
     cy.on('tap', (evt) => this.onNodeTap(evt, cy));
-    cy.on('zoom', (evt) => this.setState({ zoom: cy.zoom() }));
+    cy.on('zoom', () => this.setState({ zoom: cy.zoom() }));
   }
 
   openAddNode() {
@@ -95,7 +94,7 @@ class IokEdit extends Component {
   addNode(id, props) {
     const { addNode } = this.props;
     addNode(id, props);
-    this.setState({ submitFunc: null })
+    this.setState({ submitFunc: null });
   }
 
   openEditNode() {
@@ -107,7 +106,7 @@ class IokEdit extends Component {
   editNode(id, props) {
     const { editNode } = this.props;
     editNode(id, props);
-    this.setState({ submitFunc: null })
+    this.setState({ submitFunc: null });
   }
 
   deleteNode() {
@@ -129,7 +128,9 @@ class IokEdit extends Component {
   }
 
   confirmMerge() {
-    const { mergeNode, selectMergeNode, selected, mergingNode } = this.props;
+    const {
+      mergeNode, selectMergeNode, selected, mergingNode,
+    } = this.props;
     if (mergingNode && selected) {
       mergeNode(mergingNode.id, selected.id);
       selectMergeNode(null);
@@ -152,22 +153,22 @@ class IokEdit extends Component {
 
   publishGraph() {
     const { graph } = this.props;
-    console.log("PUBLISHING", { elements: graph });
+    console.log('PUBLISHING', { elements: graph });
 
     // saveCache(graph, storage, options);
 
     // switch (storage) {
     // case STORAGE_TYPES.IPFS:
     // might result in invalid state if cache is not updated after onHashChange
-    saveIPFSGraph({ elements: graph }, (hash) => { this.setState({ options: { hash } }); alert(hash); });
+    saveIPFSGraph({ elements: graph },
+      (hash) => { alert(hash); });
     // break;
     // case STORAGE_TYPES.BLOCKSTACK:
     //   saveBlockstackGraph(graph, this.userSession);
     //   break;
     // default:
     //   break;
-    //}
-
+    // }
   }
 
   downloadGraph() {
@@ -182,17 +183,13 @@ class IokEdit extends Component {
     downloadAnchorNode.remove();
   }
 
-  addNodeDialog() {
-
-  }
-
   render() {
     const { elements, selected, mergingNode } = this.props;
     const { zoom, submitFunc } = this.state;
     return (
       <div className="graph">
         <div className="toolbar">
-          <div className="birb">🐦</div>
+          <div className="birb"><span role="img" aria-label="bird">🐦</span></div>
           <button className="tool" type="button" onClick={() => this.openAddNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
@@ -209,7 +206,7 @@ class IokEdit extends Component {
             </svg>
           </button>
           <button className="tool" type="button" onClick={() => this.mergeNode()}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8.75022 20C13.0474 20 16.528 16.42 16.528 12C16.528 7.58 13.0474 4.00001 8.75022 4.00001C4.453 4.00001 0.972446 7.58001 0.972447 12C0.972448 16.42 4.453 20 8.75022 20ZM8.75013 5.99998C11.9682 5.99998 14.5835 8.68998 14.5835 12C14.5835 15.31 11.9682 18 8.75013 18C5.53208 18 2.9168 15.31 2.9168 12C2.9168 8.68998 5.53208 5.99998 8.75013 5.99998ZM16.528 17.6501C18.7933 16.8301 20.4169 14.6101 20.4169 12.0001C20.4169 9.3901 18.7933 7.1701 16.528 6.3501L16.528 4.26011C19.8822 5.1501 22.3613 8.2701 22.3613 12.0001C22.3613 15.7301 19.8822 18.8501 16.528 19.7401L16.528 17.6501Z" />
             </svg>
           </button>
@@ -233,8 +230,8 @@ class IokEdit extends Component {
 
           {mergingNode ? (
             <div>
-              <button className="tool" onClick={() => this.endMerge()}>Cancel Merge</button>
-              <button className="tool" onClick={() => this.confirmMerge()}>Confirm Merge</button>
+              <button type="button" className="tool" onClick={() => this.endMerge()}>Cancel Merge</button>
+              <button type="button" className="tool" onClick={() => this.confirmMerge()}>Confirm Merge</button>
             </div>
           ) : <div />}
         </div>
@@ -262,7 +259,7 @@ class IokEdit extends Component {
 }
 
 IokEdit.propTypes = {
-  graph: PropTypes.object.isRequired,
+  graph: PropTypes.object.isRequired, // eslint-disable-line
   elements: PropTypes.arrayOf(PropTypes.object).isRequired,
   addNode: PropTypes.func.isRequired,
   editNode: PropTypes.func.isRequired,
@@ -271,8 +268,8 @@ IokEdit.propTypes = {
   uploadGraph: PropTypes.func.isRequired,
   selectNode: PropTypes.func.isRequired,
   selectMergeNode: PropTypes.func.isRequired,
-  selected: PropTypes.object,
-  mergingNode: PropTypes.object,
+  selected: PropTypes.object, // eslint-disable-line
+  mergingNode: PropTypes.object, // eslint-disable-line
 };
 
 export default IokEdit;

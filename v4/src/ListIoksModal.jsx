@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'react-bootstrap'; // eslint-disable-line
 import { IOKS } from './constants';
-import './styles/ListIoksModal.css';
+// import './styles/ListIoksModal.css';
 
 class ListIoksModal extends Component {
   /**
@@ -35,7 +35,6 @@ class ListIoksModal extends Component {
     };
     this.toggleModal = this.toggleModal.bind(this);
   }
-
 
   toggleModal() {
     const { isOpen } = this.state;
