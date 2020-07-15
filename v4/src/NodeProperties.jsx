@@ -212,12 +212,13 @@ class NodeProperties extends Component {
 
 NodeProperties.defaultProps = {
   node: null,
+  submit: null,
 };
 
 NodeProperties.propTypes = {
   editing: PropTypes.bool.isRequired,
   node: PropTypes.object, // eslint-disable-line
-  submit: PropTypes.func.isRequired,
+  submit: PropTypes.func,
 };
 
 export default NodeProperties;

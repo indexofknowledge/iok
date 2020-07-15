@@ -31,14 +31,14 @@ export const mergeNode = (fromId, toId) => ({
   toId,
 });
 
-export const selectNode = (node) => ({
+export const selectNode = (nodeId) => ({
   type: ACTION_TYPES.SELECT_NODE,
-  node,
+  nodeId,
 });
 
-export const selectMergeNode = (node) => ({
+export const selectMergeNode = (nodeId) => ({
   type: ACTION_TYPES.SELECT_MERGE_NODE,
-  node,
+  nodeId,
 });
 
 export const uploadGraph = (graph) => ({

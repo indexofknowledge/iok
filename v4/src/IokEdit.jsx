@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CytoscapeComponent from 'react-cytoscapejs';
 import './IokEdit.css';
-import calcCurrentNode from './calcCurrNode';
 import NodeProperties from './NodeProperties';
 import { saveIPFSGraph } from './storage/ipfs';
 
@@ -64,7 +63,7 @@ class IokEdit extends Component {
     } else if (evt.target.isNode()) {
       const id = evt.target.id();
       if (!selected || selected.id !== id) {
-        selectNode(calcCurrentNode(evt.target));
+        selectNode(id);
       }
     }
   }

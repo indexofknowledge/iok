@@ -2,8 +2,8 @@ import Cytoscape from 'cytoscape';
 import { ACTION_TYPES } from '../actions';
 import {
   createNode, createEdge, updateEdges, merge, deleteNodeHelper, graphHelper,
+  outgoers, calcCurrentNode,
 } from './graphlib';
-import calcCurrentNode from '../../calcCurrNode';
 
 const DEFAULT_STATE = { graph: {}, selected: null, mergingNode: null };
 
@@ -43,7 +43,11 @@ export default function reducer(state = DEFAULT_STATE, action) {
     case ACTION_TYPES.MERGE_NODE: {
       const from = cy.getElementById(action.fromId);
       const to = cy.getElementById(action.toId);
-      selected = merge(from, to, cy);
+      const parent = outgoers(to)[0];
+      console.log(parent);
+      const newNode = merge(from, to, cy);
+      if (parent) cy.add(createEdge(newNode, parent));
+      selected = calcCurrentNode(newNode);
       graph = graphHelper(cy);
       break;
     }
@@ -52,11 +56,11 @@ export default function reducer(state = DEFAULT_STATE, action) {
       break;
     }
     case ACTION_TYPES.SELECT_NODE: {
-      selected = action.node;
+      selected = calcCurrentNode(cy.getElementById(action.nodeId));
       break;
     }
     case ACTION_TYPES.SELECT_MERGE_NODE: {
-      mergingNode = action.node;
+      mergingNode = calcCurrentNode(cy.getElementById(action.nodeId));
       break;
     }
     default:

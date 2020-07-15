@@ -97,9 +97,28 @@ function graphHelper(cy) {
   return j;
 }
 
+function calcCurrentNode(node) {
+  if (node && node.isNode()) {
+    let neighbors = [node.data()];
+
+    if (node.data('node_type') === NTYPE.TOPIC) {
+      neighbors = node.incomers((el) => el.isNode())
+        .map((neighbor) => neighbor.data());
+    }
+
+    return {
+      id: node.id(),
+      data: node.data(),
+      neighbors,
+    };
+  }
+  return null;
+}
+
 export {
   incomers, outgoers,
   nodeId, createNode,
   edgeId, createEdge, updateEdges,
   merge, deleteNodeHelper, graphHelper,
+  calcCurrentNode,
 };

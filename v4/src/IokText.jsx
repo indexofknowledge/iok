@@ -25,6 +25,7 @@ function IokText({ node }) {
     subtitle = 'NOTE: Resource node. Displaying own contents';
   }
   const neighbors = node ? node.neighbors : [data];
+  console.log(node, neighbors, data);
 
   const depList = [];
   const descList = [];
