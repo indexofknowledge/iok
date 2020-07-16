@@ -1,0 +1,152 @@
+{
+    "elements": {
+        "nodes": [
+            {
+                "data": {
+                    "id": "bafyreigazhg2f6bxjtgpx7ich3kxjkuftdakjfdesb7a4uaw4rcqbn5v6q",
+                    "name": "math",
+                    "node_type": 1
+                }
+            },
+            {
+                "data": {
+                    "id": "bafyreihf2ronor5vmn5cnhk742qmgmn25dmf4wxee7lfreuncb5pv5axca",
+                    "name": "computer science",
+                    "node_type": 1
+                }
+            },
+            {
+                "data": {
+                    "id": "bafyreiciadl64yuyj2q7pn63jqr5rg3jcnjgzjtb5wkw3gldvvknxiwy7u",
+                    "name": "economics",
+                    "node_type": 1
+                }
+            },
+            {
+                "data": {
+                    "id": "bafyreihjbj4okhbxjauu2at76cbop2kogmzaujs747ox72qooahpat3ndu",
+                    "name": "bitcoin",
+                    "node_type": 1
+                }
+            },
+            {
+                "data": {
+                    "id": "bafyreihs3js6ahctdfjy63azciecii6r2mftvirpnx4osnylcidkwvaucm",
+                    "data": {
+                        "link": "",
+                        "text": "Computer science is the study of processes that interact with data and that can be represented as data in the form of programs."
+                    },
+                    "name": "res-8d3e61ce16",
+                    "node_type": 2,
+                    "resource_type": 1
+                }
+            },
+            {
+                "data": {
+                    "id": "bafyreiek3g4zgsnxhw7ons4fomdzss4vhcea7zd3zrl3nswgynu7oheltq",
+                    "data": {
+                        "link": "",
+                        "text": "Economics is the social science that studies the production, distribution, and consumption of goods and services."
+                    },
+                    "name": "res-71686ead6a",
+                    "node_type": 2,
+                    "resource_type": 1
+                }
+            },
+            {
+                "data": {
+                    "id": "bafyreifjk5qmntsupwaaitopf3syerr7yz4jhxrtey5jlicify7ncqc2jm",
+                    "data": {
+                        "link": "",
+                        "text": "Mathematics is the study of abstract objects and structures that are often, but not always, abstracted from the physical world. It includes the study of such abstractions as quantity, structure, space and shapes, and change."
+                    },
+                    "name": "res-4fba4eba5e",
+                    "node_type": 2,
+                    "resource_type": 1
+                }
+            },
+            {
+                "data": {
+                    "id": "bafyreih7u7hvj6qjrd26eoqayp7zq6lb6xrkpud7yaw3y5kujal2dzkw3m",
+                    "data": {
+                        "link": "",
+                        "text": "Bitcoin is an innovative payment network and a new kind of money."
+                    },
+                    "name": "res-e6f043e279",
+                    "node_type": 2,
+                    "resource_type": 1
+                }
+            },
+            {
+                "data": {
+                    "id": "bafyreih4we3i6lyyxijfctjbvy5ozp5r6fdbteyfouonvsuvja4tj2i7mm",
+                    "data": {
+                        "link": "https://bitcoin.org/bitcoin.pdf",
+                        "text": "Bitcoin: A Peer-to-Peer Electronic Cash System"
+                    },
+                    "name": "res-5e71f1ce88",
+                    "node_type": 2,
+                    "resource_type": 4
+                }
+            }
+        ],
+        "edges": [
+            {
+                "data": {
+                    "id": "0f366f92-58ca-4f29-b942-da41ca8863c7",
+                    "source": "bafyreihf2ronor5vmn5cnhk742qmgmn25dmf4wxee7lfreuncb5pv5axca",
+                    "target": "bafyreihjbj4okhbxjauu2at76cbop2kogmzaujs747ox72qooahpat3ndu"
+                }
+            },
+            {
+                "data": {
+                    "id": "090d2ffb-9a72-4660-a7a7-247119ba47a0",
+                    "source": "bafyreigazhg2f6bxjtgpx7ich3kxjkuftdakjfdesb7a4uaw4rcqbn5v6q",
+                    "target": "bafyreihjbj4okhbxjauu2at76cbop2kogmzaujs747ox72qooahpat3ndu"
+                }
+            },
+            {
+                "data": {
+                    "id": "27ef1ee0-344b-4961-9afd-3639e32c6736",
+                    "source": "bafyreiciadl64yuyj2q7pn63jqr5rg3jcnjgzjtb5wkw3gldvvknxiwy7u",
+                    "target": "bafyreihjbj4okhbxjauu2at76cbop2kogmzaujs747ox72qooahpat3ndu"
+                }
+            },
+            {
+                "data": {
+                    "id": "3a33c7c3-714a-4da4-a1e4-dbcc1cd1c86b",
+                    "source": "bafyreihs3js6ahctdfjy63azciecii6r2mftvirpnx4osnylcidkwvaucm",
+                    "target": "bafyreihf2ronor5vmn5cnhk742qmgmn25dmf4wxee7lfreuncb5pv5axca"
+                }
+            },
+            {
+                "data": {
+                    "id": "92369729-24e4-4f83-9aa0-a72667cf9191",
+                    "source": "bafyreiek3g4zgsnxhw7ons4fomdzss4vhcea7zd3zrl3nswgynu7oheltq",
+                    "target": "bafyreiciadl64yuyj2q7pn63jqr5rg3jcnjgzjtb5wkw3gldvvknxiwy7u"
+                }
+            },
+            {
+                "data": {
+                    "id": "1f3f5e7e-bf90-43ba-ace5-0fbfe462872b",
+                    "source": "bafyreifjk5qmntsupwaaitopf3syerr7yz4jhxrtey5jlicify7ncqc2jm",
+                    "target": "bafyreigazhg2f6bxjtgpx7ich3kxjkuftdakjfdesb7a4uaw4rcqbn5v6q"
+                }
+            },
+            {
+                "data": {
+                    "id": "649c601a-dd57-42a9-ba1f-5053c37152e0",
+                    "source": "bafyreih7u7hvj6qjrd26eoqayp7zq6lb6xrkpud7yaw3y5kujal2dzkw3m",
+                    "target": "bafyreihjbj4okhbxjauu2at76cbop2kogmzaujs747ox72qooahpat3ndu"
+                }
+            },
+            {
+                "data": {
+                    "id": "53e2e0a4-a766-4b9e-a88a-a87c7d293772",
+                    "source": "bafyreih4we3i6lyyxijfctjbvy5ozp5r6fdbteyfouonvsuvja4tj2i7mm",
+                    "target": "bafyreihjbj4okhbxjauu2at76cbop2kogmzaujs747ox72qooahpat3ndu"
+                }
+            }
+        ]
+    }
+}
