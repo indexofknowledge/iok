@@ -5,7 +5,9 @@ import traceback
 from .validate import run_validator
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--file", required=True, type=str, help="Path to IoK JSON graph file")
+parser.add_argument(
+    "--file", required=True, type=str, help="Path to IoK JSON graph file"
+)
 parser.add_argument("--debug", action="store_true")
 args = parser.parse_args()
 
@@ -20,4 +22,3 @@ except Exception:
     track = traceback.format_exc()
     print(track)
     print("😨 Something horrible happened")
-
