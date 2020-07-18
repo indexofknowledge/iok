@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // Initiate ipfs and CID instance
 const IpfsClient = require('ipfs-http-client');
 const DagCBOR = require('ipld-dag-cbor');
@@ -6,6 +7,8 @@ const DagCBOR = require('ipld-dag-cbor');
 const ipfs = new IpfsClient({
   host: 'ipfs.infura.io', port: '5001', protocol: 'https', apiPath: '/api/v0',
 });
+
+const options = { format: 'dag-cbor', hashAlg: 'sha2-256', pin: 'true' };
 
 function verifyGraphShape(graph) {
   const hasKeys = 'elements' in graph && 'nodes' in graph.elements && 'edges' in graph.elements;
@@ -57,38 +60,14 @@ function verifyNodeShape(node) {
   throw Error('Invalid node_type');
 }
 
-// NOTE: only PUTs the minimum keys for each node, as calculated by verifyNodeShape
 async function putGraph(graph) {
   verifyGraphShape(graph);
-  const options = { format: 'dag-cbor', hashAlg: 'sha2-256', pin: 'true' };
-  const putNodeProms = [];
-
-  // PUT each individual node
-  const putAndProm = (el, lst) => {
-    const prom = ipfs.dag.put(el, options);
-    lst.push(prom);
-  };
-  const graphNodes = graph.elements.nodes;
-  for (let i = 0; i < graphNodes.length; i += 1) {
-    const dat = graphNodes[i].data;
-    putAndProm(verifyNodeShape(dat), putNodeProms);
-  }
-  const nodes = await Promise.all(putNodeProms);
-
-  const { edges } = graph.elements;
-  const ipfsGraph = { elements: { nodes, edges } };
-  const cid = await ipfs.dag.put(ipfsGraph, options);
+  const cid = await ipfs.dag.put(graph, options);
   return cid.toBaseEncodedString();
 }
 
 async function getGraph(cid, path = '') {
-  // get cid or subgraph root cid
-  // so we don't have to load in the entire IoK at once, only top level nodes and edges CIDs
   const graph = await ipfs.dag.get(cid + path);
-  const nodeCids = graph.value.elements.nodes;
-  for (let i = 0; i < nodeCids.length; i += 1) {
-    graph.value.elements.nodes[i] = nodeCids[i].toBaseEncodedString();
-  }
   return graph.value;
 }
 
@@ -129,41 +108,96 @@ async function formatGraph(graph) {
   return graph;
 }
 
-async function getFullGraph(cid) {
-  const cgraph = await getGraph(cid);
-  const hasKeys = 'elements' in cgraph && 'nodes' in cgraph.elements && 'edges' in cgraph.elements;
-  if (!hasKeys) {
-    throw Error('Invalid CID for graph, expected elements: {nodes, edges}');
+// TODO(rustielin): disable lazy-loading for now for performance reasons
+//                  we can just calculate graph element CID directly
+
+// async function putGraph(graph) {
+//   const hasKeys = 'elements' in graph && 'nodes' in graph.elements && 'edges' in graph.elements;
+//   if (!hasKeys) {
+//     throw Error('Invalid graph, expected elements: {nodes, edges}');
+//   }
+
+//   const putNodeProms = [];
+//   // putEdgeProms = []
+//   const putAndProm = (el, lst) => {
+//     const prom = ipfs.dag.put(el, options);
+//     lst.push(prom);
+//   };
+//   graph.elements.nodes.forEach((el) => putAndProm(el, putNodeProms));
+//   // graph.elements.edges.forEach((el) => putAndProm(el, putEdgeProms))
+//   const nodes = await Promise.all(putNodeProms);
+//   // edges = await Promise.all(putEdgeProms)
+//   const { edges } = graph.elements; // XXX: edges are lightweight and don't need lazy
+//   const ipfsGraph = { elements: { nodes, edges } };
+//   const cid = await ipfs.dag.put(ipfsGraph, options);
+//   return cid.toBaseEncodedString();
+// }
+
+// async function getFullGraph(cid) {
+//   const cgraph = await getGraph(cid);
+//   const hasKeys = 'elements' in cgraph && 'nodes' in cgraph.elements && 'edges' in cgraph.elements;
+//   if (!hasKeys) {
+//     throw Error('Invalid CID for graph, expected elements: {nodes, edges}');
+//   }
+//   const nodeCIDs = cgraph.elements.nodes;
+//   // edgeCIDs = cgraph.elements.edges
+//   const getNodeProms = [];
+//   // getEdgeProms = []
+//   const getAndProm = (el, lst) => {
+//     const prom = ipfs.dag.get(el);
+//     lst.push(prom);
+//   };
+//   nodeCIDs.forEach((el) => getAndProm(el, getNodeProms));
+//   // edgeCIDs.forEach((el) => getAndProm(el, getEdgeProms))
+//   const vnodes = await Promise.all(getNodeProms);
+//   // vedges = await Promise.all(getEdgeProms)
+//   const ipfsGraph = { elements: { nodes: [], edges: [] } };
+//   vnodes.forEach((el) => ipfsGraph.elements.nodes.push(el.value));
+//   // vedges.forEach(el => ipfsGraph.elements.edges.push(el.value))
+//   ipfsGraph.elements.edges.push(...cgraph.elements.edges);
+//   return ipfsGraph;
+// }
+
+// verify that a list of node IDs are all CID and exist in the graph
+function verifyNodeIds(graph, cids) {
+  verifyGraphShape(graph);
+  const nodeCids = new Set(graph.elements.nodes.map((el) => el.data.id));
+  for (let i = 0; i < cids.length; i += 1) {
+    const traversedNode = cids[i];
+    if (!nodeCids.has(traversedNode)) {
+      console.log(`Graph elements provided do not have node ${traversedNode}`);
+      return false;
+    }
+  }
+  return true;
+}
+
+// given a graph, its cid, and a list of
+// node IDs, create and pin an IoK traversal state
+async function putTraversalState(cid, graph, traversedList) {
+  if (!Array.isArray(traversedList)) {
+    throw Error('Expected `traversedList` to be an array');
   }
 
-  // get node data by their CID
-  const nodeCIDs = cgraph.elements.nodes;
-  const getNodeProms = [];
-  const getAndProm = (el, lst) => {
-    const prom = ipfs.dag.get(el);
-    lst.push(prom);
-  };
-  nodeCIDs.forEach((el) => getAndProm(el, getNodeProms));
-  const vnodes = await Promise.all(getNodeProms);
-
-  // construct a graph to return
-  const ipfsGraph = { elements: { nodes: [], edges: [] } };
-  vnodes.forEach((el) => ipfsGraph.elements.nodes.push({ data: el.value }));
-  ipfsGraph.elements.edges.push(...cgraph.elements.edges);
-
-  // populate the node IDs with their CID
-  for (let i = 0; i < nodeCIDs.length; i += 1) {
-    ipfsGraph.elements.nodes[i].data.id = nodeCIDs[i];
+  const verified = verifyNodeIds(graph, traversedList);
+  if (!verified) {
+    throw Error(`Graph with CID ${cid} and traversal ${traversedList} INVALID!`);
   }
 
-  return ipfsGraph;
+  // construct the traversal state obj
+  traversedList.sort();
+  const traversalState = { cid, traversedNodes: traversedList };
+  const traversalCid = await ipfs.dag.put(traversalState, options);
+  return traversalCid;
 }
 
 module.exports.putGraph = putGraph;
 module.exports.getGraph = getGraph;
-module.exports.getFullGraph = getFullGraph;
+// module.exports.getFullGraph = getFullGraph;
 
 module.exports.verifyNodeShape = verifyNodeShape;
-
 module.exports.formatGraph = formatGraph;
 module.exports.objToCid = objToCid;
+
+module.exports.verifyNodeIds = verifyNodeIds;
+module.exports.putTraversalState = putTraversalState;

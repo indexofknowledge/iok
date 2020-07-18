@@ -12,13 +12,9 @@ test('putGraph completes with CID', async () => {
   expect(cid).toEqual(graphCid);
 });
 
-test('getGraph completes with keys', async () => {
-  const cgraph = await lib.getGraph(graphCid);
-  expect(cgraph).toHaveProperty(['elements', 'nodes']);
-  expect(cgraph).toHaveProperty(['elements', 'edges']);
-});
-
-test('getFullGraph completes with exact match', async () => {
-  const retGraph = await lib.getFullGraph(graphCid);
+test('getGraph completes with exact match', async () => {
+  const retGraph = await lib.getGraph(graphCid);
+  expect(retGraph).toHaveProperty(['elements', 'nodes']);
+  expect(retGraph).toHaveProperty(['elements', 'edges']);
   expect(retGraph).toEqual(graph);
 });

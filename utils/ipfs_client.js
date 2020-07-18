@@ -5,11 +5,6 @@ async function putGraph() {
     console.log(ret);
 }
 
-async function getFullGraph() {
-    ret = await lib.getFullGraph(process.env.CID);
-    console.log(JSON.stringify(ret));
-}
-
 async function getGraph() {
     ret = await lib.getGraph(process.env.CID);
     console.log(JSON.stringify(ret));
@@ -28,8 +23,6 @@ async function formatGraph() {
 fname = process.env.FUNC;
 if (fname === 'putGraph') {
     f = putGraph;
-} else if (fname === 'getFullGraph') {
-    f = getFullGraph;
 } else if (fname === 'objToCid') {
     f = objToCid;
 } else if (fname === 'formatGraph') {

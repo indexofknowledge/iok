@@ -23,19 +23,6 @@ setup_node() {
   (cd $DIR && npm install)
 }
 
-# TODO: these function calls to js are redundant
-get_full_graph() {
-  cid=$1
-  if [ -z "$cid" ]; then
-    echo "CID not specified"
-    exit 1
-  fi
-  export NODE_NO_WARNINGS=1
-  export CID=$cid
-  export FUNC=getFullGraph
-  node --experimental-repl-await $DIR/ipfs_client.js
-}
-
 get_graph() {
   cid=$1
   if [ -z "$cid" ]; then
