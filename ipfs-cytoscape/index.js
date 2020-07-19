@@ -1,5 +1,6 @@
 // Initiate ipfs and CID instance
 const IpfsClient = require('ipfs-http-client');
+const DagCBOR = require('ipld-dag-cbor');
 
 // Connecting ipfs instance to infura node
 const ipfs = new IpfsClient({
@@ -60,6 +61,14 @@ async function getFullGraph(cid) {
   return ipfsGraph;
 }
 
+async function objToCid(obj) {
+  const ser = DagCBOR.util.serialize(obj);
+  const cid = await DagCBOR.util.cid(ser);
+  return cid.toBaseEncodedString();
+}
+
 module.exports.putGraph = putGraph;
 module.exports.getGraph = getGraph;
 module.exports.getFullGraph = getFullGraph;
+
+module.exports.objToCid = objToCid;

@@ -10,6 +10,7 @@ show_help() {
   echo "setup_node        Install node if it\'s not present and npm install the utils"
   echo "get_full_graph    Print full graph json from CID"
   echo "put_graph         Takes graph JSON from stdin and puts to IPFS"
+  echo "obj_to_cid        Takes an object JSON from stdin and gets its CID"
 }
 
 setup_node() {
@@ -42,6 +43,18 @@ put_graph() {
   export NODE_NO_WARNINGS=1
   export GRAPH=$graph
   export FUNC=putGraph
+  node --experimental-repl-await $DIR/ipfs_client.js
+}
+
+obj_to_cid() {
+  read -r obj
+  if [ -z "$obj" ]; then
+    echo "Obj not specified"
+    exit 1
+  fi
+  export NODE_NO_WARNINGS=1
+  export OBJ=$obj
+  export FUNC=objToCid
   node --experimental-repl-await $DIR/ipfs_client.js
 }
 
