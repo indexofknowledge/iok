@@ -15,6 +15,11 @@ async function objToCid() {
     console.log(ret);
 }
 
+async function formatGraph() {
+    ret = await lib.formatGraph(JSON.parse(process.env.GRAPH));
+    console.log(JSON.stringify(ret));
+}
+
 fname = process.env.FUNC;
 if (fname === 'putGraph') {
     f = putGraph;
@@ -22,6 +27,8 @@ if (fname === 'putGraph') {
     f = getFullGraph;
 } else if (fname === 'objToCid') {
     f = objToCid;
+} else if (fname === 'formatGraph') {
+    f = formatGraph;
 }
 
 f();

@@ -11,6 +11,7 @@ show_help() {
   echo "get_full_graph    Print full graph json from CID"
   echo "put_graph         Takes graph JSON from stdin and puts to IPFS"
   echo "obj_to_cid        Takes an object JSON from stdin and gets its CID"
+  echo "format_graph      Takes a graph JSON from stdin and returns it correctly formatted to spec"
 }
 
 setup_node() {
@@ -55,6 +56,18 @@ obj_to_cid() {
   export NODE_NO_WARNINGS=1
   export OBJ=$obj
   export FUNC=objToCid
+  node --experimental-repl-await $DIR/ipfs_client.js
+}
+
+format_graph() {
+  read -r graph
+  if [ -z "$graph" ]; then
+    echo "Graph not specified"
+    exit 1
+  fi
+  export NODE_NO_WARNINGS=1
+  export GRAPH=$graph
+  export FUNC=formatGraph
   node --experimental-repl-await $DIR/ipfs_client.js
 }
 
