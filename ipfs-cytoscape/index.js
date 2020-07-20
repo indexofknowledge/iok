@@ -163,5 +163,7 @@ module.exports.putGraph = putGraph;
 module.exports.getGraph = getGraph;
 module.exports.getFullGraph = getFullGraph;
 
+module.exports.verifyNodeShape = verifyNodeShape;
+
 module.exports.formatGraph = formatGraph;
 module.exports.objToCid = objToCid;

@@ -3,12 +3,13 @@
 /* eslint-disable no-alert */
 import React, { Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { sha256 } from 'js-sha256';
 import { PropTypes } from 'prop-types';
 import AddNodeModal from './AddNodeModal';
 import EditNodeModal from './EditNodeModal';
 import ListIoksModal from './ListIoksModal';
 import Log from './log';
+
+import { verifyNodeShape, objToCid } from 'ipfs-cytoscape';
 
 import './styles/IokText.css';
 
@@ -111,15 +112,11 @@ class IokText extends Component {
    */
   addNodeToCy(data) {
     const { cy } = this.state;
-    const hash = sha256.create();
-    hash.update(JSON.stringify(data));
-    let dataWithHash = { ...data, id: hash.hex() };
-    if (!('name' in data)) { // XXX: make a note of this... give it a name...
-      dataWithHash = { ...dataWithHash, name: 'res-'.concat(dataWithHash.id.substring(0, 10)) };
-    }
-
-    Log.info('DATA', dataWithHash);
-    return addNode(cy, dataWithHash);
+    const bareNodeData = verifyNodeShape(data);
+    objToCid(bareNodeData).then((nodeId) => {
+      const bareNode = { id: nodeId, ...bareNodeData }
+      addNode(cy, bareNode);
+    });
   }
 
   toggleDeleteModal() {
