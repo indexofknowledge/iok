@@ -15,6 +15,9 @@ function verifyGraphShape(graph) {
 }
 
 /**
+ * Verify a given object is a node in cytoscape form
+ * and return only its key fields
+ *
  * At the bare minimum, we should have:
  * All nodes should contain `node_type`
  *  Topic nodes (1) should contain
@@ -27,49 +30,52 @@ function verifyGraphShape(graph) {
  * @param {*} node
  */
 function verifyNodeShape(node) {
-  let hasKeys = 'data' in node && 'node_type' in node.data;
+  let hasKeys = 'node_type' in node;
   if (!hasKeys) {
-    throw Error('Invalid node, expected data: {node_type}');
+    throw Error('Invalid node, expected {node_type}');
   }
 
-  if (node.data.node_type === 1) { // topic
-    hasKeys = 'name' in node.data;
+  if (node.node_type === 1) { // topic
+    hasKeys = 'name' in node;
     if (!hasKeys) {
       throw Error('Invalid Topic node, expected `name`');
     }
-    return { data: { name: node.data.name, node_type: node.data.node_type } };
+    return { name: node.name, node_type: node.node_type };
   }
 
-  if (node.data.node_type === 2) { // resource
-    hasKeys = 'resource_type' in node.data && 'data' in node.data;
+  if (node.node_type === 2) { // resource
+    hasKeys = 'resource_type' in node && 'data' in node;
     if (!hasKeys) {
       throw Error('Invalid Resource node, expected `resource_type` and `data`');
     }
     return {
-      data: {
-        node_type: node.data.node_type,
-        resource_type: node.data.resource_type,
-        data: node.data.data,
-      },
+      node_type: node.node_type,
+      resource_type: node.resource_type,
+      data: node.data,
     };
   }
   throw Error('Invalid node_type');
 }
 
+// NOTE: only PUTs the minimum keys for each node, as calculated by verifyNodeShape
 async function putGraph(graph) {
   verifyGraphShape(graph);
   const options = { format: 'dag-cbor', hashAlg: 'sha2-256', pin: 'true' };
   const putNodeProms = [];
-  // putEdgeProms = []
+
+  // PUT each individual node
   const putAndProm = (el, lst) => {
     const prom = ipfs.dag.put(el, options);
     lst.push(prom);
   };
-  graph.elements.nodes.forEach((el) => putAndProm(verifyNodeShape(el), putNodeProms));
-  // graph.elements.edges.forEach((el) => putAndProm(el, putEdgeProms))
+  const graphNodes = graph.elements.nodes;
+  for (let i = 0; i < graphNodes.length; i += 1) {
+    const dat = graphNodes[i].data;
+    putAndProm(verifyNodeShape(dat), putNodeProms);
+  }
   const nodes = await Promise.all(putNodeProms);
-  // edges = await Promise.all(putEdgeProms)
-  const { edges } = graph.elements; // XXX: edges are lightweight and don't need lazy
+
+  const { edges } = graph.elements;
   const ipfsGraph = { elements: { nodes, edges } };
   const cid = await ipfs.dag.put(ipfsGraph, options);
   return cid.toBaseEncodedString();
@@ -79,43 +85,11 @@ async function getGraph(cid, path = '') {
   // get cid or subgraph root cid
   // so we don't have to load in the entire IoK at once, only top level nodes and edges CIDs
   const graph = await ipfs.dag.get(cid + path);
+  const nodeCids = graph.value.elements.nodes;
+  for (let i = 0; i < nodeCids.length; i += 1) {
+    graph.value.elements.nodes[i] = nodeCids[i].toBaseEncodedString();
+  }
   return graph.value;
-}
-
-async function getFullGraph(cid) {
-  const cgraph = await getGraph(cid);
-  const hasKeys = 'elements' in cgraph && 'nodes' in cgraph.elements && 'edges' in cgraph.elements;
-  if (!hasKeys) {
-    throw Error('Invalid CID for graph, expected elements: {nodes, edges}');
-  }
-  const nodeCIDs = cgraph.elements.nodes;
-  // edgeCIDs = cgraph.elements.edges
-  const getNodeProms = [];
-  // getEdgeProms = []
-  const getAndProm = (el, lst) => {
-    const prom = ipfs.dag.get(el);
-    lst.push(prom);
-  };
-  nodeCIDs.forEach((el) => getAndProm(el, getNodeProms));
-  // edgeCIDs.forEach((el) => getAndProm(el, getEdgeProms))
-  const vnodes = await Promise.all(getNodeProms);
-  // vedges = await Promise.all(getEdgeProms)
-  const ipfsGraph = { elements: { nodes: [], edges: [] } };
-  vnodes.forEach((el) => ipfsGraph.elements.nodes.push(el.value));
-
-  if (nodeCIDs.length !== ipfsGraph.elements.nodes.length) {
-    throw Error('Uh oh! Some GETs failed');
-  }
-
-  // node ID's are stored implicitly as their IPLD CID's, so
-  // reconstruct them here
-  for (let i = 0; i < nodeCIDs.length; i += 1) {
-    const nodeId = nodeCIDs[i];
-    ipfsGraph.elements.nodes[i].data.id = nodeId.toBaseEncodedString();
-  }
-  // vedges.forEach(el => ipfsGraph.elements.edges.push(el.value))
-  ipfsGraph.elements.edges.push(...cgraph.elements.edges);
-  return ipfsGraph;
 }
 
 async function objToCid(obj) {
@@ -134,13 +108,14 @@ async function formatGraph(graph) {
 
   for (let i = 0; i < nodes.length; i += 1) {
     const oldId = nodes[i].data.id;
-    const bare = verifyNodeShape(nodes[i]);
+    const bare = verifyNodeShape(nodes[i].data);
     // eslint-disable-next-line no-await-in-loop
     const newId = await objToCid(bare);
-    bare.data.id = newId;
-    nodes[i] = bare;
+    bare.id = newId;
+    nodes[i] = { data: bare };
 
     // XXX: probably a better way to do this in cytoscape
+    // replaces old node ID with new node ID
     for (let j = 0; j < edges.length; j += 1) {
       const dat = edges[j].data;
       const { source, target } = dat;
@@ -152,6 +127,36 @@ async function formatGraph(graph) {
     }
   }
   return graph;
+}
+
+async function getFullGraph(cid) {
+  const cgraph = await getGraph(cid);
+  const hasKeys = 'elements' in cgraph && 'nodes' in cgraph.elements && 'edges' in cgraph.elements;
+  if (!hasKeys) {
+    throw Error('Invalid CID for graph, expected elements: {nodes, edges}');
+  }
+
+  // get node data by their CID
+  const nodeCIDs = cgraph.elements.nodes;
+  const getNodeProms = [];
+  const getAndProm = (el, lst) => {
+    const prom = ipfs.dag.get(el);
+    lst.push(prom);
+  };
+  nodeCIDs.forEach((el) => getAndProm(el, getNodeProms));
+  const vnodes = await Promise.all(getNodeProms);
+
+  // construct a graph to return
+  const ipfsGraph = { elements: { nodes: [], edges: [] } };
+  vnodes.forEach((el) => ipfsGraph.elements.nodes.push({ data: el.value }));
+  ipfsGraph.elements.edges.push(...cgraph.elements.edges);
+
+  // populate the node IDs with their CID
+  for (let i = 0; i < nodeCIDs.length; i += 1) {
+    ipfsGraph.elements.nodes[i].data.id = nodeCIDs[i];
+  }
+
+  return ipfsGraph;
 }
 
 module.exports.putGraph = putGraph;
