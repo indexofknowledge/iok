@@ -1,0 +1,42 @@
+name: scraper
+
+on:
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  scrape-to-readme:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install pipenv
+        run: |
+          pip install --upgrade pipenv
+      - name: Install dependencies
+        working-directory: python
+        run: |
+          ./build.sh
+      - name: Set up node
+        run: |
+          ./utils/iok.sh setup_node
+      - name: Get full graph to json
+        run: |
+          source iok.vars
+          ./utils/iok.sh get_full_graph $ROOT_CID > graph.json
+      - name: Linearize graph to awesome list
+        working-directory: python
+        run: |
+          pipenv run python3 -m scraper --file ../graph.json --out ../README.md
+      - name: Show README
+        run: |
+          cat README.md

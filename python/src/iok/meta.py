@@ -27,8 +27,8 @@ class KnowledgeGraph:
             logging.info("Trying to read graph from obj")
             self.graph = nx.DiGraph()
             self.read_from_json_obj(obj)
-        # create new one if not
-        self.graph = nx.DiGraph()
+        else:
+            self.graph = nx.DiGraph()
 
     def write_graph(self, filename):
         """For debugging mostly, write graph to png"""
@@ -81,8 +81,8 @@ class KnowledgeGraph:
                 name = dat["name"]
 
             self._add_knowledge_node(
-                dat["id"],
                 NodeType(dat["node_type"]),
+                id=dat["id"],
                 name=name,
                 data=data,
                 resource_type=resource_type,
@@ -213,18 +213,17 @@ class AwesomeClient:
         link = dat["link"]
         return f"* [{text}]({link})\n"
 
-    def get_nodedata(self, dat):
+    def get_nodedata(self, dat, resource_type):
         """Formats a node's data.
         Like get_s or get_link, but handles any type of node data."""
-        if isinstance(dat, str):
-            return self.get_s(dat)
-        if "link" in dat:
+        if resource_type == ResourceType.DESCRIPTION:
+            return self.get_s(dat["text"])
+        else:
             return self.get_link(dat)
-        return self.get_s(dat["text"])
 
     def escape_toc_link_txt(self, s):
         """spaces in toc link need to be escaped, among others"""
-        return re.sub(r"\s+", "%20", s)
+        return re.sub(r"\s+", "-", s)
 
     def get_toc_link(self, title):
         """Generate link that references title on the same doc"""
@@ -266,7 +265,7 @@ class AwesomeClient:
             if len(node[hkey]):
                 s += self.get_h(hname, level=3)
                 for x in node[hkey]:
-                    s += self.get_nodedata(x)
+                    s += self.get_nodedata(x, hkey)
         return s
 
     def write_to_file(self, filename):

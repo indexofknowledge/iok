@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+black = "*"
 
 [packages]
 decorator = "==4.4.2"
@@ -20,7 +21,6 @@ chardet = "==3.0.4"
 idna = "==2.9"
 requests = "==2.23.0"
 urllib3 = "==1.25.9"
-black = "*"
 
 [requires]
 python_version = "3.7"
