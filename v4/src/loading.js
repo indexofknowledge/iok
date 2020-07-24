@@ -51,7 +51,10 @@ function loadGraph(storage, options, userSession = DEFAULT_SESSION) {
       default:
         break;
     }
-  }).then((jsonGraph) => saveCache(jsonGraph, storage, options));
+  }).then((jsonGraph) => {
+    saveCache(jsonGraph, storage, options);
+    return jsonGraph;
+  });
 }
 
 export { loadGraph };

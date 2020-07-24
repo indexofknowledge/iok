@@ -191,7 +191,7 @@ class IokEdit extends Component {
 
   onSuccessLoadGraph(graph) {
     const { uploadGraph } = this.props;
-    if (graph) uploadGraph(graph);
+    uploadGraph(graph);
     console.log("THE SUCCESS", graph.elements);
   }
 
