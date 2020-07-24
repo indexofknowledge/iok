@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import React, { Component } from 'react';
 import './App.css';
-// import { UserSession } from 'blockstack';
+import { UserSession } from 'blockstack';
 import Graph from './Graph';
 import Sidebar from './Sidebar';
 // import Landing from './Landing';
@@ -12,34 +12,25 @@ import Sidebar from './Sidebar';
 // import { parseParams, redirectGuest, redirectStorage } from './urlUtils';
 
 class App extends Component {
-  // constructor() {
-  // super();
-
-  // const { storage, options } = parseParams();
-  // this.state = { storage, options };
-  // this.userSession = new UserSession();
-
-  //   Log.info(storage, options);
-  // }
 
   // componentDidMount() {
   //   const { storage, options } = this.state;
   //   const session = this.userSession;
 
-  // If we're using blockstack authed, get the username
-  // if (storage === STORAGE_TYPES.BLOCKSTACK
-  //   && !('guest' in options)
-  //   && !options.guest) {
-  //   if (!session.isUserSignedIn() && session.isSignInPending()) {
-  //     session.handlePendingSignIn().then((userData) => {
-  //       if (!userData.username) {
-  //         throw new Error('This app requires a username.');
-  //       }
-  //       this.setState({ options: { ...options, username: userData.username } });
-  //       redirectStorage(STORAGE_TYPES.BLOCKSTACK, { loaduser: userData.username });
-  //     });
+  //   // If we're using blockstack authed, get the username
+  //   if (storage === STORAGE_TYPES.BLOCKSTACK
+  //     && !('guest' in options)
+  //     && !options.guest) {
+  //     if (!session.isUserSignedIn() && session.isSignInPending()) {
+  //       session.handlePendingSignIn().then((userData) => {
+  //         if (!userData.username) {
+  //           throw new Error('This app requires a username.');
+  //         }
+  //         this.setState({ options: { ...options, username: userData.username } });
+  //         redirectStorage(STORAGE_TYPES.BLOCKSTACK, { loaduser: userData.username });
+  //       });
+  //     }
   //   }
-  // }
   // }
 
   render() {

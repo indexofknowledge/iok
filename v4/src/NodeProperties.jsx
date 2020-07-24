@@ -57,35 +57,39 @@ class NodeProperties extends Component {
   }
 
   addOrEdit() {
-    // TODO: ADD CHECKS FOR SUBMIT BUTTON
+
     const { node, editing } = this.props;
     const { nodeType } = this.state;
     if (editing) {
       if (!node) return <span />;
       return (
         <div className="dialog">
-          <h2>Edit Node</h2>
-          <p>{node.name}</p>
-          {this.topicOrResource()}
-          <button type="button" onClick={() => this.handleSubmit()}>Submit</button>
-        </div>
+          <form onSubmit={(e) => this.handleSubmit()}>
+            <h2>Edit Node</h2>
+            <p>{node.name}</p>
+            {this.topicOrResource()}
+            <button type="submit">Submit</button>
+          </form>
+        </div >
       );
     }
     return (
       <div className="dialog">
         <h2>Add Node</h2>
         <div className="formgroup">
-          Type of Node
-          <label>
-            <input type="radio" value="1" checked={nodeType === 1} onChange={this.setNodeType} />
-            Topic
-          </label>
-          <label>
-            <input type="radio" value="2" checked={nodeType === 2} onChange={this.setNodeType} />
+          <form onSubmit={(e) => this.handleSubmit()}>
+            Type of Node
+            <label>
+              <input required name="nodeType" type="radio" value="1" checked={nodeType === 1} onChange={this.setNodeType} />
+              Topic
+            </label>
+            <label>
+              <input required name="nodeType" type="radio" value="2" checked={nodeType === 2} onChange={this.setNodeType} />
             Resource
           </label>
-          {this.topicOrResource()}
-          <button type="button" onClick={() => this.handleSubmit()}>Submit</button>
+            {this.topicOrResource()}
+            <button type="submit">Submit</button>
+          </form>
         </div>
       </div>
     );
@@ -99,7 +103,7 @@ class NodeProperties extends Component {
         <div className="formgroup">
           <label>
             Topic Name
-            <input type="text" placeholder="Bitcoin" value={name} onChange={(ev) => this.setState({ name: ev.target.value })} />
+            <input required type="text" placeholder="Bitcoin" value={name} onChange={(ev) => this.setState({ name: ev.target.value })} />
           </label>
         </div>
       );
@@ -109,11 +113,11 @@ class NodeProperties extends Component {
         <div className="formgroup">
           Resource Type
           <label>
-            <input type="radio" value="1" checked={resourceType === 1} onChange={this.setResourceType} />
+            <input required name="resourceType" type="radio" value="1" checked={resourceType === 1} onChange={this.setResourceType} />
             Description
           </label>
           <label>
-            <input type="radio" value="4" checked={resourceType === 4} onChange={this.setResourceType} />
+            <input required name="resourceType" type="radio" value="4" checked={resourceType === 4} onChange={this.setResourceType} />
             Link
           </label>
           {this.descOrLink()}
@@ -130,7 +134,7 @@ class NodeProperties extends Component {
     if (resourceType === RTYPE.DESC) {
       return (
         <div>
-          <input
+          <input required
             id="abc"
             name="abc"
             type="text"
@@ -146,17 +150,13 @@ class NodeProperties extends Component {
               }));
             }}
           />
-          {/* <input.Feedback type="invalid">
-            Please provide valid resource data
-          </input.Feedback> */}
-          {/* Resource data can be a description or hyperlink */}
         </div>
       );
     }
     if (resourceType === RTYPE.LINK) {
       return (
         <div>
-          <input
+          <input required
             type="text"
             placeholder="Bitcoin whitepaper"
             value={resourceData ? resourceData.text : null}
@@ -170,15 +170,9 @@ class NodeProperties extends Component {
               }));
             }}
           />
-          {/* <input.Feedback type="invalid">
-            Please provide valid resource link name
-          </input.Feedback>
-          <form.Text>
-            Resource link name
-          </form.Text> */}
 
           <input
-            type="url"
+            type="url" required
             placeholder="https://bitcoin.org/bitcoin.pdf"
             value={resourceData ? resourceData.link : null}
             onChange={(ev) => {
@@ -191,12 +185,6 @@ class NodeProperties extends Component {
               }));
             }}
           />
-          {/* <input.Feedback type="invalid">
-            Please provide valid resource link
-          </input.Feedback>
-          <form.Text>
-            Resource link URL
-          </form.Text> */}
         </div>
       );
     }

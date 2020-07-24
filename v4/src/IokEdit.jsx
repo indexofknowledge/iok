@@ -4,7 +4,8 @@ import CytoscapeComponent from 'react-cytoscapejs';
 import './IokEdit.css';
 import NodeProperties from './NodeProperties';
 import { saveIPFSGraph } from './storage/ipfs';
-
+import { loadGraph } from './loading.js';
+import { parseParams } from './urlUtils';
 const IokStyle = (zoom) => [
   {
     selector: 'node[name]',
@@ -45,12 +46,17 @@ class IokEdit extends Component {
   constructor(props) {
     super(props);
     this.nodeProps = React.createRef();
+    const { storage, options } = parseParams();
     this.state = {
       zoom: 1,
       submitFunc: null,
+      storage,
+      options
     };
     this.addNode = this.addNode.bind(this);
     this.editNode = this.editNode.bind(this);
+    loadGraph(storage, options).then((json) => this.onSuccessLoadGraph(json))
+      .catch(() => alert('oops graph couldnt load'));
   }
 
   onNodeTap(evt, cy) {
@@ -142,6 +148,7 @@ class IokEdit extends Component {
     reader.onload = (ev) => {
       try {
         const obj = JSON.parse(ev.target.result);
+        console.log(obj);
         uploadGraph(obj);
       } catch (err) {
         alert('Invalid JSON file');
@@ -180,6 +187,12 @@ class IokEdit extends Component {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  }
+
+  onSuccessLoadGraph(graph) {
+    const { uploadGraph } = this.props;
+    if (graph) uploadGraph(graph);
+    console.log("THE SUCCESS", graph.elements);
   }
 
   render() {
