@@ -33,7 +33,7 @@ jobs:
       - name: Get full graph to json
         run: |
           source iok.vars
-          ./utils/iok.sh get_full_graph $ROOT_CID > graph.json
+          ./utils/iok.sh get_graph $ROOT_CID > graph.json
       - name: Linearize graph to awesome list
         working-directory: python
         run: |

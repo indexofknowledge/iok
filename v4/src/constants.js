@@ -9,7 +9,7 @@ export const GRAPH_FILENAME = 'graph.json';
 export const DEFL_STORAGE = STORAGE_TYPES.IPFS;
 
 export const DEFL_STORAGE_OPTIONS = {
-  hash: 'bafyreiazycwyywapgf6bhskh4ztwrpghca4znle73kdyoquefgkapw3bry',
+  hash: 'bafyreibvef7pwqpwi64b5in6tidpnirq5w7owbxx6pluqofwx5bwjwrx2m',
 };
 
 export const IOKS = [
