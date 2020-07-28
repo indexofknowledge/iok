@@ -10,19 +10,12 @@ const ipfs = new IpfsClient({
 
 const options = { format: 'dag-cbor', hashAlg: 'sha2-256', pin: 'true' };
 
-function verifyGraphShape(graph) {
-  const hasKeys = 'elements' in graph && 'nodes' in graph.elements && 'edges' in graph.elements;
-  if (!hasKeys) {
-    throw Error('Invalid graph, expected elements: {nodes, edges}');
-  }
-}
-
 /**
  * Verify a given object is a node in cytoscape form
- * and return only its key fields
+ * and return only its bare minimum fields. This is useful
+ * for consistency of node ID calculation by CID.
  *
- * At the bare minimum, we should have:
- * All nodes should contain `node_type`
+ * All nodes should contain `node_type` and `id`.
  *  Topic nodes (1) should contain
  *    name
  *
@@ -60,41 +53,75 @@ function verifyNodeShape(node) {
   throw Error('Invalid node_type');
 }
 
+/**
+ * Given a graph, verifies it's in cytoscape graph shape (elements: { nodes, edges })
+ * and also that the nodes have the minimum fields required per IoK graph format.
+ * NOTE: This does not verify node IDs are calculated correctly or whether edges are valid.
+ * @param {*} graph
+ */
+function verifyGraphShape(graph) {
+  const hasKeys = 'elements' in graph && 'nodes' in graph.elements && 'edges' in graph.elements;
+  if (!hasKeys) {
+    throw Error('Invalid graph, expected elements: {nodes, edges}');
+  }
+  const { nodes } = graph.elements;
+  for (let i = 0; i < nodes.length; i += 1) {
+    verifyNodeShape(nodes[i].data);
+  }
+}
+
+/**
+ * Given a graph of the right shape, pins it to IPFS and returns
+ * the corresponding CID.
+ * @param {*} graph
+ */
 async function putGraph(graph) {
   verifyGraphShape(graph);
   const cid = await ipfs.dag.put(graph, options);
   return cid.toBaseEncodedString();
 }
 
+/**
+ * Given a CID, fetches the backing object from IPFS. An optional
+ * `path` parameter is optional, and can be used for debugging.
+ * @param {*} cid
+ * @param {*} path
+ */
 async function getGraph(cid, path = '') {
   const graph = await ipfs.dag.get(cid + path);
   return graph.value;
 }
 
+/**
+ * Given a CBOR-serializable JSON object, calculate its CID.
+ * @param {*} obj
+ */
 async function objToCid(obj) {
   const ser = DagCBOR.util.serialize(obj);
   const cid = await DagCBOR.util.cid(ser);
   return cid.toBaseEncodedString();
 }
 
-// replace all node ids with IPLD CIDs based on hash
-// of the "bare" node
+/**
+ * Given a graph, verify it's the right shape and also recalculate
+ * all node IDs based on CID of each's node's minimum keys.
+ * @param {*} graph
+ */
 async function formatGraph(graph) {
   verifyGraphShape(graph);
 
-  // for each of the nodes, change its id
+  // for each of the nodes, change its ID
   const { nodes, edges } = graph.elements;
-
   for (let i = 0; i < nodes.length; i += 1) {
     const oldId = nodes[i].data.id;
     const bare = verifyNodeShape(nodes[i].data);
     // eslint-disable-next-line no-await-in-loop
     const newId = await objToCid(bare);
-    bare.id = newId;
-    nodes[i] = { data: bare };
+    nodes[i].data.id = newId;
 
     // XXX: probably a better way to do this in cytoscape
-    // replaces old node ID with new node ID
+    // replaces old node ID with new node ID for each edge
+    // NOTE: this does not work for self-edges
     for (let j = 0; j < edges.length; j += 1) {
       const dat = edges[j].data;
       const { source, target } = dat;
@@ -158,13 +185,19 @@ async function formatGraph(graph) {
 //   return ipfsGraph;
 // }
 
-// verify that a list of node IDs are all CID and exist in the graph
-function verifyNodeIds(graph, cids) {
+/**
+ * Verify that the given list of node IDs all exist in the graph. This is useful
+ * for traversal verification, since an Iok traversal is just a set of node IDs, not
+ * necessarily fringe or representing a full subtree.
+ * @param {*} graph
+ * @param {*} ids
+ */
+function verifyNodeIds(graph, ids) {
   verifyGraphShape(graph);
-  const nodeCids = new Set(graph.elements.nodes.map((el) => el.data.id));
-  for (let i = 0; i < cids.length; i += 1) {
-    const traversedNode = cids[i];
-    if (!nodeCids.has(traversedNode)) {
+  const nodeIds = new Set(graph.elements.nodes.map((el) => el.data.id));
+  for (let i = 0; i < ids.length; i += 1) {
+    const traversedNode = ids[i];
+    if (!nodeIds.has(traversedNode)) {
       console.log(`Graph elements provided do not have node ${traversedNode}`);
       return false;
     }
@@ -172,8 +205,13 @@ function verifyNodeIds(graph, cids) {
   return true;
 }
 
-// given a graph, its cid, and a list of
-// node IDs, create and pin an IoK traversal state
+/**
+ * Given a graph, its CID, and a list of node IDs, create and pin an IoK traversal
+ * state.
+ * @param {*} cid
+ * @param {*} graph
+ * @param {*} traversedList
+ */
 async function putTraversalState(cid, graph, traversedList) {
   if (!Array.isArray(traversedList)) {
     throw Error('Expected `traversedList` to be an array');
