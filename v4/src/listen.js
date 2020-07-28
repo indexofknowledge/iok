@@ -61,7 +61,6 @@ export const getNodesEdgesJson = (cy) => {
 export const getExportableJson = (cy) => {
   const j = getNodesEdgesJson(cy);
   const obj = { elements: j };
-  obj.style = cy.style;
   return obj;
 };
 

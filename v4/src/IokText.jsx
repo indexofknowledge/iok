@@ -14,7 +14,7 @@ import { verifyNodeShape, objToCid } from 'ipfs-cytoscape';
 import './styles/IokText.css';
 
 import {
-  regroupCy, toggleDrawMode, toggleMeta, addNode, getNodesEdgesJson,
+  regroupCy, toggleDrawMode, toggleMeta, addNode, getExportableJson,
 } from './listen';
 import { GRAPH_FILENAME } from './constants';
 import { NTYPE } from './types';
@@ -93,7 +93,7 @@ class IokText extends Component {
 
   downloadGraph() {
     const { cy } = this.state;
-    const exportObj = getNodesEdgesJson(cy);
+    const exportObj = getExportableJson(cy);
     const exportName = GRAPH_FILENAME;
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(exportObj))}`;
     const downloadAnchorNode = document.createElement('a');

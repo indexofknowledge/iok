@@ -192,11 +192,11 @@ class SignedIn extends Component {
   /**
    * Support loading graph from user-uploaded JSON file
    */
-  loadGraphFromFile(content) {
+  loadGraphFromFile(elements) {
     const { cy, options } = this.state;
     try {
       cy.json({
-        elements: content,
+        ...elements,
         style: DEFL_GRAPH_STYLE,
       });
       regroupCy(cy, false);
