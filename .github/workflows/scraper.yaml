@@ -32,6 +32,7 @@ jobs:
       - name: Get full graph to json
         run: |
           source iok.vars
+          echo "::set-env name=SCRAPED_CID::$ROOT_CID"
           ./utils/iok.sh get_full_graph $ROOT_CID > graph.json
       - name: Linearize graph to awesome list
         working-directory: python
@@ -40,3 +41,13 @@ jobs:
       - name: Show README
         run: |
           cat README.md
+      - name: Add and commit
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: EndBug/add-and-commit@v4
+        with:
+          add: README.md
+          author_name: 🐦 IoK Bot
+          author_email: birdie@iok.com
+          message: Auto-generated from IOK ${{ env.SCRAPED_CID }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
