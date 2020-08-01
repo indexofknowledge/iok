@@ -5,23 +5,27 @@ import './IokEdit.css';
 import NodeProperties from './NodeProperties';
 import { saveIPFSGraph } from './storage/ipfs';
 import { loadGraph } from './loading.js';
+import { loadCache, saveCache, wipeCache } from './storage/cache';
 import { parseParams } from './urlUtils';
+import { NTYPE } from './types';
+import { selectNode } from './redux/actions';
 const IokStyle = (zoom) => [
   {
     selector: 'node[name]',
     style: {
-      'background-color': '#f8be35',
+      'background-color': '#DAB357',
       label: 'data(name)',
       'font-size': `${15 / Math.sqrt(zoom)}px`,
+      color: '#D8D9F3',
     },
   },
   {
     selector: 'edge',
     style: {
-      width: 4,
+      width: 3,
       'target-arrow-shape': 'triangle',
-      'line-color': '#FFE6A9',
-      'target-arrow-color': '#FFE6A9',
+      'line-color': '#5B67B2',
+      'target-arrow-color': '#5B67B2',
       'curve-style': 'bezier',
     },
   }, {
@@ -51,25 +55,49 @@ class IokEdit extends Component {
       zoom: 1,
       submitFunc: null,
       storage,
-      options
+      options,
+      secretCodeSign: [],
     };
     this.addNode = this.addNode.bind(this);
     this.editNode = this.editNode.bind(this);
+    this.openEditNode = this.openEditNode.bind(this);
+    this.periodicallySaveCache = this.periodicallySaveCache.bind(this);
     loadGraph(storage, options).then((json) => this.onSuccessLoadGraph(json))
       .catch(() => alert('oops graph couldnt load'));
   }
 
+  componentDidMount() {
+    const { timerID } = this.state;
+    clearInterval(timerID);
+    const newTimerID = setInterval(this.periodicallySaveCache, 5000);
+    this.setState({ timerID: newTimerID });
+  }
+
+  periodicallySaveCache() {
+    const { storage, options } = this.state;
+    const { graph } = this.props;
+    saveCache(graph, storage, options);
+  }
+
   onNodeTap(evt, cy) {
-    const { selected, selectNode } = this.props;
+    const { selected, selectNode, mergingNode } = this.props;
+    console.log("SELECTED", selected, "MERGING", mergingNode)
     if (evt.target === cy) {
       if (selected) {
         selectNode(null);
-        this.setState({ submitFunc: null });
       }
     } else if (evt.target.isNode()) {
       const id = evt.target.id();
       if (!selected || selected.id !== id) {
         selectNode(id);
+        console.log(this.state.secretCodeSign);
+        this.setState({ secretCodeSign: [...this.state.secretCodeSign, id] }, () => {
+          if (JSON.stringify(this.state.secretCodeSign) == JSON.stringify(["04eaf9a2a65d37f254fab35f969da7b133cea2087e1be846ea2dc8ccbb0e2470",
+            "e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855", "8d3e61ce168c16ae5c10fc0eb2085e7063844736be62d37c1318b437e60a06b2",
+            "71686ead6a4dc2481870877da6a888fab7c488819572c391b71acabd047930fe", "e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855"])) {
+            window.location = 'https://bab-internal.slack.com';
+          }
+        });
       }
     }
   }
@@ -79,7 +107,7 @@ class IokEdit extends Component {
     cy.nodes().removeClass('selected merging');
     if (selected) cy.getElementById(selected.id).addClass('selected');
     if (mergingNode) cy.getElementById(mergingNode.id).addClass('merging');
-    cy.layout({ name: 'breadthfirst', fit: false }).run();
+    cy.layout({ name: 'breadthfirst', fit: false, spacingFactor: 0.8 }).run();
 
     if (cy === this.cy) return;
     this.cy = cy;
@@ -104,8 +132,10 @@ class IokEdit extends Component {
 
   openEditNode() {
     const { selected } = this.props;
-    this.nodeProps.current.setStateFromNode(selected.data);
-    this.setState({ submitFunc: this.editNode });
+    if (selected) {
+      this.nodeProps.current.setStateFromNode(selected.data);
+      this.setState({ submitFunc: this.editNode });
+    }
   }
 
   editNode(id, props) {
@@ -122,8 +152,8 @@ class IokEdit extends Component {
 
   mergeNode() {
     const { selectMergeNode, selected, mergingNode } = this.props;
-    if (!mergingNode) {
-      selectMergeNode(selected);
+    if (!mergingNode && selected) {
+      selectMergeNode(selected.id);
     }
   }
 
@@ -134,11 +164,15 @@ class IokEdit extends Component {
 
   confirmMerge() {
     const {
-      mergeNode, selectMergeNode, selected, mergingNode,
+      mergeNode, selectMergeNode, selectNode, selected, mergingNode,
     } = this.props;
-    if (mergingNode && selected) {
+    if (mergingNode && selected &&
+      mergingNode.data.node_type != NTYPE.RESO && selected.data.node_type != NTYPE.RESO) {
       mergeNode(mergingNode.id, selected.id);
       selectMergeNode(null);
+    } else {
+      selectMergeNode(null);
+      alert("You can't merge resource nodes")
     }
   }
 
@@ -191,7 +225,24 @@ class IokEdit extends Component {
 
   onSuccessLoadGraph(graph) {
     const { uploadGraph } = this.props;
-    uploadGraph(graph);
+    graph ? uploadGraph(graph.elements) : uploadGraph(graph);
+  }
+
+  downloadGraph() {
+    const { graph } = this.props;
+    const exportName = 'file.json';
+    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(graph))}`;
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute('href', dataStr);
+    downloadAnchorNode.setAttribute('download', exportName);
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  }
+
+  onSuccessLoadGraph(graph) {
+    const { uploadGraph } = this.props;
+    graph ? uploadGraph(graph.elements) : uploadGraph(graph);
     console.log("THE SUCCESS", graph.elements);
   }
 
@@ -201,13 +252,13 @@ class IokEdit extends Component {
     return (
       <div className="graph">
         <div className="toolbar">
-          <div className="birb"><span role="img" aria-label="bird">🐦</span></div>
-          <button className="tool" type="button" onClick={() => this.openAddNode()}>
+          <div className="birb" onClick={() => document.querySelector('.birb').innerHTML = '🗿'}><span role="img" aria-label="bird">🐦</span><span role="img" aria-label="bird">🐦</span></div>
+          <button className={submitFunc == this.addNode ? 'tool active' : 'tool'} type="button" onClick={() => this.openAddNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
             </svg>
           </button>
-          <button className="tool" type="button" onClick={() => this.openEditNode()}>
+          <button className={submitFunc == this.editNode ? 'tool active' : 'tool'} type="button" onClick={() => this.openEditNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20.1346 5.62957C20.5138 6.01957 20.5138 6.64957 20.1346 7.03957L18.3554 8.86957L14.7096 5.11957L16.4888 3.28957C16.8679 2.89957 17.4804 2.89957 17.8596 3.28957L20.1346 5.62957ZM2.9165 20.9995V17.2495L13.6693 6.18953L17.3151 9.93953L6.56234 20.9995H2.9165Z" />
             </svg>
@@ -217,7 +268,7 @@ class IokEdit extends Component {
               <path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z" />
             </svg>
           </button>
-          <button className="tool" type="button" onClick={() => this.mergeNode()}>
+          <button className={mergingNode ? 'tool active' : 'tool'} type="button" onClick={() => this.mergeNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8.75022 20C13.0474 20 16.528 16.42 16.528 12C16.528 7.58 13.0474 4.00001 8.75022 4.00001C4.453 4.00001 0.972446 7.58001 0.972447 12C0.972448 16.42 4.453 20 8.75022 20ZM8.75013 5.99998C11.9682 5.99998 14.5835 8.68998 14.5835 12C14.5835 15.31 11.9682 18 8.75013 18C5.53208 18 2.9168 15.31 2.9168 12C2.9168 8.68998 5.53208 5.99998 8.75013 5.99998ZM16.528 17.6501C18.7933 16.8301 20.4169 14.6101 20.4169 12.0001C20.4169 9.3901 18.7933 7.1701 16.528 6.3501L16.528 4.26011C19.8822 5.1501 22.3613 8.2701 22.3613 12.0001C22.3613 15.7301 19.8822 18.8501 16.528 19.7401L16.528 17.6501Z" />
             </svg>
@@ -240,13 +291,8 @@ class IokEdit extends Component {
             </svg>
           </button>
 
-          {mergingNode ? (
-            <div>
-              <button type="button" className="tool" onClick={() => this.endMerge()}>Cancel Merge</button>
-              <button type="button" className="tool" onClick={() => this.confirmMerge()}>Confirm Merge</button>
-            </div>
-          ) : <div />}
         </div>
+
 
         <div className="innerGraph">
           <h1>Hiiiiiiiiii!! IoK</h1>
@@ -256,14 +302,14 @@ class IokEdit extends Component {
             style={{ width: '100%', height: '100%' }}
             stylesheet={IokStyle(zoom)}
           />
-          {/* <p>
-            <code>
-              Selected:
-            {selected ? selected.id : 'null'}
-            </code>
-          </p> */}
           <NodeProperties title="Hello node" node={selected} ref={this.nodeProps} submit={submitFunc} editing={submitFunc === this.editNode} />
           {/* <pre><code>{JSON.stringify(elements, null, 2)}</code></pre> */}
+          {mergingNode ? (
+            <div className="dialog">
+              <button type="button" className="tool borderButton" onClick={() => this.endMerge()}>Cancel Merge</button>
+              <button type="button" className="tool filledButton" onClick={() => this.confirmMerge()}>Confirm Merge</button>
+            </div>
+          ) : <div />}
         </div>
       </div>
     );

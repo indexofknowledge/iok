@@ -48,6 +48,7 @@ export default function reducer(state = DEFAULT_STATE, action) {
       const newNode = merge(from, to, cy);
       if (parent) cy.add(createEdge(newNode, parent));
       selected = calcCurrentNode(newNode);
+      mergingNode = null;
       graph = graphHelper(cy);
       break;
     }

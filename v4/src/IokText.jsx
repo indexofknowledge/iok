@@ -25,8 +25,6 @@ function IokText({ node }) {
     subtitle = 'NOTE: Resource node. Displaying own contents';
   }
   const neighbors = node ? node.neighbors : [data];
-  console.log(node, neighbors, data);
-
   const depList = [];
   const descList = [];
   const linkList = [];
@@ -52,55 +50,67 @@ function IokText({ node }) {
   return (
 
     <div className="sidebar">
-
-      <h2 className="nodetitle">{data.name}</h2>
-      <p>
-        From
-        <a href="http://localhost:3000/">Rustie&apos;s IoK</a>
-        by Rustie
-      </p>
-      <div className="circle">#</div>
-      <div className="circle">@</div>
-      <div className="circle">!</div>
-      <p id="nodesubtitle">{subtitle}</p>
-
-      {depList.length !== 0 && (
-        <div>
-          <h3 className="heading">
-            You&apos;ll first need to understand
-          </h3>
-          <ul id="nodedeps">
-            {depList}
-          </ul>
+      <div>
+        <h2 className="nodetitle">{data.name}</h2>
+        <p className="byline">
+          From <a href="http://localhost:3000/">Rustie&apos;s IoK</a> by Rustie
+        </p>
+        <div className="circles">
+          <div className="circle" style={{ backgroundColor: '#51B9C8' }}>#</div>
+          <div className="circle" style={{ backgroundColor: '#CAB467' }}>@</div>
+          <div className="circle" style={{ backgroundColor: '#CD6052' }}>!</div>
+          <div className="circle">[?]</div>
         </div>
-      )}
+        {/* <p id="nodesubtitle">{subtitle}</p> */}
+        {
+          depList.length !== 0 && (
+            <div className="section depsection" >
+              <h3 className="heading">
+                You&apos;ll first need to understand
+            </h3>
+              <ul id="nodedeps">
+                {depList}
+              </ul>
+            </div>
+          )
+        }
 
-      {descList.length !== 0 && (
-        <div>
-          <h3 className="heading">
-            What is
-            {' '}
-            {data.name}
-            ?
-          </h3>
-          <ul id="nodedescs">
-            {descList}
-          </ul>
-        </div>
-      )}
+        {
+          descList.length !== 0 && (
+            <div className="section descriptionsection" >
+              <h3 className="heading">
+                What is
+              {' '}
+                {data.name}
+              ?
+            </h3>
+              <ul id="nodedescs">
+                {descList}
+              </ul>
+            </div>
+          )
+        }
 
-      {linkList.length !== 0 && (
-        <div>
-          <h3 className="heading">Learn more</h3>
-          <ul id="nodelinks">
-            {linkList}
-          </ul>
-        </div>
-      )}
+        {
+          linkList.length !== 0 && (
+            <div className="section linksection">
+              <h3 className="heading">Learn more</h3>
+              <ul id="nodelinks">
+                {linkList}
+              </ul>
+            </div>
+          )
+        }
+      </div>
 
-      <h3 className="heading">Debugging</h3>
-      <p className="nodeid">{data.id}</p>
-    </div>
+      {
+        data.id && (
+          <div> <h3 className="heading">Debugging</h3>
+            <p className="nodeid">{data.id}</p></div>
+        )
+      }
+
+    </div >
   );
 }
 

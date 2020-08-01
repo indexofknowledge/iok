@@ -68,7 +68,7 @@ class NodeProperties extends Component {
             <h2>Edit Node</h2>
             <p>{node.name}</p>
             {this.topicOrResource()}
-            <button type="submit">Submit</button>
+            <button type="submit" className="filledButton">Submit</button>
           </form>
         </div >
       );
@@ -88,7 +88,7 @@ class NodeProperties extends Component {
             Resource
           </label>
             {this.topicOrResource()}
-            <button type="submit">Submit</button>
+            <button type="submit" className="filledButton">Submit</button>
           </form>
         </div>
       </div>
