@@ -38,6 +38,7 @@
 
 .innerGraph {
   flex-grow: 1;
+  width: 0;
 }
 
 h1 {

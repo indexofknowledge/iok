@@ -94,7 +94,7 @@ function graphHelper(cy) {
   const j = cy.json().elements;
   if (j.nodes) j.nodes = j.nodes.map((n) => ({ data: n.data }));
   if (j.edges) j.edges = j.edges.map((e) => ({ data: e.data }));
-  return j;
+  return { elements: j };
 }
 
 function calcCurrentNode(node) {

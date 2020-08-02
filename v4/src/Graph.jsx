@@ -6,8 +6,8 @@ import {
 
 const mapStateToProps = (state) => {
   let elements = [];
-  if (state.graph.nodes) elements = state.graph.nodes;
-  if (state.graph.edges) elements = elements.concat(state.graph.edges);
+  if (state.graph.elements.nodes) elements = state.graph.elements.nodes;
+  if (state.graph.elements.edges) elements = elements.concat(state.graph.elements.edges);
   return {
     elements,
     graph: state.graph,

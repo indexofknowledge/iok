@@ -105,9 +105,11 @@ class IokEdit extends Component {
   initCy(cy) {
     const { selected, mergingNode } = this.props;
     cy.nodes().removeClass('selected merging');
+    cy.maxZoom(10);
+    cy.minZoom(0.1);
     if (selected) cy.getElementById(selected.id).addClass('selected');
     if (mergingNode) cy.getElementById(mergingNode.id).addClass('merging');
-    cy.layout({ name: 'breadthfirst', fit: false, spacingFactor: 0.8 }).run();
+    cy.layout({ name: 'breadthfirst', circle: true, fit: false, spacingFactor: 0.8 }).run();
 
     if (cy === this.cy) return;
     this.cy = cy;
@@ -116,8 +118,24 @@ class IokEdit extends Component {
     /* let lastSelected = null; */
     cy.autounselectify(true);
     cy.autoungrabify(true);
+    cy.boxSelectionEnabled(false)
     cy.on('tap', (evt) => this.onNodeTap(evt, cy));
     cy.on('zoom', () => this.setState({ zoom: cy.zoom() }));
+    cy.pan({ x: 0, y: 50 });
+    function recenterMaybe() {
+      const width = cy.width();
+      const height = cy.height();
+      const rbb = cy.elements().renderedBoundingbox();
+      if (rbb.x2 < 0 || rbb.y2 < 0 || rbb.x1 > width || rbb.y1 > height) {
+        cy.off('mouseup touchend zoom', recenterMaybe);
+        cy.animate({
+          zoom: 1, pan: { x: 0, y: 50 }, easing: 'ease-out', duration: 500, complete: () => {
+            cy.on('mouseup touchend zoom', recenterMaybe);
+          }
+        });
+      }
+    }
+    cy.on('mouseup touchend zoom', recenterMaybe);
   }
 
   openAddNode() {
@@ -224,8 +242,9 @@ class IokEdit extends Component {
   }
 
   onSuccessLoadGraph(graph) {
+    console.log('THE SUCESS', graph);
     const { uploadGraph } = this.props;
-    graph ? uploadGraph(graph.elements) : uploadGraph(graph);
+    uploadGraph(graph);
   }
 
   downloadGraph() {
@@ -238,12 +257,6 @@ class IokEdit extends Component {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-  }
-
-  onSuccessLoadGraph(graph) {
-    const { uploadGraph } = this.props;
-    graph ? uploadGraph(graph.elements) : uploadGraph(graph);
-    console.log("THE SUCCESS", graph.elements);
   }
 
   render() {

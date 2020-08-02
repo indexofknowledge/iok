@@ -5,13 +5,13 @@ import {
   outgoers, calcCurrentNode,
 } from './graphlib';
 
-const DEFAULT_STATE = { graph: {}, selected: null, mergingNode: null };
+const DEFAULT_STATE = { graph: { elements: {} }, selected: null, mergingNode: null };
 
 export default function reducer(state = DEFAULT_STATE, action) {
   let { graph, selected, mergingNode } = state;
   let elements = [];
-  if (state.graph.nodes) elements = state.graph.nodes;
-  if (state.graph.edges) elements = elements.concat(state.graph.edges);
+  if (state.graph.elements.nodes) elements = state.graph.elements.nodes;
+  if (state.graph.elements.edges) elements = elements.concat(state.graph.elements.edges);
   const cy = Cytoscape({ elements });
 
   switch (action.type) {

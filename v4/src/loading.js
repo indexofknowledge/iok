@@ -30,7 +30,6 @@ function loadGraph(storage, options, userSession = DEFAULT_SESSION) {
         && JSON.stringify(options) === JSON.stringify(DEFL_STORAGE_OPTIONS)) {
         Log.info('Load DEFL request cache');
         onSuccessLoadGraph(cached.graph);
-        console.log("SHOULD NOT BE HERE2");
         return;
       }
     }
