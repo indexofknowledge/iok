@@ -6,7 +6,7 @@ import { loadBlockstackGraph } from './storage/blockstack';
 import { loadIPFSGraph } from './storage/ipfs';
 import { STORAGE_TYPES } from './types';
 
-const DEFAULT_SESSION = new UserSession();
+export const DEFAULT_SESSION = new UserSession();
 
 /**
  * Load cy instance from various storage providers

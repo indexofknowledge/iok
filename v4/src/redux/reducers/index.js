@@ -7,11 +7,16 @@ import {
 
 const DEFAULT_STATE = { graph: { elements: {} }, selected: null, mergingNode: null };
 
+function graphToElements(graph) {
+  let elements = [];
+  if (graph.elements.nodes) elements = graph.elements.nodes;
+  if (graph.elements.edges) elements = elements.concat(graph.elements.edges);
+  return elements;
+}
+
 export default function reducer(state = DEFAULT_STATE, action) {
   let { graph, selected, mergingNode } = state;
-  let elements = [];
-  if (state.graph.elements.nodes) elements = state.graph.elements.nodes;
-  if (state.graph.elements.edges) elements = elements.concat(state.graph.elements.edges);
+  const elements = graphToElements(state.graph);
   const cy = Cytoscape({ elements });
 
   switch (action.type) {
@@ -54,6 +59,11 @@ export default function reducer(state = DEFAULT_STATE, action) {
     }
     case ACTION_TYPES.UPLOAD_GRAPH: {
       graph = action.graph;
+      break;
+    }
+    case ACTION_TYPES.IMPORT_GRAPH: {
+      cy.add(graphToElements(action.graph));
+      graph = graphHelper(cy);
       break;
     }
     case ACTION_TYPES.SELECT_NODE: {

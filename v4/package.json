@@ -12,6 +12,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@blockstack/connect": "^2.10.5",
+    "@blockstack/stacks-transactions": "^0.6.0",
     "axios": "^0.19.2",
     "blockstack": "^19.2.5",
     "cytoscape": "^3.15.2",

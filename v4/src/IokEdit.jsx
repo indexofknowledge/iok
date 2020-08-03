@@ -4,11 +4,13 @@ import CytoscapeComponent from 'react-cytoscapejs';
 import './IokEdit.css';
 import NodeProperties from './NodeProperties';
 import { saveIPFSGraph } from './storage/ipfs';
-import { loadGraph } from './loading.js';
+import { saveBlockstackGraph } from './storage/blockstack';
+import { loadGraph, DEFAULT_SESSION } from './loading.js';
 import { loadCache, saveCache, wipeCache } from './storage/cache';
 import { parseParams } from './urlUtils';
-import { NTYPE } from './types';
+import { STORAGE_TYPES, NTYPE } from './types';
 import { selectNode } from './redux/actions';
+import { showBlockstackConnect } from '@blockstack/connect';
 const IokStyle = (zoom) => [
   {
     selector: 'node[name]',
@@ -49,6 +51,7 @@ const IokStyle = (zoom) => [
 class IokEdit extends Component {
   constructor(props) {
     super(props);
+    const { uploadGraph } = this.props;
     this.nodeProps = React.createRef();
     const { storage, options } = parseParams();
     this.state = {
@@ -62,8 +65,8 @@ class IokEdit extends Component {
     this.editNode = this.editNode.bind(this);
     this.openEditNode = this.openEditNode.bind(this);
     this.periodicallySaveCache = this.periodicallySaveCache.bind(this);
-    loadGraph(storage, options).then((json) => this.onSuccessLoadGraph(json))
-      .catch(() => alert('oops graph couldnt load'));
+    loadGraph(storage, options).then((graph) => uploadGraph(graph))
+                               .catch(() => alert('oops graph couldnt load'));
   }
 
   componentDidMount() {
@@ -209,17 +212,16 @@ class IokEdit extends Component {
     if (event.target.files) reader.readAsText(event.target.files[0]);
   }
 
-  publishGraph() {
+  saveIpfs() {
     const { graph } = this.props;
-    console.log('PUBLISHING', { elements: graph });
+    console.log('PUBLISHING', graph);
 
     // saveCache(graph, storage, options);
 
     // switch (storage) {
     // case STORAGE_TYPES.IPFS:
     // might result in invalid state if cache is not updated after onHashChange
-    saveIPFSGraph({ elements: graph },
-      (hash) => { alert(hash); });
+    saveIPFSGraph(graph, (hash) => { alert('New hash: ' + hash); });
     // break;
     // case STORAGE_TYPES.BLOCKSTACK:
     //   saveBlockstackGraph(graph, this.userSession);
@@ -227,6 +229,37 @@ class IokEdit extends Component {
     // default:
     //   break;
     // }
+  }
+
+  async saveBlockstack() {
+    const { graph } = this.props;
+    console.log('AM I SIGNED IN', DEFAULT_SESSION.isUserSignedIn());
+    console.log(DEFAULT_SESSION.loadUserData())
+    console.log(DEFAULT_SESSION.getFile('graph.json', { decrypt: false }).then((f) => console.log('the file', f), (e) => console.error(e)));
+    window.session = DEFAULT_SESSION;
+    if (!DEFAULT_SESSION.isUserSignedIn()) {
+      showBlockstackConnect({
+        redirectTo: '/',
+        userSession: DEFAULT_SESSION,
+        sendToSignIn: true,
+        finished: ({ userSession }) => {
+          console.log('user session', userSession)
+          this.saveBlockstack();
+        },
+        appDetails: {
+          name: 'Index of Knowledge',
+          icon: 'favicon.ico'
+        }
+      });
+      return;
+    }
+    console.log('saving to', DEFAULT_SESSION);
+    saveBlockstackGraph(graph, DEFAULT_SESSION).then(() => {
+      alert('It saved!');
+      console.log(DEFAULT_SESSION);
+    }, () => (e) => {
+      alert('oops ' + e.message);
+    });
   }
 
   downloadGraph() {
@@ -243,8 +276,7 @@ class IokEdit extends Component {
 
   onSuccessLoadGraph(graph) {
     console.log('THE SUCESS', graph);
-    const { uploadGraph } = this.props;
-    uploadGraph(graph);
+
   }
 
   downloadGraph() {
@@ -257,6 +289,22 @@ class IokEdit extends Component {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+  }
+
+  importIpfs() {
+    const { importGraph } = this.props;
+    const hash = prompt("What's your ipfs hash?");
+    loadGraph(STORAGE_TYPES.IPFS, { hash })
+      .then((graph) => importGraph(graph))
+      .catch((e) => { alert('oops graph couldnt load'); console.error(e) });
+  }
+
+  importBlockstack() {
+    const { importGraph } = this.props;
+    const loaduser = prompt("What's your blockstack username?");
+    loadGraph(STORAGE_TYPES.BLOCKSTACK, { loaduser })
+      .then((graph) => { importGraph(graph); console.log(graph) })
+      .catch((e) => { alert('oops graph couldnt load'); console.error(e) });
   }
 
   render() {
@@ -316,6 +364,12 @@ class IokEdit extends Component {
             stylesheet={IokStyle(zoom)}
           />
           <NodeProperties title="Hello node" node={selected} ref={this.nodeProps} submit={submitFunc} editing={submitFunc === this.editNode} />
+          <div style={{position: 'fixed', bottom: 0}}>
+            <button type="button" className="tool filledButton"  onClick={() => this.importIpfs()}>Import from IPFS</button>
+            <button type="button" className="tool filledButton"  onClick={() => this.importBlockstack()}>Import from Blockstack</button>
+            <button type="button" className="tool filledButton"  onClick={() => this.saveIpfs()}>Save to IPFS</button>
+            <button type="button" className="tool filledButton"  onClick={() => this.saveBlockstack()}>Save to Blockstack</button>
+          </div>
           {/* <pre><code>{JSON.stringify(elements, null, 2)}</code></pre> */}
           {mergingNode ? (
             <div className="dialog">
