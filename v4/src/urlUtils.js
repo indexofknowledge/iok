@@ -8,7 +8,7 @@ export const redirectStorage = (storage, options = {}) => {
   Object.keys(options).forEach((key) => {
     par.set(key, options[key]);
   });
-  window.location.href = url;
+  window.history.replaceState(null, null, url);
 };
 
 export const redirectGuest = () => {
