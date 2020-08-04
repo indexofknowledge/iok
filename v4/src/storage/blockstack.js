@@ -1,5 +1,4 @@
 // eslint-disable-line
-import Log from '../log';
 import { GRAPH_FILENAME } from '../constants';
 
 const TAG = 'storage.blockstack';

@@ -57,27 +57,26 @@ class NodeProperties extends Component {
   }
 
   addOrEdit() {
-
     const { node, editing } = this.props;
     const { nodeType } = this.state;
     if (editing) {
       if (!node) return <span />;
       return (
         <div className="dialog">
-          <form onSubmit={(e) => this.handleSubmit()}>
+          <form onSubmit={() => this.handleSubmit()}>
             <h2>Edit Node</h2>
             <p>{node.name}</p>
             {this.topicOrResource()}
             <button type="submit" className="filledButton">Submit</button>
           </form>
-        </div >
+        </div>
       );
     }
     return (
       <div className="dialog">
         <h2>Add Node</h2>
         <div className="formgroup">
-          <form onSubmit={(e) => this.handleSubmit()}>
+          <form onSubmit={() => this.handleSubmit()}>
             Type of Node
             <label>
               <input required name="nodeType" type="radio" value="1" checked={nodeType === 1} onChange={this.setNodeType} />
@@ -85,8 +84,8 @@ class NodeProperties extends Component {
             </label>
             <label>
               <input required name="nodeType" type="radio" value="2" checked={nodeType === 2} onChange={this.setNodeType} />
-            Resource
-          </label>
+              Resource
+            </label>
             {this.topicOrResource()}
             <button type="submit" className="filledButton">Submit</button>
           </form>
@@ -134,7 +133,8 @@ class NodeProperties extends Component {
     if (resourceType === RTYPE.DESC) {
       return (
         <div>
-          <input required
+          <input
+            required
             id="abc"
             name="abc"
             type="text"
@@ -156,7 +156,8 @@ class NodeProperties extends Component {
     if (resourceType === RTYPE.LINK) {
       return (
         <div>
-          <input required
+          <input
+            required
             type="text"
             placeholder="Bitcoin whitepaper"
             value={resourceData ? resourceData.text : null}
@@ -172,7 +173,8 @@ class NodeProperties extends Component {
           />
 
           <input
-            type="url" required
+            type="url"
+            required
             placeholder="https://bitcoin.org/bitcoin.pdf"
             value={resourceData ? resourceData.link : null}
             onChange={(ev) => {

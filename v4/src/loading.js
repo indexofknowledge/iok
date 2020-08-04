@@ -1,5 +1,5 @@
-import Log from './log';
 import { UserSession } from 'blockstack';
+import Log from './log';
 import { DEFL_STORAGE, DEFL_STORAGE_OPTIONS } from './constants';
 import { loadCache, saveCache } from './storage/cache';
 import { loadBlockstackGraph } from './storage/blockstack';
@@ -22,7 +22,7 @@ function loadGraph(storage, options, userSession = DEFAULT_SESSION) {
         && JSON.stringify(cached.options) === JSON.stringify(options))) {
         Log.info('Load request cache');
         onSuccessLoadGraph(cached.graph);
-        console.log("cached graph", cached.graph);
+        console.log('cached graph', cached.graph);
         return;
       }
       // if we're loading the default graph, check cache first
@@ -36,7 +36,7 @@ function loadGraph(storage, options, userSession = DEFAULT_SESSION) {
 
     switch (storage) {
       case STORAGE_TYPES.IPFS:
-        console.log("GOING INTO IPFS");
+        console.log('GOING INTO IPFS');
         loadIPFSGraph(options.hash, onSuccessLoadGraph, onErrorLoadGraph);
         break;
       case STORAGE_TYPES.BLOCKSTACK:

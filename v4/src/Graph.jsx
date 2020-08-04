@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import IokEdit from './IokEdit';
 import {
-  addNode, editNode, deleteNode, mergeNode, selectNode, selectMergeNode, uploadGraph, importGraph
+  addNode, editNode, deleteNode, mergeNode, selectNode, selectMergeNode, uploadGraph, importGraph,
 } from './redux/actions';
 
 const mapStateToProps = (state) => {
