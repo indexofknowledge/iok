@@ -9,11 +9,13 @@
   "bugs": {
     "url": "https://github.com/rustielin/iok/issues"
   },
+  "homepage": ".",
   "author": "",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.19.2",
     "blockstack": "^19.2.5",
+    "bootstrap": "^4.4.1",
     "cytoscape": "^3.13.0",
     "cytoscape-cola": "^2.3.0",
     "cytoscape-dagre": "^2.2.2",
@@ -57,7 +59,6 @@
     ]
   },
   "devDependencies": {
-    "bootstrap": "^4.4.1",
     "react-test-renderer": "^16.8.6"
   }
 }
