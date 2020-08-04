@@ -18,12 +18,6 @@ function IokText({ node }) {
     node_type: 2,
   };
 
-  let subtitle = '';
-  if (!node) {
-    subtitle = 'NOTE: No node selected.';
-  } else if (data.node_type === NTYPE.RESO) {
-    subtitle = 'NOTE: Resource node. Displaying own contents';
-  }
   const neighbors = node ? node.neighbors : [data];
   const depList = [];
   const descList = [];
@@ -53,7 +47,11 @@ function IokText({ node }) {
       <div>
         <h2 className="nodetitle">{data.name}</h2>
         <p className="byline">
-          From <a href="http://localhost:3000/">Rustie&apos;s IoK</a> by Rustie
+          From
+          {' '}
+          <a href="http://localhost:3000/">Rustie&apos;s IoK</a>
+          {' '}
+          by Rustie
         </p>
         <div className="circles">
           <div className="circle" style={{ backgroundColor: '#51B9C8' }}>#</div>
@@ -64,10 +62,10 @@ function IokText({ node }) {
         {/* <p id="nodesubtitle">{subtitle}</p> */}
         {
           depList.length !== 0 && (
-            <div className="section depsection" >
+            <div className="section depsection">
               <h3 className="heading">
                 You&apos;ll first need to understand
-            </h3>
+              </h3>
               <ul id="nodedeps">
                 {depList}
               </ul>
@@ -77,13 +75,13 @@ function IokText({ node }) {
 
         {
           descList.length !== 0 && (
-            <div className="section descriptionsection" >
+            <div className="section descriptionsection">
               <h3 className="heading">
                 What is
-              {' '}
+                {' '}
                 {data.name}
-              ?
-            </h3>
+                ?
+              </h3>
               <ul id="nodedescs">
                 {descList}
               </ul>
@@ -105,12 +103,15 @@ function IokText({ node }) {
 
       {
         data.id && (
-          <div> <h3 className="heading">Debugging</h3>
-            <p className="nodeid">{data.id}</p></div>
+          <div>
+            {' '}
+            <h3 className="heading">Debugging</h3>
+            <p className="nodeid">{data.id}</p>
+          </div>
         )
       }
 
-    </div >
+    </div>
   );
 }
 

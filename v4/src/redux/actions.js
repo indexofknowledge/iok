@@ -6,6 +6,7 @@ export const ACTION_TYPES = {
   SELECT_NODE: 'SELECT_NODE',
   SELECT_MERGE_NODE: 'SELECT_MERGE_NODE',
   UPLOAD_GRAPH: 'UPLOAD_GRAPH',
+  IMPORT_GRAPH: 'IMPORT_GRAPH',
 };
 
 export const addNode = (parentId, props) => ({
@@ -43,5 +44,10 @@ export const selectMergeNode = (nodeId) => ({
 
 export const uploadGraph = (graph) => ({
   type: ACTION_TYPES.UPLOAD_GRAPH,
+  graph,
+});
+
+export const importGraph = (graph) => ({
+  type: ACTION_TYPES.IMPORT_GRAPH,
   graph,
 });

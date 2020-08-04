@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CytoscapeComponent from 'react-cytoscapejs';
 import './IokEdit.css';
+import { showBlockstackConnect } from '@blockstack/connect';
 import NodeProperties from './NodeProperties';
 import { saveIPFSGraph } from './storage/ipfs';
-import { loadGraph } from './loading.js';
-import { loadCache, saveCache, wipeCache } from './storage/cache';
+import { saveBlockstackGraph } from './storage/blockstack';
+import { loadGraph, DEFAULT_SESSION } from './loading';
+import { saveCache, wipeCache } from './storage/cache';
 import { parseParams } from './urlUtils';
-import { NTYPE } from './types';
-import { selectNode } from './redux/actions';
+import { STORAGE_TYPES, NTYPE } from './types';
+
 const IokStyle = (zoom) => [
   {
     selector: 'node[name]',
@@ -49,6 +51,7 @@ const IokStyle = (zoom) => [
 class IokEdit extends Component {
   constructor(props) {
     super(props);
+    const { uploadGraph } = this.props;
     this.nodeProps = React.createRef();
     const { storage, options } = parseParams();
     this.state = {
@@ -62,7 +65,7 @@ class IokEdit extends Component {
     this.editNode = this.editNode.bind(this);
     this.openEditNode = this.openEditNode.bind(this);
     this.periodicallySaveCache = this.periodicallySaveCache.bind(this);
-    loadGraph(storage, options).then((json) => this.onSuccessLoadGraph(json))
+    loadGraph(storage, options).then((graph) => uploadGraph(graph))
       .catch(() => alert('oops graph couldnt load'));
   }
 
@@ -73,15 +76,9 @@ class IokEdit extends Component {
     this.setState({ timerID: newTimerID });
   }
 
-  periodicallySaveCache() {
-    const { storage, options } = this.state;
-    const { graph } = this.props;
-    saveCache(graph, storage, options);
-  }
-
   onNodeTap(evt, cy) {
     const { selected, selectNode, mergingNode } = this.props;
-    console.log("SELECTED", selected, "MERGING", mergingNode)
+    console.log('SELECTED', selected, 'MERGING', mergingNode);
     if (evt.target === cy) {
       if (selected) {
         selectNode(null);
@@ -90,16 +87,23 @@ class IokEdit extends Component {
       const id = evt.target.id();
       if (!selected || selected.id !== id) {
         selectNode(id);
-        console.log(this.state.secretCodeSign);
-        this.setState({ secretCodeSign: [...this.state.secretCodeSign, id] }, () => {
-          if (JSON.stringify(this.state.secretCodeSign) == JSON.stringify(["04eaf9a2a65d37f254fab35f969da7b133cea2087e1be846ea2dc8ccbb0e2470",
-            "e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855", "8d3e61ce168c16ae5c10fc0eb2085e7063844736be62d37c1318b437e60a06b2",
-            "71686ead6a4dc2481870877da6a888fab7c488819572c391b71acabd047930fe", "e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855"])) {
+        const { secretCodeSign } = this.state;
+        this.setState({ secretCodeSign: [...secretCodeSign, id] }, () => {
+          // eslint-disable-next-line
+          if (JSON.stringify(this.statesecretCodeSign) === JSON.stringify(['04eaf9a2a65d37f254fab35f969da7b133cea2087e1be846ea2dc8ccbb0e2470',
+            'e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855', '8d3e61ce168c16ae5c10fc0eb2085e7063844736be62d37c1318b437e60a06b2',
+            '71686ead6a4dc2481870877da6a888fab7c488819572c391b71acabd047930fe', 'e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855'])) {
             window.location = 'https://bab-internal.slack.com';
           }
         });
       }
     }
+  }
+
+  periodicallySaveCache() {
+    const { storage, options } = this.state;
+    const { graph } = this.props;
+    saveCache(graph, storage, options);
   }
 
   initCy(cy) {
@@ -109,7 +113,9 @@ class IokEdit extends Component {
     cy.minZoom(0.1);
     if (selected) cy.getElementById(selected.id).addClass('selected');
     if (mergingNode) cy.getElementById(mergingNode.id).addClass('merging');
-    cy.layout({ name: 'breadthfirst', circle: true, fit: false, spacingFactor: 0.8 }).run();
+    cy.layout({
+      name: 'breadthfirst', circle: true, fit: false, spacingFactor: 0.8,
+    }).run();
 
     if (cy === this.cy) return;
     this.cy = cy;
@@ -118,7 +124,7 @@ class IokEdit extends Component {
     /* let lastSelected = null; */
     cy.autounselectify(true);
     cy.autoungrabify(true);
-    cy.boxSelectionEnabled(false)
+    cy.boxSelectionEnabled(false);
     cy.on('tap', (evt) => this.onNodeTap(evt, cy));
     cy.on('zoom', () => this.setState({ zoom: cy.zoom() }));
     cy.pan({ x: 0, y: 50 });
@@ -129,9 +135,13 @@ class IokEdit extends Component {
       if (rbb.x2 < 0 || rbb.y2 < 0 || rbb.x1 > width || rbb.y1 > height) {
         cy.off('mouseup touchend zoom', recenterMaybe);
         cy.animate({
-          zoom: 1, pan: { x: 0, y: 50 }, easing: 'ease-out', duration: 500, complete: () => {
+          zoom: 1,
+          pan: { x: 0, y: 50 },
+          easing: 'ease-out',
+          duration: 500,
+          complete: () => {
             cy.on('mouseup touchend zoom', recenterMaybe);
-          }
+          },
         });
       }
     }
@@ -182,15 +192,15 @@ class IokEdit extends Component {
 
   confirmMerge() {
     const {
-      mergeNode, selectMergeNode, selectNode, selected, mergingNode,
+      mergeNode, selectMergeNode, selected, mergingNode,
     } = this.props;
-    if (mergingNode && selected &&
-      mergingNode.data.node_type != NTYPE.RESO && selected.data.node_type != NTYPE.RESO) {
+    if (mergingNode && selected
+      && mergingNode.data.node_type !== NTYPE.RESO && selected.data.node_type !== NTYPE.RESO) {
       mergeNode(mergingNode.id, selected.id);
       selectMergeNode(null);
     } else {
       selectMergeNode(null);
-      alert("You can't merge resource nodes")
+      alert("You can't merge resource nodes");
     }
   }
 
@@ -209,17 +219,16 @@ class IokEdit extends Component {
     if (event.target.files) reader.readAsText(event.target.files[0]);
   }
 
-  publishGraph() {
+  saveIpfs() {
     const { graph } = this.props;
-    console.log('PUBLISHING', { elements: graph });
+    console.log('PUBLISHING', graph);
 
     // saveCache(graph, storage, options);
 
     // switch (storage) {
     // case STORAGE_TYPES.IPFS:
     // might result in invalid state if cache is not updated after onHashChange
-    saveIPFSGraph({ elements: graph },
-      (hash) => { alert(hash); });
+    saveIPFSGraph(graph, (hash) => { alert(`New hash: ${hash}`); });
     // break;
     // case STORAGE_TYPES.BLOCKSTACK:
     //   saveBlockstackGraph(graph, this.userSession);
@@ -229,6 +238,37 @@ class IokEdit extends Component {
     // }
   }
 
+  async saveBlockstack() {
+    const { graph } = this.props;
+    console.log('AM I SIGNED IN', DEFAULT_SESSION.isUserSignedIn());
+    console.log(DEFAULT_SESSION.loadUserData());
+    console.log(DEFAULT_SESSION.getFile('graph.json', { decrypt: false }).then((f) => console.log('the file', f), (e) => console.error(e)));
+    window.session = DEFAULT_SESSION;
+    if (!DEFAULT_SESSION.isUserSignedIn()) {
+      showBlockstackConnect({
+        redirectTo: '/',
+        userSession: DEFAULT_SESSION,
+        sendToSignIn: true,
+        finished: ({ userSession }) => {
+          console.log('user session', userSession);
+          this.saveBlockstack();
+        },
+        appDetails: {
+          name: 'Index of Knowledge',
+          icon: 'favicon.ico',
+        },
+      });
+      return;
+    }
+    console.log('saving to', DEFAULT_SESSION);
+    saveBlockstackGraph(graph, DEFAULT_SESSION).then(() => {
+      alert('It saved!');
+      console.log(DEFAULT_SESSION);
+    }, () => (e) => {
+      alert(`oops ${e.message}`);
+    });
+  }
+
   downloadGraph() {
     const { graph } = this.props;
     const exportName = 'file.json';
@@ -241,22 +281,20 @@ class IokEdit extends Component {
     downloadAnchorNode.remove();
   }
 
-  onSuccessLoadGraph(graph) {
-    console.log('THE SUCESS', graph);
-    const { uploadGraph } = this.props;
-    uploadGraph(graph);
+  importIpfs() {
+    const { importGraph } = this.props;
+    const hash = prompt("What's your ipfs hash?");
+    loadGraph(STORAGE_TYPES.IPFS, { hash })
+      .then((graph) => importGraph(graph))
+      .catch((e) => { alert('oops graph couldnt load'); console.error(e); });
   }
 
-  downloadGraph() {
-    const { graph } = this.props;
-    const exportName = 'file.json';
-    const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(graph))}`;
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute('href', dataStr);
-    downloadAnchorNode.setAttribute('download', exportName);
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+  importBlockstack() {
+    const { importGraph } = this.props;
+    const loaduser = prompt("What's your blockstack username?");
+    loadGraph(STORAGE_TYPES.BLOCKSTACK, { loaduser })
+      .then((graph) => { importGraph(graph); console.log(graph); })
+      .catch((e) => { alert('oops graph couldnt load'); console.error(e); });
   }
 
   render() {
@@ -265,13 +303,17 @@ class IokEdit extends Component {
     return (
       <div className="graph">
         <div className="toolbar">
-          <div className="birb" onClick={() => document.querySelector('.birb').innerHTML = '🗿'}><span role="img" aria-label="bird">🐦</span><span role="img" aria-label="bird">🐦</span></div>
-          <button className={submitFunc == this.addNode ? 'tool active' : 'tool'} type="button" onClick={() => this.openAddNode()}>
+          { /* eslint-disable-next-line */ }
+              <div className="birb" onClick={() => {document.querySelector('.birb').innerHTML = '🗿'}}>
+                <span role="img" aria-label="bird">🐦</span>
+                <span role="img" aria-label="bird">🐦</span>
+              </div>
+          <button className={submitFunc === this.addNode ? 'tool active' : 'tool'} type="button" onClick={() => this.openAddNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
             </svg>
           </button>
-          <button className={submitFunc == this.editNode ? 'tool active' : 'tool'} type="button" onClick={() => this.openEditNode()}>
+          <button className={submitFunc === this.editNode ? 'tool active' : 'tool'} type="button" onClick={() => this.openEditNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20.1346 5.62957C20.5138 6.01957 20.5138 6.64957 20.1346 7.03957L18.3554 8.86957L14.7096 5.11957L16.4888 3.28957C16.8679 2.89957 17.4804 2.89957 17.8596 3.28957L20.1346 5.62957ZM2.9165 20.9995V17.2495L13.6693 6.18953L17.3151 9.93953L6.56234 20.9995H2.9165Z" />
             </svg>
@@ -306,7 +348,6 @@ class IokEdit extends Component {
 
         </div>
 
-
         <div className="innerGraph">
           <h1>Hiiiiiiiiii!! IoK</h1>
           <CytoscapeComponent
@@ -316,6 +357,13 @@ class IokEdit extends Component {
             stylesheet={IokStyle(zoom)}
           />
           <NodeProperties title="Hello node" node={selected} ref={this.nodeProps} submit={submitFunc} editing={submitFunc === this.editNode} />
+          <div style={{ position: 'fixed', bottom: 0 }}>
+            <button type="button" className="tool filledButton" onClick={() => this.importIpfs()}>Import from IPFS</button>
+            <button type="button" className="tool filledButton" onClick={() => this.importBlockstack()}>Import from Blockstack</button>
+            <button type="button" className="tool filledButton" onClick={() => this.saveIpfs()}>Save to IPFS</button>
+            <button type="button" className="tool filledButton" onClick={() => this.saveBlockstack()}>Save to Blockstack</button>
+            <button type="button" className="tool filledButton" onClick={wipeCache}>Wipe cache</button>
+          </div>
           {/* <pre><code>{JSON.stringify(elements, null, 2)}</code></pre> */}
           {mergingNode ? (
             <div className="dialog">
@@ -336,6 +384,7 @@ IokEdit.propTypes = {
   editNode: PropTypes.func.isRequired,
   deleteNode: PropTypes.func.isRequired,
   mergeNode: PropTypes.func.isRequired,
+  importGraph: PropTypes.func.isRequired,
   uploadGraph: PropTypes.func.isRequired,
   selectNode: PropTypes.func.isRequired,
   selectMergeNode: PropTypes.func.isRequired,

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import IokEdit from './IokEdit';
 import {
-  addNode, editNode, deleteNode, mergeNode, selectNode, selectMergeNode, uploadGraph,
+  addNode, editNode, deleteNode, mergeNode, selectNode, selectMergeNode, uploadGraph, importGraph,
 } from './redux/actions';
 
 const mapStateToProps = (state) => {
@@ -24,6 +24,7 @@ const mapDispatchToProps = (dispatch) => ({
   selectNode: (id) => dispatch(selectNode(id)),
   selectMergeNode: (id) => dispatch(selectMergeNode(id)),
   uploadGraph: (graph) => dispatch(uploadGraph(graph)),
+  importGraph: (graph) => dispatch(importGraph(graph)),
 });
 
 const Graph = connect(mapStateToProps, mapDispatchToProps)(IokEdit);
