@@ -1,7 +1,7 @@
 import {
   addNode, editNode, deleteNode, mergeNode,
 } from '../actions';
-import graph from './graph';
+import reduce from './index';
 
 function edge(id, source, target) {
   return {
@@ -38,6 +38,11 @@ expect.extend({
 });
 
 const sw = (x) => expect.toStartWith(x);
+
+function graph(iok, action) {
+  const state = iok ? { graph: iok } : undefined;
+  return reduce(state, action).graph;
+}
 
 describe('graphs reducer', () => {
   it('should return the initial state', () => {
@@ -82,7 +87,7 @@ describe('graphs reducer', () => {
       edges: [edge('edge2', 'test3', 'test2'), edge('edge', 'test2', 'test')],
     }, deleteNode('test2')))
       .toEqual({
-        nodes: [node('test', 'TOPIC1'), node('test3', 'TOPIC3')],
+        nodes: [node('test', 'TOPIC1')],
       });
   });
 

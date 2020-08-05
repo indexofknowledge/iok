@@ -1,0 +1,134 @@
+.graph {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+  height: 100%;
+}
+
+.toolbar {
+  width: 54px;
+  background: #fff;
+  box-shadow: 0px 0 4px rgba(0, 0, 0, 0.3);
+  background-color: var(--side-color);
+  display: grid;
+  grid-template-rows: 1fr 54px 54px 54px 54px 54px 54px 54px 1fr;
+}
+
+.tool {
+  color: #fff;
+  padding: 7px;
+  margin: 8px;
+  border-width: 0px;
+  background: transparent;
+}
+
+.tool.active {
+  background: var(--button-color);
+  border-radius: 8px;
+}
+
+.birb {
+  text-align: center;
+  font-size: 28px;
+  /* margin-top: 15px; */
+  /* margin-bottom: 54px; */
+  margin-top: 15px;
+  margin-bottom: 18px;
+}
+
+.innerGraph {
+  flex-grow: 1;
+  width: 0;
+}
+
+h1 {
+    font-weight: 400;
+    font-size: 2.4em;
+    padding: 2.7rem 2rem;
+    margin: 0;
+    position: absolute;
+    color: #DCDDFF;
+    z-index: 1;
+    width: calc(100% - 54px);
+    background: linear-gradient(var(--bg-color) 0%, rgba(37, 42, 72, 0.8) 50%, transparent 100%);
+}
+
+h2 {
+  margin:0;
+  color: var(--body-text);
+  font-size: 1.3em;
+  font-weight: 500;
+}
+
+form {
+  color: var(--body-text);
+}
+
+/* .formgroup input[type="radio"] {
+  opacity: 0;
+  width: 0;
+  position:fixed;
+} */
+
+.formgroup input[type="radio"] + label {
+  display: inline-block;
+  border: 3px var(--button-color) solid;
+  border-radius: 5px;
+  background-color: var(--bg-color);
+  color: var(--body-text);
+  padding: 5px;
+  margin: 5px;
+  font-size: 1em;
+}
+
+.formgroup input[type="radio"]:checked + label {
+  background-color: var(--button-color);
+  border-color: var(--button-color);
+  color: var(--body-text);
+}
+/* pre {
+    background: #eee;
+    border-radius: 4px;
+    margin: 2rem;
+    padding: 1rem 2rem;
+} */
+
+.dialog {
+  position: absolute;
+  display: inline-block;
+  left: 60px;
+  top: 200px;
+  padding: 25px;
+  /* height: 200px; */
+  /* width: 400px; */
+  background-color: var(--side-color);
+  border-radius: 20px;
+  border-color: aqua;
+  border-width: 10px;
+}
+
+/* .subsection {
+  padding-left: 20px;
+  margin-bottom: 10px;
+  border-left:grey solid;
+  border-left-width: 5px;
+ } */
+ 
+ .filledButton {
+  padding: 5px 15px;
+  border-radius: 30px;
+  background-color: var(--main-highlight);
+  color: var(--body-text);
+  border-style:solid;
+  border-color:  var(--main-highlight);
+  border-width: 3px;
+ }
+
+ .borderButton {
+  color: var(--sub-highlight);
+  padding:5px 15px;
+  border-radius: 30px;
+  border-style:solid;
+  border-color:  var(--sub-highlight);
+  border-width: 3px;
+ }

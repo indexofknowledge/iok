@@ -6,7 +6,7 @@ import { PropTypes } from 'prop-types';
 import { STORAGE_TYPES } from './types';
 import { DEFL_STORAGE, DEFL_STORAGE_OPTIONS } from './constants';
 import { redirectStorage, redirectDefl } from './urlUtils';
-import './styles/NavBar.css';
+// import './styles/NavBar.css';
 
 class NavBar extends Component {
   static onHomeClick(storage, options, changeLoadUser) {
@@ -80,7 +80,6 @@ class NavBar extends Component {
         return 'Hello';
     }
   }
-
 
   render() {
     const {

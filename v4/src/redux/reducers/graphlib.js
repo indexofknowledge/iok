@@ -1,7 +1,5 @@
-import Cytoscape from 'cytoscape';
 import { sha256 } from 'js-sha256';
 import { NTYPE } from '../../types';
-import { ACTION_TYPES } from '../actions';
 
 const incomers = (node) => node.incomers((el) => el.isNode());
 const outgoers = (node) => node.outgoers((el) => el.isNode());
@@ -59,14 +57,20 @@ function merge(from, to, cy) {
   }));
   const nodes = {};
 
+  // handle cases where nodes are directly related
+  const testFromId = nodeId(from.data(), false);
+  const testToId = nodeId(to.data(), false);
+
   // if the node is repeated / in hashtable, merge it, else, add i
   // eslint-disable-next-line no-restricted-syntax
   for (const node of incomers(from).union(incomers(to))) {
     const id = nodeId(node.data(), false);
-    if (nodes[id]) {
-      nodes[id] = merge(node, nodes[id], cy);
-    } else {
-      nodes[id] = node;
+    if (id !== testFromId && id !== testToId) {
+      if (nodes[id]) {
+        nodes[id] = merge(node, nodes[id], cy);
+      } else {
+        nodes[id] = node;
+      }
     }
   }
 
@@ -77,43 +81,44 @@ function merge(from, to, cy) {
   return newNode;
 }
 
-export default function graph(state = {}, action) {
-  // Hack to make sure cytoscape doesn't add a default node for us
-  // eslint-disable-next-line no-param-reassign
-  if (!state.nodes || !state.nodes.length) state = [];
-
-  const cy = Cytoscape({ elements: state });
-  switch (action.type) {
-    case ACTION_TYPES.ADD_NODE: {
-      const newNode = cy.add(createNode(action.props));
-      if (action.parentId) {
-        cy.add(createEdge(newNode, cy.getElementById(action.parentId)));
-      }
-      break;
-    }
-    case ACTION_TYPES.EDIT_NODE: {
-      const oldNode = cy.getElementById(action.id);
-      const newNode = cy.add(createNode({ ...oldNode.data(), ...action.props, id: undefined }));
-      updateEdges(cy, oldNode, newNode);
-      newNode.shift(oldNode.position());
-      oldNode.remove();
-      break;
-    }
-    case ACTION_TYPES.DELETE_NODE: {
-      cy.getElementById(action.id).remove();
-      break;
-    }
-    case ACTION_TYPES.MERGE_NODE: {
-      const from = cy.getElementById(action.fromId);
-      const to = cy.getElementById(action.toId);
-      merge(from, to, cy);
-      break;
-    }
-    default:
-      break;
+function deleteNodeHelper(node, cy) {
+  // recursively send in a node, if theres no incomers, delete it
+  const nodes = incomers(node);
+  if (nodes) {
+    nodes.map((nodeIn) => deleteNodeHelper(nodeIn, cy));
   }
+  cy.remove(node);
+}
+
+function graphHelper(cy) {
   const j = cy.json().elements;
   if (j.nodes) j.nodes = j.nodes.map((n) => ({ data: n.data }));
   if (j.edges) j.edges = j.edges.map((e) => ({ data: e.data }));
-  return j;
+  return { elements: j };
 }
+
+function calcCurrentNode(node) {
+  if (node && node.isNode()) {
+    let neighbors = [node.data()];
+
+    if (node.data('node_type') === NTYPE.TOPIC) {
+      neighbors = node.incomers((el) => el.isNode())
+        .map((neighbor) => neighbor.data());
+    }
+
+    return {
+      id: node.id(),
+      data: node.data(),
+      neighbors,
+    };
+  }
+  return null;
+}
+
+export {
+  incomers, outgoers,
+  nodeId, createNode,
+  edgeId, createEdge, updateEdges,
+  merge, deleteNodeHelper, graphHelper,
+  calcCurrentNode,
+};

@@ -177,7 +177,6 @@ export const DEFL_GRAPH_ELEMENTS = {
   ],
 };
 
-
 export const DEFL_GRAPH_STYLE = [
   {
     selector: 'node[name]',
