@@ -303,11 +303,11 @@ class IokEdit extends Component {
     return (
       <div className="graph">
         <div className="toolbar">
-          { /* eslint-disable-next-line */ }
-              <div className="birb" onClick={() => {document.querySelector('.birb').innerHTML = '🗿'}}>
-                <span role="img" aria-label="bird">🐦</span>
-                <span role="img" aria-label="bird">🐦</span>
-              </div>
+          { /* eslint-disable-next-line */}
+          <div className="birb" onClick={() => { document.querySelector('.birb').innerHTML = '🗿' }}>
+            <span role="img" aria-label="bird">🐦</span>
+            <span role="img" aria-label="bird">🐦</span>
+          </div>
           <button className={submitFunc === this.addNode ? 'tool active' : 'tool'} type="button" onClick={() => this.openAddNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
@@ -340,7 +340,7 @@ class IokEdit extends Component {
               <path d="M13 13H16L12 17L8 13H11V3H13V13ZM4 21V19H20V21H4Z" />
             </svg>
           </button>
-          <button className="tool" type="button" onClick={() => this.publishGraph()}>
+          <button className="tool" type="button" onClick={() => this.saveIpfs()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 4C15.64 4 18.67 6.59 19.35 10.04C21.95 10.22 24 12.36 24 15C24 17.76 21.76 20 19 20H6C2.69 20 0 17.31 0 14C0 10.91 2.34 8.36 5.35 8.04C6.6 5.64 9.11 4 12 4ZM13.9999 17V13H16.9999L11.9999 7.99997L6.99992 13H9.99992V17H13.9999Z" />
             </svg>

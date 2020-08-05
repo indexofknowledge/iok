@@ -133,7 +133,7 @@ class NodeProperties extends Component {
     if (resourceType === RTYPE.DESC) {
       return (
         <div>
-          <input
+          <textarea
             required
             id="abc"
             name="abc"
