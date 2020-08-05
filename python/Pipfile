@@ -21,6 +21,7 @@ chardet = "==3.0.4"
 idna = "==2.9"
 requests = "==2.23.0"
 urllib3 = "==1.25.9"
+py-cid = "*"
 
 [requires]
 python_version = "3.7"
