@@ -13,6 +13,6 @@ export const loadIPFSGraph = (hash, onSuccess, onError) => {
 
 export const saveIPFSGraph = (graph, onHashChange) => {
   putGraph(graph)
-    .then((data) => { Log.info(TAG, data); onHashChange(data); })
-    .catch((err) => Log.error(err));
+    .then((data) => { console.info(TAG, data); onHashChange(data); })
+    .catch((err) => console.error(err));
 };

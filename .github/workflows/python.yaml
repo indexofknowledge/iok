@@ -22,11 +22,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install pipenv
         run: |
-          pip install --upgrade pipenv
-      - name: Install dependencies
-        working-directory: python
-        run: |
-          ./build.sh
+          ./utils/iok.sh setup_py
       - name: Test and format
         working-directory: python
         run: |

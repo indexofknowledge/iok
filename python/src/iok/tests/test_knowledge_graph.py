@@ -49,8 +49,10 @@ def test_write_to_json() -> None:
     resource_id = kg.add_resource_node(resource)
 
     edge_id = kg.add_edge(node_id, node_id2)
-    j = kg.write_to_json()
-    print(j)  # if pytest fails, we'll see the output
+    json_graph = kg.write_to_json()
+    print(json_graph)  # if pytest fails, we'll see the output
+
+    j = json_graph["elements"]
 
     assert len(j["nodes"]) == 3
     assert len(j["edges"]) == 1

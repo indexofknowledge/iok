@@ -1,7 +1,6 @@
 import { STORAGE_TYPES } from './types';
 import { DEFL_STORAGE, DEFL_STORAGE_OPTIONS } from './constants';
 
-
 export const redirectStorage = (storage, options = {}) => {
   const url = new URL(window.location.origin);
   url.pathname = storage;
@@ -9,7 +8,7 @@ export const redirectStorage = (storage, options = {}) => {
   Object.keys(options).forEach((key) => {
     par.set(key, options[key]);
   });
-  window.location.href = url;
+  window.history.replaceState(null, null, url);
 };
 
 export const redirectGuest = () => {
