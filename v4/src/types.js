@@ -17,3 +17,19 @@ export const RTYPE = {
   DESC: 1,
   LINK: 4,
 };
+
+/** Types of graph import formats */
+export const IMPORT_TYPES = {
+  BLOCKSTACK: 'blockstack',
+  IPFS: 'ipfs',
+  LINK: 'link',
+  FILE: 'file',
+}
+
+/** Types of tools available for selection */
+export const TOOL_TYPES = {
+  ADD: 'add_node',
+  EDIT: 'edit_node',
+  MERGE: 'merge_node',
+  DELETE: 'delete_node',
+}

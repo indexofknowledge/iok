@@ -72,6 +72,7 @@ export default function reducer(state = DEFAULT_STATE, action) {
     }
     case ACTION_TYPES.SELECT_MERGE_NODE: {
       mergingNode = calcCurrentNode(cy.getElementById(action.nodeId));
+      selected = null;
       break;
     }
     default:

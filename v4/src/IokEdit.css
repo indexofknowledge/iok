@@ -94,6 +94,7 @@ form {
 } */
 
 .dialog {
+  color: white; /*change later pls!*/
   position: absolute;
   display: inline-block;
   left: 60px;

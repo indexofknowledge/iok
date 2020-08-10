@@ -10,6 +10,8 @@ import { loadGraph, DEFAULT_SESSION } from './loading';
 import { saveCache, wipeCache } from './storage/cache';
 import { parseParams } from './urlUtils';
 import { STORAGE_TYPES, NTYPE } from './types';
+import { graphFromUrl } from './md_scraper';
+
 
 const IokStyle = (zoom) => [
   {
@@ -59,11 +61,14 @@ class IokEdit extends Component {
       submitFunc: null,
       storage,
       options,
+      importType: 0,
+      importLink: "",
       secretCodeSign: [],
     };
     this.addNode = this.addNode.bind(this);
     this.editNode = this.editNode.bind(this);
     this.openEditNode = this.openEditNode.bind(this);
+    this.setImportType = this.setImportType.bind(this);
     this.periodicallySaveCache = this.periodicallySaveCache.bind(this);
     loadGraph(storage, options).then((graph) => uploadGraph(graph))
       .catch(() => alert('oops graph couldnt load'));
@@ -76,6 +81,12 @@ class IokEdit extends Component {
     this.setState({ timerID: newTimerID });
   }
 
+  periodicallySaveCache() {
+    const { storage, options } = this.state;
+    const { graph } = this.props;
+    saveCache(graph, storage, options);
+  }
+
   onNodeTap(evt, cy) {
     const { selected, selectNode, mergingNode } = this.props;
     console.log('SELECTED', selected, 'MERGING', mergingNode);
@@ -85,25 +96,23 @@ class IokEdit extends Component {
       }
     } else if (evt.target.isNode()) {
       const id = evt.target.id();
-      if (!selected || selected.id !== id) {
-        selectNode(id);
-        const { secretCodeSign } = this.state;
-        this.setState({ secretCodeSign: [...secretCodeSign, id] }, () => {
-          // eslint-disable-next-line
-          if (JSON.stringify(this.statesecretCodeSign) === JSON.stringify(['04eaf9a2a65d37f254fab35f969da7b133cea2087e1be846ea2dc8ccbb0e2470',
-            'e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855', '8d3e61ce168c16ae5c10fc0eb2085e7063844736be62d37c1318b437e60a06b2',
-            '71686ead6a4dc2481870877da6a888fab7c488819572c391b71acabd047930fe', 'e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855'])) {
-            window.location = 'https://bab-internal.slack.com';
-          }
-        });
+      if (selected && selected.id === id) return;
+      if (mergingNode !== null && id === mergingNode.id) {
+        selectNode(null);
+        return;
       }
+      selectNode(id);
+      //extra below
+      const { secretCodeSign } = this.state;
+      this.setState({ secretCodeSign: [...secretCodeSign, id] }, () => {
+        // eslint-disable-next-line
+        if (JSON.stringify(this.statesecretCodeSign) === JSON.stringify(['04eaf9a2a65d37f254fab35f969da7b133cea2087e1be846ea2dc8ccbb0e2470',
+          'e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855', '8d3e61ce168c16ae5c10fc0eb2085e7063844736be62d37c1318b437e60a06b2',
+          '71686ead6a4dc2481870877da6a888fab7c488819572c391b71acabd047930fe', 'e6f043e27913e1ceb469bfbcc6eca983a374918618c4912e65f4756f6e177855'])) {
+          window.location = 'https://bab-internal.slack.com';
+        }
+      });
     }
-  }
-
-  periodicallySaveCache() {
-    const { storage, options } = this.state;
-    const { graph } = this.props;
-    saveCache(graph, storage, options);
   }
 
   initCy(cy) {
@@ -114,7 +123,7 @@ class IokEdit extends Component {
     if (selected) cy.getElementById(selected.id).addClass('selected');
     if (mergingNode) cy.getElementById(mergingNode.id).addClass('merging');
     cy.layout({
-      name: 'breadthfirst', circle: true, fit: false, spacingFactor: 0.8,
+      name: 'breadthfirst', circle: false, fit: false, spacingFactor: 0.8,
     }).run();
 
     if (cy === this.cy) return;
@@ -195,7 +204,8 @@ class IokEdit extends Component {
       mergeNode, selectMergeNode, selected, mergingNode,
     } = this.props;
     if (mergingNode && selected
-      && mergingNode.data.node_type !== NTYPE.RESO && selected.data.node_type !== NTYPE.RESO) {
+      && mergingNode.data.node_type !== NTYPE.RESO
+      && selected.data.node_type !== NTYPE.RESO) {
       mergeNode(mergingNode.id, selected.id);
       selectMergeNode(null);
     } else {
@@ -206,17 +216,44 @@ class IokEdit extends Component {
 
   importGraph(event) {
     const { uploadGraph } = this.props;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const obj = JSON.parse(ev.target.result);
-        console.log(obj);
-        uploadGraph(obj);
-      } catch (err) {
-        alert('Invalid JSON file');
-      }
-    };
-    if (event.target.files) reader.readAsText(event.target.files[0]);
+    const { importType, importLink } = this.state;
+    if (importType === 1) {
+      //blockstack
+
+    } else if (importType === 2) {
+      /* must be ipfs */
+      const { importGraph } = this.props;
+      const { importLink } = this.state;
+      console.log(importLink);
+      loadGraph(STORAGE_TYPES.IPFS, { hash: importLink })
+        .then((graph) => importGraph(graph))
+        .catch((e) => { alert('oops graph couldnt load'); console.error(e); });
+
+    } else if (importType === 3) {
+      // link
+      graphFromUrl(importLink).then((graph) => {
+        uploadGraph(graph);
+      })
+
+    } else if (importType === 4) {
+      //file
+      const { uploadGraph } = this.props;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const obj = JSON.parse(ev.target.result);
+          console.log(obj);
+          uploadGraph(obj);
+        } catch (err) {
+          alert('Invalid JSON file');
+        }
+      };
+      reader.readAsText(importLink);
+    }
+  }
+
+  setImportType(evt) {
+    this.setState({ importType: Number(evt.target.value) });
   }
 
   saveIpfs() {
@@ -281,14 +318,6 @@ class IokEdit extends Component {
     downloadAnchorNode.remove();
   }
 
-  importIpfs() {
-    const { importGraph } = this.props;
-    const hash = prompt("What's your ipfs hash?");
-    loadGraph(STORAGE_TYPES.IPFS, { hash })
-      .then((graph) => importGraph(graph))
-      .catch((e) => { alert('oops graph couldnt load'); console.error(e); });
-  }
-
   importBlockstack() {
     const { importGraph } = this.props;
     const loaduser = prompt("What's your blockstack username?");
@@ -297,9 +326,48 @@ class IokEdit extends Component {
       .catch((e) => { alert('oops graph couldnt load'); console.error(e); });
   }
 
+  importDialog() {
+    const { importType, importLink } = this.state;
+    return (
+      <div className="dialog">
+        <h2>Import Graph</h2>
+        <div className="formgroup">
+          <div>
+            <label>
+              <input required name="importType" type="radio" value="1" checked={importType === 1} onChange={this.setImportType} />
+                Blockstack
+              </label>
+            <label>
+              <input required name="importType" type="radio" value="2" checked={importType === 2} onChange={this.setImportType} />
+                IPFS
+              </label>
+            <label>
+              <input required name="importType" type="radio" value="3" checked={importType === 3} onChange={this.setImportType} />
+                Link
+              </label>
+            <label>
+              <input required name="importType" type="radio" value="4" checked={importType === 4} onChange={this.setImportType} />
+                File
+              </label>
+          </div>
+          {/* <input required type="text" placeholder="Link" value={importLink} onChange={(ev) => this.setState({ importLink: ev.target.value })} /> */}
+          {importType === 2 || importType === 3 ?
+            <input required type="text" placeholder={importType === 2 ? "Hash" : "Link"} value={importLink} onChange={(ev) => this.setState({ importLink: ev.target.value })} />
+            : <span />
+          }
+          {importType === 4 ? <input required type="file" onChange={(ev) => this.setState({ importLink: ev.target.files[0] })} />
+            : <span />
+          }
+        </div>
+        <div><input type="checkbox" id="replace" /> Replace Current Graph</div>
+        <button type="submit" className="filledButton" onClick={/*document.getElementById('replace').checked ? */() => this.importGraph()}>Submit</button>
+      </div>
+    );
+  }
+
   render() {
     const { elements, selected, mergingNode } = this.props;
-    const { zoom, submitFunc } = this.state;
+    const { zoom, submitFunc, } = this.state;
     return (
       <div className="graph">
         <div className="toolbar">
@@ -358,7 +426,6 @@ class IokEdit extends Component {
           />
           <NodeProperties title="Hello node" node={selected} ref={this.nodeProps} submit={submitFunc} editing={submitFunc === this.editNode} />
           <div style={{ position: 'fixed', bottom: 0 }}>
-            <button type="button" className="tool filledButton" onClick={() => this.importIpfs()}>Import from IPFS</button>
             <button type="button" className="tool filledButton" onClick={() => this.importBlockstack()}>Import from Blockstack</button>
             <button type="button" className="tool filledButton" onClick={() => this.saveIpfs()}>Save to IPFS</button>
             <button type="button" className="tool filledButton" onClick={() => this.saveBlockstack()}>Save to Blockstack</button>
@@ -368,9 +435,12 @@ class IokEdit extends Component {
           {mergingNode ? (
             <div className="dialog">
               <button type="button" className="tool borderButton" onClick={() => this.endMerge()}>Cancel Merge</button>
-              <button type="button" className="tool filledButton" onClick={() => this.confirmMerge()}>Confirm Merge</button>
+              <button type="button" className="tool filledButton" disabled={selected === null} onClick={() => this.confirmMerge()}>Confirm Merge</button>
             </div>
           ) : <div />}
+
+          {this.importDialog()}
+
         </div>
       </div>
     );

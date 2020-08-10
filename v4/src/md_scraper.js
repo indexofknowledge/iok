@@ -61,7 +61,7 @@ function updateScopes(newScope, scopes, graph) {
   // eslint-disable-next-line
   let scopesCpy = [...scopes];
 
-  graph.nodes.push(newScope.node);
+  graph.nodes.push({ data: newScope.node });
   // console.log("Adding ", new_scope.node, "\n")
 
   if (scopesCpy.length) {
@@ -71,12 +71,13 @@ function updateScopes(newScope, scopes, graph) {
     const hash = sha256.create();
     hash.update(newScope.id + targetId);
 
-    graph.edges.push(
-      {
+    graph.edges.push({
+      data: {
         source: newScope.id,
         target: targetId,
         id: hash.hex(),
-      },
+      }
+    }
     );
   }
   scopesCpy.push(newScope);
@@ -110,6 +111,7 @@ function matchLine(newScope, scopes, graph) {
 
 // given a string, returns the graph in IOK format
 function createGraph(text) {
+  console.log(text)
   const textlines = text.split('\n');
   let scopes = [];
 
@@ -125,11 +127,11 @@ function createGraph(text) {
     const newScope = new Scope(match, line);
     scopes = matchLine(newScope, scopes, graph);
   }
-  return graph;
+  return { elements: graph };
 }
 
-export function graphFromUrl(link) {
-  const text = fetch(link).then((response) => response.text());
+export async function graphFromUrl(link) {
+  const text = await fetch(link).then((response) => response.text());
   const g = createGraph(text);
   // console.log(JSON.stringify(g, null, 2));
   return g;
