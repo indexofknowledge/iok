@@ -9,12 +9,6 @@ function nodeId(props, includeSource = true) {
   // call objToCid synchronously
   const bareNodeData = verifyNodeShape(props);
   return objToCid(bareNodeData);
-
-  // const hash = sha256.create();
-  // let hashStr = props.name + (JSON.stringify(props.data) || '');
-  // if (includeSource) hashStr += props.source;
-  // hash.update(hashStr);
-  // return hash.hex();
 }
 
 function createNode(props) {

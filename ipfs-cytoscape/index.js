@@ -98,14 +98,16 @@ async function getGraph(cid, path = '') {
 
 /**
  * Given a CBOR-serializable JSON object, calculate its CID.
+ * NOTE: uses blocking multihashing instead of async variant, so
+ *       don't use the built-in one in "ipld-dag-cbor"
  * @param {*} obj
  */
 function objToCid(obj) {
   const ser = DagCBOR.util.serialize(obj);
 
-  const multihash = multihashing(ser, DagCBOR.defaultHashAlg)
-  const codecName = multicodec.print[DagCBOR.codec]
-  const cid = new CID(1, codecName, multihash)
+  const multihash = multihashing(ser, DagCBOR.defaultHashAlg);
+  const codecName = multicodec.print[DagCBOR.codec];
+  const cid = new CID(1, codecName, multihash);
 
   return cid.toBaseEncodedString();
 }

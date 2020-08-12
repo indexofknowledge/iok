@@ -10,8 +10,8 @@ async function getGraph() {
     console.log(JSON.stringify(ret));
 }
 
-async function objToCid() {
-    ret = await lib.objToCid(JSON.parse(process.env.OBJ));
+function objToCid() {
+    ret = lib.objToCid(JSON.parse(process.env.OBJ));
     console.log(ret);
 }
 
