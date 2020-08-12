@@ -11,7 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "ipfs-http-client": "^44.3.0",
-    "ipld-dag-cbor": "^0.16.0"
+    "ipld-dag-cbor": "^0.16.0",
+    "multihashing": "^0.3.3"
   },
   "devDependencies": {
     "eslint": "^7.4.0",

@@ -3,6 +3,10 @@
 const IpfsClient = require('ipfs-http-client');
 const DagCBOR = require('ipld-dag-cbor');
 
+const multicodec = require('multicodec');
+const multihashing = require('multihashing');
+const CID = require('cids');
+
 // Connecting ipfs instance to infura node
 const ipfs = new IpfsClient({
   host: 'ipfs.infura.io', port: '5001', protocol: 'https', apiPath: '/api/v0',
@@ -96,9 +100,13 @@ async function getGraph(cid, path = '') {
  * Given a CBOR-serializable JSON object, calculate its CID.
  * @param {*} obj
  */
-async function objToCid(obj) {
+function objToCid(obj) {
   const ser = DagCBOR.util.serialize(obj);
-  const cid = await DagCBOR.util.cid(ser);
+
+  const multihash = multihashing(ser, DagCBOR.defaultHashAlg)
+  const codecName = multicodec.print[DagCBOR.codec]
+  const cid = new CID(1, codecName, multihash)
+
   return cid.toBaseEncodedString();
 }
 

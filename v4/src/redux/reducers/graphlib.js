@@ -1,17 +1,20 @@
 import { sha256 } from 'js-sha256';
 import { NTYPE } from '../../types';
-// import { objToCid, verifyNodeShape } from 'ipfs-cytoscape';
+import { objToCid, verifyNodeShape } from 'ipfs-cytoscape';
 
 const incomers = (node) => node.incomers((el) => el.isNode());
 const outgoers = (node) => node.outgoers((el) => el.isNode());
 
 function nodeId(props, includeSource = true) {
   // call objToCid synchronously
-  const hash = sha256.create();
-  let hashStr = props.name + (JSON.stringify(props.data) || '');
-  if (includeSource) hashStr += props.source;
-  hash.update(hashStr);
-  return hash.hex();
+  const bareNodeData = verifyNodeShape(props);
+  return objToCid(bareNodeData);
+
+  // const hash = sha256.create();
+  // let hashStr = props.name + (JSON.stringify(props.data) || '');
+  // if (includeSource) hashStr += props.source;
+  // hash.update(hashStr);
+  // return hash.hex();
 }
 
 function createNode(props) {
