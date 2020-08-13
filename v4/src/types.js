@@ -18,6 +18,12 @@ export const RTYPE = {
   LINK: 4,
 };
 
+export const NPAIR = {
+  TOPIC: [NTYPE.TOPIC, null],
+  DESC: [NTYPE.RESO, RTYPE.DESC],
+  LINK: [NTYPE.RESO, RTYPE.LINK],
+}
+
 /** Types of graph import formats */
 export const IMPORT_TYPES = {
   BLOCKSTACK: 'blockstack',

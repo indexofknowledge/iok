@@ -14,6 +14,12 @@
   grid-template-rows: 1fr 54px 54px 54px 54px 54px 54px 54px 1fr;
 }
 
+.toolbar-bottom {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
 .tool {
   color: #fff;
   padding: 7px;
@@ -54,37 +60,75 @@ h1 {
 }
 
 h2 {
-  margin:0;
+  margin: 0 0 0.5em 0;
   color: var(--body-text);
   font-size: 1.3em;
   font-weight: 500;
 }
 
+ .button {
+  background-color: var(--bg-color);
+  color: var(--sub-highlight);
+  padding:5px 15px;
+  border-radius: 30px;
+  border-style:solid;
+  border-color:  var(--button-color);
+  border-width: 3px;
+  font-size: 1rem;
+  margin: 0 4px;
+ }
+
+.filledButton, .formgroup input[type="radio"]:checked + label{
+  background-color: var(--button-color);
+  color: var(--body-text);
+}
+
+ .rounded {
+  border-radius: 30px;
+ }
+ 
 form {
   color: var(--body-text);
 }
 
-/* .formgroup input[type="radio"] {
+.formgroup input[type="radio"] {
   opacity: 0;
   width: 0;
   position:fixed;
-} */
+}
 
 .formgroup input[type="radio"] + label {
-  display: inline-block;
-  border: 3px var(--button-color) solid;
   border-radius: 5px;
-  background-color: var(--bg-color);
-  color: var(--body-text);
-  padding: 5px;
-  margin: 5px;
-  font-size: 1em;
+  display: inline-block;
 }
 
 .formgroup input[type="radio"]:checked + label {
   background-color: var(--button-color);
-  border-color: var(--button-color);
   color: var(--body-text);
+}
+
+.formgroup input[type="radio"]:disabled + label {
+  background-color: var(--bg-color);
+  border-color: #828282;
+  color: #828282;
+}
+
+.formgroup textarea, input[type="text"], input[type="url"]{
+  display:block;
+width:100%;
+padding:5px;
+background-color: #2D314C;
+color:#FFF;
+border: 0px solid;
+}
+
+.formgroup div {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.rightButton {
+float: right;
 }
 /* pre {
     background: #eee;
@@ -115,21 +159,4 @@ form {
   border-left-width: 5px;
  } */
  
- .filledButton {
-  padding: 5px 15px;
-  border-radius: 30px;
-  background-color: var(--main-highlight);
-  color: var(--body-text);
-  border-style:solid;
-  border-color:  var(--main-highlight);
-  border-width: 3px;
- }
-
- .borderButton {
-  color: var(--sub-highlight);
-  padding:5px 15px;
-  border-radius: 30px;
-  border-style:solid;
-  border-color:  var(--sub-highlight);
-  border-width: 3px;
- }
+ 
