@@ -424,12 +424,11 @@ class IokEdit extends Component {
               <path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z" />
             </svg>
           </button>
-          <button className="tool" type="button" onClick={() => document.getElementById('selectedFile').click()}>
+          <button className="tool" type="button" onClick={() => this.toggleTool(TOOL_TYPES.IMPORT, true)}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M4 5V3H20V5H4ZM11 11H8L12 7L16 11H13V21H11V11Z" />
             </svg>
           </button>
-          <input type="file" id="selectedFile" className="nodisplay" onChange={(evt) => this.importGraph(evt)} />
           <button className="tool" type="button" onClick={() => this.downloadGraph()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M13 13H16L12 17L8 13H11V3H13V13ZM4 21V19H20V21H4Z" />
@@ -473,8 +472,7 @@ class IokEdit extends Component {
               <button type="button" className="button filledButton" disabled={selected === null} onClick={() => this.confirmMerge()}>Confirm Merge</button>
             </div>
           ) : <div />}
-
-          {this.importDialog()}
+          {tool == TOOL_TYPES.IMPORT ? this.importDialog() : ''}
 
         </div>
       </div>

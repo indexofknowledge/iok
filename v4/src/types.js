@@ -38,4 +38,5 @@ export const TOOL_TYPES = {
   EDIT: 'edit_node',
   MERGE: 'merge_node',
   DELETE: 'delete_node',
+  IMPORT: 'import',
 }
