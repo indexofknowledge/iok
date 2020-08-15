@@ -21,11 +21,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install pipenv
         run: |
-          pip install --upgrade pipenv
-      - name: Install dependencies
-        working-directory: python
-        run: |
-          ./build.sh
+          ./utils/iok.sh setup_py
       - name: Set up node
         run: |
           ./utils/iok.sh setup_node
@@ -33,7 +29,7 @@ jobs:
         run: |
           source iok.vars
           echo "::set-env name=SCRAPED_CID::$ROOT_CID"
-          ./utils/iok.sh get_full_graph $ROOT_CID > graph.json
+          ./utils/iok.sh get_graph $ROOT_CID > graph.json
       - name: Linearize graph to awesome list
         working-directory: python
         run: |
