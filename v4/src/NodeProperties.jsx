@@ -83,20 +83,41 @@ class NodeProperties extends Component {
       <div className="formgroup">
         <form onSubmit={() => this.handleSubmit()}>
 
-          <input required id="add_topic" name="nodeType" type="radio" value={NPAIR.TOPIC}
+          <input
+            required
+            id="add_topic"
+            name="nodeType"
+            type="radio"
+            value={NPAIR.TOPIC}
             disabled={editing && nodeType === NTYPE.RESO}
-            checked={nodeType === NPAIR.TOPIC[0]} onChange={(event) => this.setNodeType(event, NPAIR.TOPIC)} />
-          <label for="add_topic" className="button">Topic</label>
+            checked={nodeType === NPAIR.TOPIC[0]}
+            onChange={(event) => this.setNodeType(event, NPAIR.TOPIC)}
+          />
+          <label htmlFor="add_topic" className="button">Topic</label>
 
-          <input required id="add_desc" name="nodeType" type="radio" value={NPAIR.DESC}
+          <input
+            required
+            id="add_desc"
+            name="nodeType"
+            type="radio"
+            value={NPAIR.DESC}
             disabled={editing && nodeType === NTYPE.TOPIC}
-            checked={nodeType === NPAIR.DESC[0] && resourceType === NPAIR.DESC[1]} onChange={(event) => this.setNodeType(event, NPAIR.DESC)} />
-          <label for="add_desc" className="button">Description</label>
+            checked={nodeType === NPAIR.DESC[0] && resourceType === NPAIR.DESC[1]}
+            onChange={(event) => this.setNodeType(event, NPAIR.DESC)}
+          />
+          <label htmlFor="add_desc" className="button">Description</label>
 
-          <input required id="add_link" name="nodeType" type="radio" value={NPAIR.LINK}
+          <input
+            required
+            id="add_link"
+            name="nodeType"
+            type="radio"
+            value={NPAIR.LINK}
             disabled={editing && nodeType === NTYPE.TOPIC}
-            checked={nodeType === NPAIR.LINK[0] && resourceType === NPAIR.LINK[1]} onChange={(event) => this.setNodeType(event, NPAIR.LINK)} />
-          <label for="add_link" className="button">Link</label>
+            checked={nodeType === NPAIR.LINK[0] && resourceType === NPAIR.LINK[1]}
+            onChange={(event) => this.setNodeType(event, NPAIR.LINK)}
+          />
+          <label htmlFor="add_link" className="button">Link</label>
 
           {nodeType === NTYPE.TOPIC ? this.topic() : this.descOrLink()}
           <div className="rightButton">
@@ -105,7 +126,7 @@ class NodeProperties extends Component {
           </div>
         </form>
       </div>
-    )
+    );
   }
 
   topic() {
@@ -113,7 +134,7 @@ class NodeProperties extends Component {
     if (nodeType === NTYPE.TOPIC) {
       return (
         <div className="formgroup">
-          <label for="topicname">Topic Name</label>
+          <label htmlFor="topicname">Topic Name</label>
           <input required id="topicname" type="text" placeholder="Bitcoin" value={name} onChange={(ev) => this.setState({ name: ev.target.value })} />
         </div>
       );
@@ -127,7 +148,7 @@ class NodeProperties extends Component {
     if (resourceType === RTYPE.DESC) {
       return (
         <div>
-          <label for="desc">Link Text</label>
+          <label htmlFor="desc">Link Text</label>
           <textarea
             required
             id="desc"
@@ -150,7 +171,7 @@ class NodeProperties extends Component {
     if (resourceType === RTYPE.LINK) {
       return (
         <div>
-          <label for="url_text">Link Text</label>
+          <label htmlFor="url_text">Link Text</label>
           <input
             id="url_text"
             required
@@ -168,7 +189,7 @@ class NodeProperties extends Component {
             }}
           />
 
-          <label for="url_link">URL</label>
+          <label htmlFor="url_link">URL</label>
           <input
             id="url_link"
             type="url"

@@ -9,7 +9,9 @@ import { saveBlockstackGraph } from './storage/blockstack';
 import { loadGraph, DEFAULT_SESSION } from './loading';
 import { saveCache, wipeCache } from './storage/cache';
 import { parseParams } from './urlUtils';
-import { STORAGE_TYPES, NTYPE, TOOL_TYPES, IMPORT_TYPES } from './types';
+import {
+  STORAGE_TYPES, NTYPE, TOOL_TYPES, IMPORT_TYPES,
+} from './types';
 import { graphFromUrl } from './md_scraper';
 
 const IokStyle = (zoom) => [
@@ -61,7 +63,7 @@ class IokEdit extends Component {
       storage,
       options,
       importType: 0,
-      importLink: "",
+      importLink: '',
       secretCodeSign: [],
     };
     this.addNode = this.addNode.bind(this);
@@ -111,7 +113,7 @@ class IokEdit extends Component {
         return;
       }
       selectNode(id);
-      //extra below
+      // extra below
       const { secretCodeSign } = this.state;
       this.setState({ secretCodeSign: [...secretCodeSign, id] }, () => {
         // eslint-disable-next-line
@@ -171,9 +173,9 @@ class IokEdit extends Component {
    */
   toggleTool(tool, condition) {
     if (this.state.tool === tool) {
-      this.setState({ tool: null })
+      this.setState({ tool: null });
     } else if (condition) {
-      this.setState({ tool })
+      this.setState({ tool });
     }
   }
 
@@ -209,7 +211,7 @@ class IokEdit extends Component {
 
   mergeNode() {
     const { selectMergeNode, selected, mergingNode } = this.props;
-    const shouldMerge = !mergingNode && selected
+    const shouldMerge = !mergingNode && selected;
     if (shouldMerge) selectMergeNode(selected.id);
     this.toggleTool(TOOL_TYPES.MERGE, shouldMerge);
   }
@@ -248,12 +250,10 @@ class IokEdit extends Component {
       loadGraph(STORAGE_TYPES.IPFS, { hash: importLink })
         .then((graph) => importGraph(graph))
         .catch((e) => { alert('oops graph couldnt load'); console.error(e); });
-
     } else if (importType === IMPORT_TYPES.LINK) {
       graphFromUrl(importLink).then((graph) => {
         uploadGraph(graph);
-      })
-
+      });
     } else if (importType === IMPORT_TYPES.FILE) {
       const { uploadGraph } = this.props;
       const reader = new FileReader();
@@ -351,33 +351,63 @@ class IokEdit extends Component {
         <h2>Import Graph</h2>
         <div className="formgroup">
           <div className="formgroup">
-            <input required id="i_blockstack" name="importType" type="radio" value={IMPORT_TYPES.BLOCKSTACK}
-              checked={importType === IMPORT_TYPES.BLOCKSTACK} onChange={this.setImportType} />
-            <label for="i_blockstack" className="button">Blockstack </label>
+            <input
+              required
+              id="i_blockstack"
+              name="importType"
+              type="radio"
+              value={IMPORT_TYPES.BLOCKSTACK}
+              checked={importType === IMPORT_TYPES.BLOCKSTACK}
+              onChange={this.setImportType}
+            />
+            <label htmlFor="i_blockstack" className="button">Blockstack </label>
 
-            <input required id="i_ipfs" name="importType" type="radio" value={IMPORT_TYPES.IPFS}
-              checked={importType === IMPORT_TYPES.IPFS} onChange={this.setImportType} />
-            <label for="i_ipfs" className="button" > IPFS</label>
+            <input
+              required
+              id="i_ipfs"
+              name="importType"
+              type="radio"
+              value={IMPORT_TYPES.IPFS}
+              checked={importType === IMPORT_TYPES.IPFS}
+              onChange={this.setImportType}
+            />
+            <label htmlFor="i_ipfs" className="button"> IPFS</label>
 
-            <input required id="i_link" name="importType" type="radio" value={IMPORT_TYPES.LINK}
-              checked={importType === IMPORT_TYPES.LINK} onChange={this.setImportType} />
-            <label for="i_link" className="button">Link</label>
+            <input
+              required
+              id="i_link"
+              name="importType"
+              type="radio"
+              value={IMPORT_TYPES.LINK}
+              checked={importType === IMPORT_TYPES.LINK}
+              onChange={this.setImportType}
+            />
+            <label htmlFor="i_link" className="button">Link</label>
 
-            <input required id="i_file" name="importType" type="radio" value={IMPORT_TYPES.FILE}
-              checked={importType === IMPORT_TYPES.FILE} onChange={this.setImportType} />
-            <label for="i_file" className="button">File</label>
+            <input
+              required
+              id="i_file"
+              name="importType"
+              type="radio"
+              value={IMPORT_TYPES.FILE}
+              checked={importType === IMPORT_TYPES.FILE}
+              onChange={this.setImportType}
+            />
+            <label htmlFor="i_file" className="button">File</label>
           </div>
           {/* <input required type="text" placeholder="Link" value={importLink} onChange={(ev) => this.setState({ importLink: ev.target.value })} /> */}
-          {importType === IMPORT_TYPES.IPFS || importType === IMPORT_TYPES.LINK ?
-            <input required type="text" placeholder={importType === IMPORT_TYPES.IPFS ? "Hash" : "Link"} value={importLink} onChange={(ev) => this.setState({ importLink: ev.target.value })} />
-            : <span />
-          }
+          {importType === IMPORT_TYPES.IPFS || importType === IMPORT_TYPES.LINK
+            ? <input required type="text" placeholder={importType === IMPORT_TYPES.IPFS ? 'Hash' : 'Link'} value={importLink} onChange={(ev) => this.setState({ importLink: ev.target.value })} />
+            : <span />}
           {importType === IMPORT_TYPES.FILE ? <input required type="file" onChange={(ev) => this.setState({ importLink: ev.target.files[0] })} />
-            : <span />
-          }
+            : <span />}
         </div>
-        <div><input type="checkbox" id="replace" /> Replace Current Graph</div>
-        <button type="submit" className="button filledButton rounded" onClick={/*document.getElementById('replace').checked ? */() => this.importGraph()}>Submit</button>
+        <div>
+          <input type="checkbox" id="replace" />
+          {' '}
+          Replace Current Graph
+        </div>
+        <button type="submit" className="button filledButton rounded" onClick={/* document.getElementById('replace').checked ? */() => this.importGraph()}>Submit</button>
       </div>
     );
   }
@@ -413,7 +443,7 @@ class IokEdit extends Component {
             </svg>
           </button>
 
-          <button className="tool" type="button">
+          <button className="tool" type="button" >
             <svg width="24" height="24" viewBox="0 0 40 40" fill="currentColor">
               <path d="M29.9987 7.5L23.332 14.1667H28.332V25.8333C28.332 27.6667 26.832 29.1667 24.9987 29.1667C23.1654 29.1667 21.6654 27.6667 21.6654 25.8333V14.1667C21.6654 10.4833 18.682 7.5 14.9987 7.5C11.3154 7.5 8.33203 10.4833 8.33203 14.1667V25.8333H3.33203L9.9987 32.5L16.6654 25.8333H11.6654V14.1667C11.6654 12.3333 13.1654 10.8333 14.9987 10.8333C16.832 10.8333 18.332 12.3333 18.332 14.1667V25.8333C18.332 29.5167 21.3154 32.5 24.9987 32.5C28.682 32.5 31.6654 29.5167 31.6654 25.8333V14.1667H36.6654L29.9987 7.5Z" />
             </svg>
@@ -434,15 +464,15 @@ class IokEdit extends Component {
               <path d="M13 13H16L12 17L8 13H11V3H13V13ZM4 21V19H20V21H4Z" />
             </svg>
           </button>
-          <div class="toolbar-bottom">
+          <div className="toolbar-bottom">
             <button className="tool" type="button">
-              <svg width="24" height="24" viewBox="0 0 36 36" fill="currentColor" >
+              <svg width="24" height="24" viewBox="0 0 36 36" fill="currentColor">
                 <path d="M15 6H6C4.35 6 3.015 7.35 3.015 9L3 27C3 28.65 4.35 30 6 30H30C31.65 30 33 28.65 33 27V12C33 10.35 31.65 9 30 9H18L15 6Z" />
               </svg>
             </button>
 
             <button className="tool" type="button">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4C9.10999 4 6.59998 5.64 5.34998 8.04C2.34003 8.36 0 10.91 0 14C0 17.31 2.69 20 6 20H19C21.76 20 24 17.76 24 15C24 12.36 21.95 10.22 19.35 10.04ZM19 18H6C3.78998 18 2 16.21 2 14C2 11.95 3.53003 10.24 5.56 10.03L6.63 9.92L7.13 8.97C8.08002 7.14 9.94 6 12 6C14.62 6 16.88 7.86 17.39 10.43L17.69 11.93L19.22 12.04C20.78 12.14 22 13.45 22 15C22 16.65 20.65 18 19 18ZM10.55 13H8L12 9L16 13H13.45V16H10.55V13Z" />
               </svg>
             </button>

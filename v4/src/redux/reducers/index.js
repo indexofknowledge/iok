@@ -45,18 +45,30 @@ export default function reducer(state = DEFAULT_STATE, action) {
       graph = graphHelper(cy);
       break;
     }
+
     case ACTION_TYPES.MERGE_NODE: {
       const from = cy.getElementById(action.fromId);
       const to = cy.getElementById(action.toId);
       const parent = outgoers(to)[0];
-      console.log(parent);
       const newNode = merge(from, to, cy);
-      if (parent) cy.add(createEdge(newNode, parent));
+      if (parent && parent != from) cy.add(createEdge(newNode, parent));
       selected = calcCurrentNode(newNode);
       mergingNode = null;
       graph = graphHelper(cy);
       break;
     }
+
+    case ACTION_TYPES.CONNECT_NODE: {
+      const child = cy.getElementById(action.childId);
+      const newParent = cy.getElementById(action.newParentId);
+      // check no cycle will happen
+
+      const oldEdge = child.outgoers((el) => el.isEdge())[0];
+      if (oldEdge) cy.remove(oldEdge);
+      cy.add(createEdge(child, newParent));
+      break;
+    }
+
     case ACTION_TYPES.UPLOAD_GRAPH: {
       graph = action.graph;
       break;

@@ -18,10 +18,10 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const FullSideBar = ({ mergingNode, selected }) => (
-  <div style={{ display: "flex", flexDirection: "column" }}>
+  <div style={{ display: 'flex', flexDirection: 'column' }}>
     {mergingNode ? <IokText node={mergingNode} /> : <div />}
     {!mergingNode || (mergingNode && selected) ? <IokText node={selected} /> : <div />}
-  </div >
+  </div>
 );
 
 FullSideBar.propTypes = {

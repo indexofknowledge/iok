@@ -76,9 +76,8 @@ function updateScopes(newScope, scopes, graph) {
         source: newScope.id,
         target: targetId,
         id: hash.hex(),
-      }
-    }
-    );
+      },
+    });
   }
   scopesCpy.push(newScope);
   return scopesCpy;
@@ -111,7 +110,7 @@ function matchLine(newScope, scopes, graph) {
 
 // given a string, returns the graph in IOK format
 function createGraph(text) {
-  console.log(text)
+  console.log(text);
   const textlines = text.split('\n');
   let scopes = [];
 

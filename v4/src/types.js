@@ -22,7 +22,7 @@ export const NPAIR = {
   TOPIC: [NTYPE.TOPIC, null],
   DESC: [NTYPE.RESO, RTYPE.DESC],
   LINK: [NTYPE.RESO, RTYPE.LINK],
-}
+};
 
 /** Types of graph import formats */
 export const IMPORT_TYPES = {
@@ -30,7 +30,7 @@ export const IMPORT_TYPES = {
   IPFS: 'ipfs',
   LINK: 'link',
   FILE: 'file',
-}
+};
 
 /** Types of tools available for selection */
 export const TOOL_TYPES = {
@@ -39,4 +39,4 @@ export const TOOL_TYPES = {
   MERGE: 'merge_node',
   DELETE: 'delete_node',
   IMPORT: 'import',
-}
+};
