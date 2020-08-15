@@ -45,8 +45,11 @@ function IokText({ node }) {
 
     <div className="sidebar">
       <div>
-        <h2 className="nodetitle">{data.name ? data.name :
-          data.text.length > 20 ? data.text.substring(0, 20) : data.text}</h2>
+        <h2 className="nodetitle">
+          {data.name}
+          {/* {data.name ? data.name :
+          data.data.text.length > 20 ? data.data.text.substring(0, 20) : data.data.text} */}
+        </h2>
         <p className="byline">
           From
           {' '}
