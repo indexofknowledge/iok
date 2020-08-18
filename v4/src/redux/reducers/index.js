@@ -5,7 +5,7 @@ import {
   outgoers, calcCurrentNode, isConnected
 } from './graphlib';
 
-const DEFAULT_STATE = { graph: { elements: {} }, selected: null, mergingNode: null };
+const DEFAULT_STATE = { graph: { elements: {} }, selected: null, prevNode: null };
 
 function graphToElements(graph) {
   let elements = [];
@@ -15,7 +15,7 @@ function graphToElements(graph) {
 }
 
 export default function reducer(state = DEFAULT_STATE, action) {
-  let { graph, selected, mergingNode } = state;
+  let { graph, selected, prevNode } = state;
   const elements = graphToElements(state.graph);
   const cy = Cytoscape({ elements });
 
@@ -53,7 +53,7 @@ export default function reducer(state = DEFAULT_STATE, action) {
       const newNode = merge(from, to, cy);
       if (parent && parent != from) cy.add(createEdge(newNode, parent));
       selected = calcCurrentNode(newNode);
-      mergingNode = null;
+      prevNode = null;
       graph = graphHelper(cy);
       break;
     }
@@ -83,7 +83,7 @@ export default function reducer(state = DEFAULT_STATE, action) {
       break;
     }
     case ACTION_TYPES.SELECT_MERGE_NODE: {
-      mergingNode = calcCurrentNode(cy.getElementById(action.nodeId));
+      prevNode = calcCurrentNode(cy.getElementById(action.nodeId));
       selected = null;
       break;
     }
@@ -93,6 +93,6 @@ export default function reducer(state = DEFAULT_STATE, action) {
   return {
     graph,
     selected,
-    mergingNode,
+    prevNode,
   };
 }

@@ -2,30 +2,30 @@ import { connect } from 'react-redux';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  mergeNode, selectNode, selectMergeNode,
+  mergeNode, selectNode, selectPrevNode,
 } from './redux/actions';
 import IokText from './IokText';
 
 const mapStateToProps = (state) => ({
   selected: state.selected,
-  mergingNode: state.mergingNode,
+  prevNode: state.prevNode,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   mergeNode: (fromId, toId) => dispatch(mergeNode(fromId, toId)),
   selectNode: (id) => dispatch(selectNode(id)),
-  selectMergeNode: (id) => dispatch(selectMergeNode(id)),
+  selectPrevNode: (id) => dispatch(selectPrevNode(id)),
 });
 
-const FullSideBar = ({ mergingNode, selected }) => (
+const FullSideBar = ({ prevNode, selected }) => (
   <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {mergingNode ? <IokText node={mergingNode} /> : <div />}
-    {!mergingNode || (mergingNode && selected) ? <IokText node={selected} /> : <div />}
+    {prevNode ? <IokText node={prevNode} /> : <div />}
+    {!prevNode || (prevNode && selected) ? <IokText node={selected} /> : <div />}
   </div>
 );
 
 FullSideBar.propTypes = {
-  mergingNode: PropTypes.object, // eslint-disable-line
+  prevNode: PropTypes.object, // eslint-disable-line
   selected: PropTypes.object, // eslint-disable-line
 };
 

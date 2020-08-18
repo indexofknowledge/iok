@@ -45,7 +45,7 @@ export const selectNode = (nodeId) => ({
   nodeId,
 });
 
-export const selectMergeNode = (nodeId) => ({
+export const selectPrevNode = (nodeId) => ({
   type: ACTION_TYPES.SELECT_MERGE_NODE,
   nodeId,
 });

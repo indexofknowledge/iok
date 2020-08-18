@@ -89,7 +89,7 @@ function isConnected(newParent, root) {
     return false;
   } else {
     let childConnected = false;
-    for (node in children) {
+    for (let node in children) {
       childConnected = childConnected || isConnected(node);
     }
     return childConnected;

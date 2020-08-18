@@ -97,8 +97,8 @@ class IokEdit extends Component {
   }
 
   onNodeTap(evt, cy) {
-    const { selected, selectNode, mergingNode } = this.props;
-    console.log('SELECTED', selected, 'MERGING', mergingNode);
+    const { selected, selectNode, prevNode } = this.props;
+    console.log('SELECTED', selected, 'MERGING', prevNode);
     if (evt.target === cy) {
       if (selected) {
         this.clearTool();
@@ -108,7 +108,7 @@ class IokEdit extends Component {
       const id = evt.target.id();
       if (selected && selected.id === id) return;
       this.clearTool();
-      if (mergingNode !== null && id === mergingNode.id) {
+      if (prevNode !== null && id === prevNode.id) {
         selectNode(null);
         return;
       }
@@ -127,12 +127,12 @@ class IokEdit extends Component {
   }
 
   initCy(cy) {
-    const { selected, mergingNode } = this.props;
+    const { selected, prevNode } = this.props;
     cy.nodes().removeClass('selected merging');
     cy.maxZoom(10);
     cy.minZoom(0.1);
     if (selected) cy.getElementById(selected.id).addClass('selected');
-    if (mergingNode) cy.getElementById(mergingNode.id).addClass('merging');
+    if (prevNode) cy.getElementById(prevNode.id).addClass('merging');
     cy.layout({
       name: 'breadthfirst', circle: false, fit: false, spacingFactor: 0.8,
     }).run();
@@ -210,29 +210,29 @@ class IokEdit extends Component {
   }
 
   mergeNode() {
-    const { selectMergeNode, selected, mergingNode } = this.props;
-    const shouldMerge = !mergingNode && selected;
-    if (shouldMerge) selectMergeNode(selected.id);
+    const { selectPrevNode, selected, prevNode } = this.props;
+    const shouldMerge = !prevNode && selected;
+    if (shouldMerge) selectPrevNode(selected.id);
     this.toggleTool(TOOL_TYPES.MERGE, shouldMerge);
   }
 
   endMerge() {
-    const { selectMergeNode } = this.props;
-    selectMergeNode(null);
+    const { selectPrevNode } = this.props;
+    selectPrevNode(null);
     this.setState({ tool: null });
   }
 
   confirmMerge() {
     const {
-      mergeNode, selectMergeNode, selected, mergingNode,
+      mergeNode, selectPrevNode, selected, prevNode,
     } = this.props;
-    if (mergingNode && selected
-      && mergingNode.data.node_type !== NTYPE.RESO
+    if (prevNode && selected
+      && prevNode.data.node_type !== NTYPE.RESO
       && selected.data.node_type !== NTYPE.RESO) {
-      mergeNode(mergingNode.id, selected.id);
-      selectMergeNode(null);
+      mergeNode(prevNode.id, selected.id);
+      selectPrevNode(null);
     } else {
-      selectMergeNode(null);
+      selectPrevNode(null);
       alert("You can't merge resource nodes");
     }
     this.setState({ tool: null });
@@ -413,7 +413,7 @@ class IokEdit extends Component {
   }
 
   render() {
-    const { elements, selected, mergingNode } = this.props;
+    const { elements, selected, prevNode } = this.props;
     const { zoom, tool } = this.state;
     let submitFunc = null;
     if (tool === TOOL_TYPES.ADD) submitFunc = this.addNode;
@@ -520,9 +520,9 @@ IokEdit.propTypes = {
   importGraph: PropTypes.func.isRequired,
   uploadGraph: PropTypes.func.isRequired,
   selectNode: PropTypes.func.isRequired,
-  selectMergeNode: PropTypes.func.isRequired,
+  selectPrevNode: PropTypes.func.isRequired,
   selected: PropTypes.object, // eslint-disable-line
-  mergingNode: PropTypes.object, // eslint-disable-line
+  prevNode: PropTypes.object, // eslint-disable-line
 };
 
 export default IokEdit;
