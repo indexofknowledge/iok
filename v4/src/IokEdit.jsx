@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Cytoscape from 'cytoscape';
 import CytoscapeComponent from 'react-cytoscapejs';
 import './IokEdit.css';
 import { showBlockstackConnect } from '@blockstack/connect';
@@ -9,10 +10,13 @@ import { saveBlockstackGraph } from './storage/blockstack';
 import { loadGraph, DEFAULT_SESSION } from './loading';
 import { saveCache, wipeCache } from './storage/cache';
 import { parseParams } from './urlUtils';
+import treeLayout from './layout';
 import {
   STORAGE_TYPES, NTYPE, TOOL_TYPES, IMPORT_TYPES,
 } from './types';
 import { graphFromUrl } from './md_scraper';
+
+Cytoscape.use(treeLayout);
 
 const IokStyle = (zoom) => [
   {
@@ -135,7 +139,8 @@ class IokEdit extends Component {
     if (selected) cy.getElementById(selected.id).addClass('selected');
     if (prevNode) cy.getElementById(prevNode.id).addClass('merging');
     cy.layout({
-      name: 'breadthfirst', circle: false, fit: false, spacingFactor: 0.8,
+        /* name: 'breadthfirst', fit: false, spacingFactor: 0.8, circle: true, maximal: true */
+        name: 'treeCircle'
     }).run();
 
     if (cy === this.cy) return;
