@@ -34,10 +34,10 @@ export const mergeNode = (fromId, toId) => ({
   toId,
 });
 
-export const connectNode = (childId, newParentID) => ({
+export const connectNode = (childId, newParentId) => ({
   type: ACTION_TYPES.CONNECT_NODE,
   childId,
-  newParentID,
+  newParentId,
 });
 
 export const selectNode = (nodeId) => ({

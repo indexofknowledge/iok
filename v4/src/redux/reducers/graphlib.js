@@ -81,7 +81,7 @@ function merge(from, to, cy) {
   return newNode;
 }
 
-function isConnected(newParent, root) {
+function isConnected(root, newParent) {
   let children = incomers(root);
   if (root === newParent) {
     return true;
@@ -89,8 +89,8 @@ function isConnected(newParent, root) {
     return false;
   } else {
     let childConnected = false;
-    for (let node in children) {
-      childConnected = childConnected || isConnected(node);
+    for (const node of children) {
+      childConnected = childConnected || isConnected(node, newParent);
     }
     return childConnected;
   }

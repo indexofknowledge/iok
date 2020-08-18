@@ -39,4 +39,5 @@ export const TOOL_TYPES = {
   MERGE: 'merge_node',
   DELETE: 'delete_node',
   IMPORT: 'import',
+  CONNECT: 'connect',
 };

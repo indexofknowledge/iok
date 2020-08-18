@@ -51,6 +51,8 @@ export default function reducer(state = DEFAULT_STATE, action) {
       const to = cy.getElementById(action.toId);
       const parent = outgoers(to)[0];
       const newNode = merge(from, to, cy);
+      console.log("fD", from, "ro", to);
+
       if (parent && parent != from) cy.add(createEdge(newNode, parent));
       selected = calcCurrentNode(newNode);
       prevNode = null;
@@ -61,11 +63,14 @@ export default function reducer(state = DEFAULT_STATE, action) {
     case ACTION_TYPES.CONNECT_NODE: {
       const child = cy.getElementById(action.childId);
       const newParent = cy.getElementById(action.newParentId);
-      if (isConnected === false) {
+      if (child && newParent && isConnected(child, newParent) === false) {
         const oldEdge = child.outgoers((el) => el.isEdge())[0];
         if (oldEdge) cy.remove(oldEdge);
         cy.add(createEdge(child, newParent));
       }
+      selected = newParent;
+      prevNode = null;
+      graph = graphHelper(cy);
       break;
     }
 

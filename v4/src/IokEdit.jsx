@@ -90,7 +90,8 @@ class IokEdit extends Component {
   }
 
   clearTool() {
-    if (this.state.tool == TOOL_TYPES.MERGE) {
+    const { tool } = this.state;
+    if (tool == TOOL_TYPES.MERGE || tool == TOOL_TYPES.CONNECT) {
       return;
     }
     this.setState({ tool: null });
@@ -216,7 +217,7 @@ class IokEdit extends Component {
     this.toggleTool(TOOL_TYPES.MERGE, shouldMerge);
   }
 
-  endMerge() {
+  endMergeorConnect() {
     const { selectPrevNode } = this.props;
     selectPrevNode(null);
     this.setState({ tool: null });
@@ -234,6 +235,28 @@ class IokEdit extends Component {
     } else {
       selectPrevNode(null);
       alert("You can't merge resource nodes");
+    }
+    this.setState({ tool: null });
+  }
+
+  connectNode() {
+    const { selectPrevNode, selected, prevNode } = this.props;
+    const shouldConnect = !prevNode && selected;
+    if (shouldConnect) selectPrevNode(selected.id);
+    this.toggleTool(TOOL_TYPES.CONNECT, shouldConnect);
+  }
+
+  confirmConnect() {
+    const {
+      connectNode, selectPrevNode, selected, prevNode,
+    } = this.props;
+    if (prevNode && selected && selected.data.node_type === NTYPE.TOPIC) {
+      console.log(prevNode, "AND", selected)
+      connectNode(prevNode.id, selected.id);
+      selectPrevNode(null);
+    } else {
+      selectPrevNode(null);
+      alert("You can't connect");
     }
     this.setState({ tool: null });
   }
@@ -268,6 +291,7 @@ class IokEdit extends Component {
       };
       reader.readAsText(importLink);
     }
+    this.setState({ tool: null });
   }
 
   setImportType(evt) {
@@ -444,7 +468,7 @@ class IokEdit extends Component {
           </button>
 
           <button className="tool" type="button" >
-            <svg width="24" height="24" viewBox="0 0 40 40" fill="currentColor">
+            <svg width="24" height="24" viewBox="0 0 40 40" fill="currentColor" onClick={() => this.connectNode()}>
               <path d="M29.9987 7.5L23.332 14.1667H28.332V25.8333C28.332 27.6667 26.832 29.1667 24.9987 29.1667C23.1654 29.1667 21.6654 27.6667 21.6654 25.8333V14.1667C21.6654 10.4833 18.682 7.5 14.9987 7.5C11.3154 7.5 8.33203 10.4833 8.33203 14.1667V25.8333H3.33203L9.9987 32.5L16.6654 25.8333H11.6654V14.1667C11.6654 12.3333 13.1654 10.8333 14.9987 10.8333C16.832 10.8333 18.332 12.3333 18.332 14.1667V25.8333C18.332 29.5167 21.3154 32.5 24.9987 32.5C28.682 32.5 31.6654 29.5167 31.6654 25.8333V14.1667H36.6654L29.9987 7.5Z" />
             </svg>
           </button>
@@ -498,8 +522,15 @@ class IokEdit extends Component {
           {tool == TOOL_TYPES.MERGE ? (
             <div className="dialog">
               <h2>Merge Node</h2>
-              <button type="button" className="button" onClick={() => this.endMerge()}>Cancel Merge</button>
+              <button type="button" className="button" onClick={() => this.endMergeorConnect()}>Cancel Merge</button>
               <button type="button" className="button filledButton" disabled={selected === null} onClick={() => this.confirmMerge()}>Confirm Merge</button>
+            </div>
+          ) : ''}
+          {tool == TOOL_TYPES.CONNECT ? (
+            <div className="dialog">
+              <h2>Connect Node</h2>
+              <button type="button" className="button" onClick={() => this.endMergeorConnect()}>Cancel Connect</button>
+              <button type="button" className="button filledButton" disabled={selected === null} onClick={() => this.confirmConnect()}>Confirm Connect</button>
             </div>
           ) : <div />}
           {tool == TOOL_TYPES.IMPORT ? this.importDialog() : ''}
