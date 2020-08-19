@@ -2,7 +2,7 @@ import Cytoscape from 'cytoscape';
 import { ACTION_TYPES } from '../actions';
 import {
   createNode, createEdge, updateEdges, merge, deleteNodeHelper, graphHelper,
-  outgoers, calcCurrentNode, isConnected
+  outgoers, calcCurrentNode, isConnected,
 } from './graphlib';
 
 const DEFAULT_STATE = { graph: { elements: {} }, selected: null, prevNode: null };
@@ -51,8 +51,6 @@ export default function reducer(state = DEFAULT_STATE, action) {
       const to = cy.getElementById(action.toId);
       const parent = outgoers(to)[0];
       const newNode = merge(from, to, cy);
-      console.log("fD", from, "ro", to);
-
       if (parent && parent != from) cy.add(createEdge(newNode, parent));
       selected = calcCurrentNode(newNode);
       prevNode = null;

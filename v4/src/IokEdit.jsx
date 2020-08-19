@@ -181,6 +181,7 @@ class IokEdit extends Component {
   }
 
   openAddNode() {
+    this.nodeProps.current.setStateFromNode(NodeProperties.resetState());
     this.toggleTool(TOOL_TYPES.ADD, true);
   }
 
@@ -251,7 +252,7 @@ class IokEdit extends Component {
       connectNode, selectPrevNode, selected, prevNode,
     } = this.props;
     if (prevNode && selected && selected.data.node_type === NTYPE.TOPIC) {
-      console.log(prevNode, "AND", selected)
+      console.log(prevNode, 'AND', selected);
       connectNode(prevNode.id, selected.id);
       selectPrevNode(null);
     } else {
@@ -426,12 +427,10 @@ class IokEdit extends Component {
           {importType === IMPORT_TYPES.FILE ? <input required type="file" onChange={(ev) => this.setState({ importLink: ev.target.files[0] })} />
             : <span />}
         </div>
-        <div>
-          <input type="checkbox" id="replace" />
-          {' '}
-          Replace Current Graph
+        <div className="rightButton">
+          <button type="button" className="button" onClick={() => this.clearTool()}>Cancel</button>
+          <button type="submit" className="button filledButton" onClick={() => this.importGraph()}>Submit</button>
         </div>
-        <button type="submit" className="button filledButton rounded" onClick={/* document.getElementById('replace').checked ? */() => this.importGraph()}>Submit</button>
       </div>
     );
   }
@@ -467,7 +466,7 @@ class IokEdit extends Component {
             </svg>
           </button>
 
-          <button className="tool" type="button" >
+          <button className="tool" type="button">
             <svg width="24" height="24" viewBox="0 0 40 40" fill="currentColor" onClick={() => this.connectNode()}>
               <path d="M29.9987 7.5L23.332 14.1667H28.332V25.8333C28.332 27.6667 26.832 29.1667 24.9987 29.1667C23.1654 29.1667 21.6654 27.6667 21.6654 25.8333V14.1667C21.6654 10.4833 18.682 7.5 14.9987 7.5C11.3154 7.5 8.33203 10.4833 8.33203 14.1667V25.8333H3.33203L9.9987 32.5L16.6654 25.8333H11.6654V14.1667C11.6654 12.3333 13.1654 10.8333 14.9987 10.8333C16.832 10.8333 18.332 12.3333 18.332 14.1667V25.8333C18.332 29.5167 21.3154 32.5 24.9987 32.5C28.682 32.5 31.6654 29.5167 31.6654 25.8333V14.1667H36.6654L29.9987 7.5Z" />
             </svg>

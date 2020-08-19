@@ -78,6 +78,12 @@ h2 {
   margin: 0 4px;
  }
 
+ .button:disabled {
+   color: #828282;
+  background-color: #4e4e4e;
+  border-color: #4e4e4e;
+ }
+
 .filledButton, .formgroup input[type="radio"]:checked + label{
   background-color: var(--button-color);
   color: var(--body-text);
@@ -116,6 +122,8 @@ form {
 .formgroup textarea, input[type="text"], input[type="url"]{
   display:block;
 width:100%;
+margin-top: 5px;
+margin-bottom: 15px;
 padding:5px;
 background-color: #2D314C;
 color:#FFF;
@@ -125,6 +133,10 @@ border: 0px solid;
 .formgroup div {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+input[type="file"] {
+  margin: 0px 0px 20px 0px;
 }
 
 .rightButton {
