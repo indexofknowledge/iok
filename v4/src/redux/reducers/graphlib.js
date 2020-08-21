@@ -1,10 +1,11 @@
 import { sha256 } from 'js-sha256';
-import { NTYPE } from '../../types';
 import { objToCid, verifyNodeShape } from 'ipfs-cytoscape';
+import { NTYPE } from '../../types';
 
 const incomers = (node) => node.incomers((el) => el.isNode());
 const outgoers = (node) => node.outgoers((el) => el.isNode());
 
+// eslint-disable-next-line
 function nodeId(props, includeSource = true) {
   // call objToCid synchronously
   const bareNodeData = verifyNodeShape(props);
