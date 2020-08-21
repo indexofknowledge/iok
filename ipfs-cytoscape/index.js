@@ -49,6 +49,7 @@ function verifyNodeShape(node) {
       throw Error('Invalid Resource node, expected `resource_type` and `data`');
     }
     return {
+      name: node.data.text.length > 20 ? node.data.text.substring(0, 20) : node.data.text,
       node_type: node.node_type,
       resource_type: node.resource_type,
       data: node.data,
