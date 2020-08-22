@@ -5,43 +5,54 @@ function TreeCircleLayout(options) {
 const getInfo = ele => ele.scratch('treecircle');
 const setInfo = (ele, obj) => ele.scratch('treecircle', obj);
 
-/** Update a node's depth and position in the tree */
-function visit(node, e, parent, i, depth) {
-    const ele = node[0];
-    let index = 0;
-    if (parent) {
-        const parInfo = getInfo(parent);
-        index = (parInfo.children || 0);
-        parInfo.children = index + 1;
-    }
-    setInfo(ele, { depth, index, parent });
-}
+const SPACING = 100;
 
-/** Return (theta, maxspaceforchildren, numberofchildren) tuple */
+/** Return (theta, rootid, maxspaceforchildren, numberofchildren) tuple */
 function theta(ele) {
     const { index, parent, children } = getInfo(ele);
-    if (!parent) return [0, 2*Math.PI, children];
-
+    if (!parent) return [0, 2 * Math.PI, children];
     const [ptheta, pmaxspace, pchildren] = theta(parent);
     const angle = (index / pchildren - 0.5) * pmaxspace + ptheta;
     return [angle, pmaxspace / pchildren, children];
 }
 
-TreeCircleLayout.prototype.run = function() {
+TreeCircleLayout.prototype.run = function () {
     const eles = this.options.eles;
     const roots = eles.leaves();
     const cx = this.options.cy.width() / 2;
     const cy = this.options.cy.height() / 2;
 
-    eles.bfs({ roots, directed: false, visit });
+    let maxDepth = 0;
+    // Perform bfs on each root to assign depths and indices
+    roots.forEach((root, rootIndex) => {
+        eles.bfs({
+            roots: [root], directed: false, visit(node, e, parent, i, depth) {
+                const ele = node[0];
+                let index = 0;
+                if (parent) {
+                    const parInfo = getInfo(parent);
+                    index = (parInfo.children || 0);
+                    parInfo.children = index + 1;
+                }
+                setInfo(ele, { depth, index, parent, rootIndex });
+                maxDepth = Math.max(maxDepth, depth);
+            }
+        });
+    });
 
+    // Treat roots as sides of a regular polygone with side length 2*rootSeparation
+    // The distance from a vertex to the center is rootRadius
+    const rootSeparation = (maxDepth + 0.5) * SPACING;
+    const rootRadius = rootSeparation / Math.sin(Math.PI / roots.length);
     this.options.eles.layoutPositions(this, this.options, (ele) => {
-        const { depth } = getInfo(ele);
-        const radius = depth * 100;
+        const { depth, rootIndex } = getInfo(ele);
+        const rootAngle = 2 * Math.PI * rootIndex / roots.length;
+
+        const radius = depth * SPACING;
         const angle = theta(ele)[0];
         return {
-            x: cx + radius * Math.cos(angle),
-            y: cy + radius * Math.sin(angle)
+            x: cx + rootRadius * Math.cos(rootAngle) + radius * Math.cos(angle),
+            y: cy + rootRadius * Math.sin(rootAngle) + radius * Math.sin(angle)
         };
     });
 }
