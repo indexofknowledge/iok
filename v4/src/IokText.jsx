@@ -3,14 +3,14 @@
 /* eslint-disable no-alert */
 import React from 'react';
 import { PropTypes } from 'prop-types';
-// import Log from './log';
+import Log from './log';
 // import './styles/IokText.css';
 import './IokText.css';
 
 // import { GRAPH_FILENAME } from './constants';
 import { NTYPE } from './types';
 
-function IokText({ node }) {
+function IokText({ node, traversed, toggleNodeTraversed }) {
   const data = node ? node.data : {
     name: 'Overview',
     data: { text: 'Index of Knowledge (IoK) is a curated collection of resources for blockchain, grouped by topic and topologically ordered by pedagogical dependency.' },
@@ -22,7 +22,8 @@ function IokText({ node }) {
   const depList = [];
   const descList = [];
   const linkList = [];
-
+  const traversedNodes = [];
+  
   // eslint-disable-next-line no-restricted-syntax
   for (const neighbor of neighbors) {
     if (neighbor.node_type === NTYPE.TOPIC) { // topic is dep
@@ -39,6 +40,18 @@ function IokText({ node }) {
   // XXX: HACK!! if no node is selected, we use a linkList alongside a descList
   if (!node) {
     linkList.push(<li key="dummy"><a href=".">Resource links appear here!</a></li>);
+  }
+
+  // list the traversed nodes for debugging
+  traversed.forEach(el => {
+    traversedNodes.push(<li className="nodeid" key={el}>{el}</li>)
+  })
+
+  let toggleBtnText = "Mark as learned";
+  if (data.id) {
+    if (traversed.has(data.id)) {
+      toggleBtnText = "You learned this";
+    }
   }
 
   return (
@@ -107,6 +120,15 @@ function IokText({ node }) {
             {' '}
             <h3 className="heading">Debugging</h3>
             <p className="nodeid">{data.id}</p>
+            <button type="button" className="tool filledButton" onClick={() => {
+              Log.info(`Toggling nodde traversed: ${data.id}`)
+              toggleNodeTraversed(data.id);
+            }}>{toggleBtnText}</button>
+            <div className="section linksection">
+              <ul id="travsednodes">
+                {traversedNodes}
+              </ul>
+            </div>
           </div>
         )
       }

@@ -5,6 +5,7 @@ export const ACTION_TYPES = {
   MERGE_NODE: 'MERGE_NODE',
   SELECT_NODE: 'SELECT_NODE',
   SELECT_MERGE_NODE: 'SELECT_MERGE_NODE',
+  TOGGLE_NODE_TRAVERSED: 'TOGGLE_NODE_TRAVERSED',
   UPLOAD_GRAPH: 'UPLOAD_GRAPH',
   IMPORT_GRAPH: 'IMPORT_GRAPH',
 };
@@ -39,6 +40,11 @@ export const selectNode = (nodeId) => ({
 
 export const selectMergeNode = (nodeId) => ({
   type: ACTION_TYPES.SELECT_MERGE_NODE,
+  nodeId,
+});
+
+export const toggleNodeTraversed = (nodeId) => ({
+  type: ACTION_TYPES.TOGGLE_NODE_TRAVERSED,
   nodeId,
 });
 
