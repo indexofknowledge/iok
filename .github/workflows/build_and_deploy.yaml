@@ -1,0 +1,50 @@
+name: build-and-deploy
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-to-firebase:
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+          node-version: [13.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Target determinator
+        run: |
+          if [ ${{ github.event_name }} = 'pull_request' ]; then
+            echo "::set-env name=DEPLOY_TARGET::beta"
+            echo "Deploying BETA"
+          else
+            echo "::set-env name=DEPLOY_TARGET::prod"
+            echo "Deploying PROD"
+          fi
+      - name: Set up node
+        run: |
+          ./utils/iok.sh setup_node
+      - name: Install deps
+        working-directory: v4
+        run: |
+          npm install
+      - name: Run lint
+        working-directory: v4
+        continue-on-error: true
+        run: |
+          npm run lint
+      - name: Build
+        working-directory: v4
+        run: |
+          npm run build
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --project index-of-knowledge --only hosting:$DEPLOY_TARGET
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          PROJECT_PATH: v4
