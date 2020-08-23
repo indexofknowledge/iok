@@ -32,6 +32,19 @@ setup_py() {
   (cd $PROJ_DIR/python && ./build.sh)
 }
 
+# utility to scrape locally
+mdscrape() {
+  path=$1
+  out=$2
+
+  if [ -z $path ] || [ -z $out ]; then
+    echo "Missing path. Usage: ./iok.sh [src_path] [dst_path]"
+    exit 1
+  fi
+  PIPENV_PIPFILE=$PROJ_DIR/python/Pipfile pipenv run python3 -m mdscraper \
+      --path $path --out $out
+}
+
 validate_graph() {
   graph_file=$1
   if [ -z $graph_file ]; then
@@ -50,7 +63,6 @@ get_graph() {
     echo "CID not specified"
     exit 1
   fi
-  export NODE_NO_WARNINGS=1
   export CID=$cid
   export FUNC=getGraph
   node --experimental-repl-await $DIR/ipfs_client.js
@@ -62,7 +74,6 @@ put_graph() {
     echo "Graph not specified"
     exit 1
   fi
-  export NODE_NO_WARNINGS=1
   export GRAPH=$graph
   export FUNC=putGraph
   node --experimental-repl-await $DIR/ipfs_client.js
@@ -74,7 +85,6 @@ obj_to_cid() {
     echo "Obj not specified"
     exit 1
   fi
-  export NODE_NO_WARNINGS=1
   export OBJ=$obj
   export FUNC=objToCid
   node --experimental-repl-await $DIR/ipfs_client.js
@@ -86,7 +96,6 @@ format_graph() {
     echo "Graph not specified"
     exit 1
   fi
-  # export NODE_NO_WARNINGS=1
   export GRAPH=$graph
   export FUNC=formatGraph
   node --experimental-repl-await $DIR/ipfs_client.js
