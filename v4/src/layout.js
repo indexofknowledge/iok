@@ -43,7 +43,8 @@ TreeCircleLayout.prototype.run = function () {
     // Treat roots as sides of a regular polygone with side length 2*rootSeparation
     // The distance from a vertex to the center is rootRadius
     const rootSeparation = (maxDepth + 0.5) * SPACING;
-    const rootRadius = rootSeparation / Math.sin(Math.PI / roots.length);
+    const rootDivider = Math.sin(Math.PI / roots.length);
+    const rootRadius = roots.length < 2 ? 0 : rootSeparation / rootDivider;
     this.options.eles.layoutPositions(this, this.options, (ele) => {
         const { depth, rootIndex } = getInfo(ele);
         const rootAngle = 2 * Math.PI * rootIndex / roots.length;
