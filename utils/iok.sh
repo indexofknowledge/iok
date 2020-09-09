@@ -12,6 +12,8 @@ show_help() {
   echo "setup_py          Install pipenv if it\'s not present and build the pipenv"
   echo "get_full_graph    Print full graph json from CID"
   echo "put_graph         Takes graph JSON from stdin and puts to IPFS"
+  echo "obj_to_cid        Takes an object JSON from stdin and gets its CID"
+  echo "format_graph      Takes a graph JSON from stdin and returns it correctly formatted to spec"
 }
 
 setup_node() {
@@ -42,7 +44,7 @@ validate_graph() {
   (cd $PROJ_DIR/python && pipenv run python3 -m validator --file $PROJ_DIR/$graph_file)
 }
 
-get_full_graph() {
+get_graph() {
   cid=$1
   if [ -z "$cid" ]; then
     echo "CID not specified"
@@ -50,7 +52,7 @@ get_full_graph() {
   fi
   export NODE_NO_WARNINGS=1
   export CID=$cid
-  export FUNC=getFullGraph
+  export FUNC=getGraph
   node --experimental-repl-await $DIR/ipfs_client.js
 }
 
@@ -63,6 +65,30 @@ put_graph() {
   export NODE_NO_WARNINGS=1
   export GRAPH=$graph
   export FUNC=putGraph
+  node --experimental-repl-await $DIR/ipfs_client.js
+}
+
+obj_to_cid() {
+  read -r obj
+  if [ -z "$obj" ]; then
+    echo "Obj not specified"
+    exit 1
+  fi
+  export NODE_NO_WARNINGS=1
+  export OBJ=$obj
+  export FUNC=objToCid
+  node --experimental-repl-await $DIR/ipfs_client.js
+}
+
+format_graph() {
+  read -r graph
+  if [ -z "$graph" ]; then
+    echo "Graph not specified"
+    exit 1
+  fi
+  # export NODE_NO_WARNINGS=1
+  export GRAPH=$graph
+  export FUNC=formatGraph
   node --experimental-repl-await $DIR/ipfs_client.js
 }
 

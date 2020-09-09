@@ -5,7 +5,7 @@ import {
   outgoers, calcCurrentNode, isConnected,
 } from './graphlib';
 
-const DEFAULT_STATE = { graph: { elements: {} }, selected: null, prevNode: null };
+const DEFAULT_STATE = { graph: { elements: {} }, selected: null, prevNode: null, traversed: new Set() };
 
 function graphToElements(graph) {
   let elements = [];
@@ -15,7 +15,7 @@ function graphToElements(graph) {
 }
 
 export default function reducer(state = DEFAULT_STATE, action) {
-  let { graph, selected, prevNode } = state;
+  let { graph, selected, prevNode, traversed } = state;
   const elements = graphToElements(state.graph);
   const cy = Cytoscape({ elements });
 
@@ -45,7 +45,6 @@ export default function reducer(state = DEFAULT_STATE, action) {
       graph = graphHelper(cy);
       break;
     }
-
     case ACTION_TYPES.MERGE_NODE: {
       const from = cy.getElementById(action.fromId);
       const to = cy.getElementById(action.toId);
@@ -57,7 +56,6 @@ export default function reducer(state = DEFAULT_STATE, action) {
       graph = graphHelper(cy);
       break;
     }
-
     case ACTION_TYPES.CONNECT_NODE: {
       const child = cy.getElementById(action.childId);
       const newParent = cy.getElementById(action.newParentId);
@@ -71,7 +69,15 @@ export default function reducer(state = DEFAULT_STATE, action) {
       graph = graphHelper(cy);
       break;
     }
-
+    case ACTION_TYPES.TOGGLE_NODE_TRAVERSED: {
+      traversed = new Set(traversed);
+      if (traversed.has(action.nodeId)) {
+        traversed.delete(action.nodeId);
+      } else {
+        traversed.add(action.nodeId);
+      }
+      break;
+    }
     case ACTION_TYPES.UPLOAD_GRAPH: {
       graph = action.graph;
       break;
@@ -97,5 +103,6 @@ export default function reducer(state = DEFAULT_STATE, action) {
     graph,
     selected,
     prevNode,
+    traversed,
   };
 }

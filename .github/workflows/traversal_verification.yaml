@@ -1,0 +1,119 @@
+name: traversal-verification
+
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  notify-admin:
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Describe the issue
+        run: |
+          echo "Issue: ${{ github.event.issue.number }}"
+      - name: Exit if incorrect issue label
+        if: "!contains(github.event.issue.labels.*.name, 'traversal-verification-request')"
+        run: |
+          echo '"traversal-verification-request" label not found'
+          exit 1
+      - name: Create or Update Comment
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Pinging admin for verification on issue ${{ github.event.issue.number }}, corresponding with ${{ github.event.issue.title }}
+            - hang on tight :sparkles:
+            - we'll be with you shortly
+          reactions: "rocket"
+      - name: Create or Update Comment
+        if: ${{ failure() }}
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Oops! Failed to notify admin
+          reactions: "cry"
+  execute-pass:
+    if: github.event_name == 'issue_comment'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
+    steps:
+      - name: Check for Command
+        id: command
+        uses: xt0rted/slash-command-action@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          command: pass
+          reaction: "true"
+          reaction-type: "eyes"
+          allow-edits: "false"
+          permission-level: admin
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Command sanity check
+        run: echo "The command was '${{ steps.command.outputs.command-name }}' with arguments '${{ steps.command.outputs.command-arguments }}'"
+      - name: Issue sanity check
+        run: |
+          echo "Issue: ${{ github.event.issue.number }}"
+      - name: Set up node
+        run: |
+          ./utils/iok.sh setup_node
+      - name: Fetch from IPFS
+        run: |
+          ./utils/iok.sh get_full_graph ${{ github.event.issue.title }} > graph.json
+          cat graph.json
+          graph=$(cat graph.json)
+          echo "::set-env name=GRAPH::$graph"
+      - name: Sign IPFS object
+        run: |
+          echo '${{secrets.TRAVERSAL_VERIFYING_KEY}}' > priv.pem
+          echo '${{ env.GRAPH }}' > graph.json
+          openssl dgst -sha256 -sign priv.pem -out sig.sign graph.json
+          b64sig=$(cat sig.sign | base64)
+          echo "::set-env name=GRAPH_SIG::$b64sig"
+      - name: Create or Update Comment
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            <details open>
+            <summary>IoK contents for <a href="https://index-of-knowledge.web.app/ipfs?hash=${{ github.event.issue.title }}">${{ github.event.issue.title }}</a></summary>
+            <br>
+            Signature:
+            <pre>
+            <code>
+            ${{ env.GRAPH_SIG }}
+            </code>
+            </pre>
+            Graph contents
+            <pre>
+            <code>
+            ${{ env.GRAPH }}
+            </code>
+            </pre>
+            </details>
+          reactions: "hooray"
+      - name: Create or Update Comment
+        if: ${{ failure() }}
+        uses: peter-evans/create-or-update-comment@v1.4.2
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Oops! Pass verification workflow failed
+          reactions: "cry"

@@ -158,6 +158,7 @@ class NodeProperties extends Component {
             onChange={(ev) => {
               const val = ev.target.value; // to save the virtual event
               this.setState((prevState) => ({
+                name: val.length > 20 ? val.substring(0, 20) : val,
                 resourceData: {
                   ...prevState.resourceData,
                   text: val,
@@ -181,6 +182,7 @@ class NodeProperties extends Component {
             onChange={(ev) => {
               const val = ev.target.value; // to save the virtual event
               this.setState((prevState) => ({
+                name: val.length > 20 ? val.substring(0, 20) : val,
                 resourceData: {
                   ...prevState.resourceData,
                   text: val,
