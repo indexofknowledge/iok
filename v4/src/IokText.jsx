@@ -46,19 +46,20 @@ function IokText({ node }) {
     <div className="sidebar">
       <div>
         <h2 className="nodetitle">{data.name}</h2>
-        <p className="byline">
+        <div><p></p></div>
+        {/* <p className="byline">
           From
           {' '}
           <a href="http://localhost:3000/">Rustie&apos;s IoK</a>
           {' '}
           by Rustie
-        </p>
-        <div className="circles">
+        </p> */}
+        {/* <div className="circles">
           <div className="circle" style={{ backgroundColor: '#51B9C8' }}>#</div>
           <div className="circle" style={{ backgroundColor: '#CAB467' }}>@</div>
           <div className="circle" style={{ backgroundColor: '#CD6052' }}>!</div>
           <div className="circle">[?]</div>
-        </div>
+        </div> */}
         {/* <p id="nodesubtitle">{subtitle}</p> */}
         {
           depList.length !== 0 && (

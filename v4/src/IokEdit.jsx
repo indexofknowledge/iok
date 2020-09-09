@@ -103,7 +103,6 @@ class IokEdit extends Component {
 
   onNodeTap(evt, cy) {
     const { selected, selectNode, prevNode } = this.props;
-    console.log('SELECTED', selected, 'MERGING', prevNode);
     if (evt.target === cy) {
       if (selected) {
         this.clearTool();
@@ -140,7 +139,7 @@ class IokEdit extends Component {
     if (prevNode) cy.getElementById(prevNode.id).addClass('merging');
     cy.layout({
       /* name: 'breadthfirst', fit: false, spacingFactor: 0.8, circle: true, maximal: true */
-      name: 'treeCircle'
+      name: 'treeCircle',
     }).run();
 
     if (cy === this.cy) return;
@@ -271,14 +270,11 @@ class IokEdit extends Component {
     // const { uploadGraph, importGraph } = this.props;
     const { importType, importLink } = this.state;
 
-
-
     if (importType === IMPORT_TYPES.BLOCKSTACK) {
 
     } else if (importType === IMPORT_TYPES.IPFS) {
       const { importGraph } = this.props;
       const { importLink } = this.state;
-      console.log(importLink);
       loadGraph(STORAGE_TYPES.IPFS, { hash: importLink })
         .then((graph) => importOrMerge(graph))
         .catch((e) => { alert('oops graph couldnt load'); console.error(e); });
@@ -308,8 +304,6 @@ class IokEdit extends Component {
 
   saveIpfs() {
     const { graph } = this.props;
-    console.log('PUBLISHING', graph);
-
     // saveCache(graph, storage, options);
 
     // switch (storage) {
@@ -378,9 +372,11 @@ class IokEdit extends Component {
 
   importDialog(importOrMerge) {
     const { importType, importLink } = this.state;
+    const { importGraph } = this.props;
     return (
       <div className="dialog">
-        <h2>Import Graph</h2>
+        <h2>{importOrMerge === importGraph ? 'Import Graph' : 'Upload Graph'}</h2>
+        <p>{importOrMerge === importGraph ? 'Add a graph to your workspace.' : 'Replace your workspace with a new graph.'}</p>
         <div className="formgroup">
           <div className="formgroup">
             <input
@@ -443,7 +439,9 @@ class IokEdit extends Component {
   }
 
   render() {
-    const { elements, selected, uploadGraph, importGraph, prevNode } = this.props;
+    const {
+      elements, selected, uploadGraph, importGraph, prevNode,
+    } = this.props;
     const { zoom, tool } = this.state;
     let submitFunc = null;
     if (tool === TOOL_TYPES.ADD) submitFunc = this.addNode;
@@ -518,16 +516,10 @@ class IokEdit extends Component {
             stylesheet={IokStyle(zoom)}
           />
           <NodeProperties title="Hello node" node={selected} ref={this.nodeProps} submit={submitFunc} editing={submitFunc === this.editNode} cancel={this.clearTool} />
-          <div style={{ position: 'fixed', bottom: 0 }}>
-            <button type="button" className="button filledButton" onClick={() => this.importBlockstack()}>Import from Blockstack</button>
-            <button type="button" className="button filledButton" onClick={() => this.saveIpfs()}>Save to IPFS</button>
-            <button type="button" className="button filledButton" onClick={() => this.saveBlockstack()}>Save to Blockstack</button>
-            <button type="button" className="button filledButton" onClick={wipeCache}>Wipe cache</button>
-          </div>
-          {/* <pre><code>{JSON.stringify(elements, null, 2)}</code></pre> */}
           {tool == TOOL_TYPES.MERGE ? (
             <div className="dialog">
               <h2>Merge Node</h2>
+              <p> Select a node to combine with your currently selected node.</p>
               <button type="button" className="button" onClick={() => this.endMergeorConnect()}>Cancel Merge</button>
               <button type="button" className="button filledButton" disabled={selected === null} onClick={() => this.confirmMerge()}>Confirm Merge</button>
             </div>
@@ -535,6 +527,7 @@ class IokEdit extends Component {
           {tool == TOOL_TYPES.CONNECT ? (
             <div className="dialog">
               <h2>Connect Node</h2>
+              <p>Choose a new parent for your currently selected node.</p>
               <button type="button" className="button" onClick={() => this.endMergeorConnect()}>Cancel Connect</button>
               <button type="button" className="button filledButton" disabled={selected === null} onClick={() => this.confirmConnect()}>Confirm Connect</button>
             </div>
