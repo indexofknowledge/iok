@@ -89,9 +89,9 @@ function isConnected(root, newParent) {
     return false;
   }
   let childConnected = false;
-  for (const node of children) {
+  children.forEach((node) => {
     childConnected = childConnected || isConnected(node, newParent);
-  }
+  });
   return childConnected;
 }
 

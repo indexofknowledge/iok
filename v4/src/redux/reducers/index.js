@@ -5,7 +5,9 @@ import {
   outgoers, calcCurrentNode, isConnected,
 } from './graphlib';
 
-const DEFAULT_STATE = { graph: { elements: {} }, selected: null, prevNode: null, traversed: new Set() };
+const DEFAULT_STATE = {
+  graph: { elements: {} }, selected: null, prevNode: null, traversed: new Set(),
+};
 
 function graphToElements(graph) {
   let elements = [];
@@ -15,7 +17,9 @@ function graphToElements(graph) {
 }
 
 export default function reducer(state = DEFAULT_STATE, action) {
-  let { graph, selected, prevNode, traversed } = state;
+  let {
+    graph, selected, prevNode, traversed,
+  } = state;
   const elements = graphToElements(state.graph);
   const cy = Cytoscape({ elements });
 
@@ -50,7 +54,7 @@ export default function reducer(state = DEFAULT_STATE, action) {
       const to = cy.getElementById(action.toId);
       const parent = outgoers(to)[0];
       const newNode = merge(from, to, cy);
-      if (parent && parent != from) cy.add(createEdge(newNode, parent));
+      if (parent && parent !== from) cy.add(createEdge(newNode, parent));
       selected = calcCurrentNode(newNode);
       prevNode = null;
       graph = graphHelper(cy);

@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  mergeNode, selectNode, selectPrevNode, toggleNodeTraversed
+  mergeNode, selectNode, selectPrevNode, toggleNodeTraversed as toggleAction,
 } from './redux/actions';
 import IokText from './IokText';
 
@@ -16,13 +16,19 @@ const mapDispatchToProps = (dispatch) => ({
   mergeNode: (fromId, toId) => dispatch(mergeNode(fromId, toId)),
   selectNode: (id) => dispatch(selectNode(id)),
   selectPrevNode: (id) => dispatch(selectPrevNode(id)),
-  toggleNodeTraversed: (id) => dispatch(toggleNodeTraversed(id)),
+  toggleNodeTraversed: (id) => dispatch(toggleAction(id)),
 });
 
-const FullSideBar = ({ prevNode, selected, traversed, toggleNodeTraversed }) => (
+const FullSideBar = ({
+  prevNode, selected, traversed, toggleNodeTraversed,
+}) => (
   <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {prevNode ? <IokText node={prevNode} traversed={traversed} toggleNodeTraversed={toggleNodeTraversed}/> : <div />}
-    {!prevNode || (prevNode && selected) ? <IokText node={selected} traversed={traversed} toggleNodeTraversed={toggleNodeTraversed}/> : <div />}
+    {prevNode
+      ? <IokText node={prevNode} traversed={traversed} toggleNodeTraversed={toggleNodeTraversed} />
+      : <div />}
+    {!prevNode || (prevNode && selected)
+      ? <IokText node={selected} traversed={traversed} toggleNodeTraversed={toggleNodeTraversed} />
+      : <div />}
   </div>
 );
 

@@ -8,7 +8,7 @@ import NodeProperties from './NodeProperties';
 import { saveIPFSGraph } from './storage/ipfs';
 import { saveBlockstackGraph } from './storage/blockstack';
 import { loadGraph, DEFAULT_SESSION } from './loading';
-import { saveCache, wipeCache } from './storage/cache';
+import { saveCache } from './storage/cache';
 import { parseParams } from './urlUtils';
 import treeLayout from './layout';
 import {
@@ -87,20 +87,6 @@ class IokEdit extends Component {
     this.setState({ timerID: newTimerID });
   }
 
-  periodicallySaveCache() {
-    const { storage, options } = this.state;
-    const { graph } = this.props;
-    saveCache(graph, storage, options);
-  }
-
-  clearTool() {
-    const { tool } = this.state;
-    if (tool == TOOL_TYPES.MERGE || tool == TOOL_TYPES.CONNECT) {
-      return;
-    }
-    this.setState({ tool: null });
-  }
-
   onNodeTap(evt, cy) {
     const { selected, selectNode, prevNode } = this.props;
     if (evt.target === cy) {
@@ -128,6 +114,20 @@ class IokEdit extends Component {
         }
       });
     }
+  }
+
+  clearTool() {
+    const { tool } = this.state;
+    if (tool === TOOL_TYPES.MERGE || tool === TOOL_TYPES.CONNECT) {
+      return;
+    }
+    this.setState({ tool: null });
+  }
+
+  periodicallySaveCache() {
+    const { storage, options } = this.state;
+    const { graph } = this.props;
+    saveCache(graph, storage, options);
   }
 
   initCy(cy) {
@@ -177,6 +177,7 @@ class IokEdit extends Component {
    *  Else select the tool if condition is true
    */
   toggleTool(tool, condition) {
+    // eslint-disable-next-line
     if (this.state.tool === tool) {
       this.setState({ tool: null });
     } else if (condition) {
@@ -271,10 +272,8 @@ class IokEdit extends Component {
     const { importType, importLink } = this.state;
 
     if (importType === IMPORT_TYPES.BLOCKSTACK) {
-
+      // Maybe do stuff later
     } else if (importType === IMPORT_TYPES.IPFS) {
-      const { importGraph } = this.props;
-      const { importLink } = this.state;
       loadGraph(STORAGE_TYPES.IPFS, { hash: importLink })
         .then((graph) => importOrMerge(graph))
         .catch((e) => { alert('oops graph couldnt load'); console.error(e); });
@@ -296,10 +295,6 @@ class IokEdit extends Component {
       reader.readAsText(importLink);
     }
     this.setState({ tool: null });
-  }
-
-  setImportType(evt) {
-    this.setState({ importType: evt.target.value });
   }
 
   saveIpfs() {
@@ -423,7 +418,8 @@ class IokEdit extends Component {
             />
             <label htmlFor="i_file" className="button">File</label>
           </div>
-          {/* <input required type="text" placeholder="Link" value={importLink} onChange={(ev) => this.setState({ importLink: ev.target.value })} /> */}
+          {/* <input required type="text" placeholder="Link" value={importLink}
+              onChange={(ev) => this.setState({ importLink: ev.target.value })} /> */}
           {importType === IMPORT_TYPES.IPFS || importType === IMPORT_TYPES.LINK
             ? <input required type="text" placeholder={importType === IMPORT_TYPES.IPFS ? 'Hash' : 'Link'} value={importLink} onChange={(ev) => this.setState({ importLink: ev.target.value })} />
             : <span />}
@@ -440,7 +436,7 @@ class IokEdit extends Component {
 
   render() {
     const {
-      elements, selected, uploadGraph, importGraph, prevNode,
+      elements, selected, uploadGraph, importGraph,
     } = this.props;
     const { zoom, tool } = this.state;
     let submitFunc = null;
@@ -465,24 +461,24 @@ class IokEdit extends Component {
             </svg>
           </button>
 
-          <button className={tool == TOOL_TYPES.MERGE ? 'tool active' : 'tool'} type="button" onClick={() => this.mergeNode()}>
+          <button className={tool === TOOL_TYPES.MERGE ? 'tool active' : 'tool'} type="button" onClick={() => this.mergeNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M8.75022 20C13.0474 20 16.528 16.42 16.528 12C16.528 7.58 13.0474 4.00001 8.75022 4.00001C4.453 4.00001 0.972446 7.58001 0.972447 12C0.972448 16.42 4.453 20 8.75022 20ZM8.75013 5.99998C11.9682 5.99998 14.5835 8.68998 14.5835 12C14.5835 15.31 11.9682 18 8.75013 18C5.53208 18 2.9168 15.31 2.9168 12C2.9168 8.68998 5.53208 5.99998 8.75013 5.99998ZM16.528 17.6501C18.7933 16.8301 20.4169 14.6101 20.4169 12.0001C20.4169 9.3901 18.7933 7.1701 16.528 6.3501L16.528 4.26011C19.8822 5.1501 22.3613 8.2701 22.3613 12.0001C22.3613 15.7301 19.8822 18.8501 16.528 19.7401L16.528 17.6501Z" />
             </svg>
           </button>
 
-          <button className={tool == TOOL_TYPES.CONNECT ? 'tool active' : 'tool'} type="button">
+          <button className={tool === TOOL_TYPES.CONNECT ? 'tool active' : 'tool'} type="button">
             <svg width="24" height="24" viewBox="0 0 40 40" fill="currentColor" onClick={() => this.connectNode()}>
               <path d="M29.9987 7.5L23.332 14.1667H28.332V25.8333C28.332 27.6667 26.832 29.1667 24.9987 29.1667C23.1654 29.1667 21.6654 27.6667 21.6654 25.8333V14.1667C21.6654 10.4833 18.682 7.5 14.9987 7.5C11.3154 7.5 8.33203 10.4833 8.33203 14.1667V25.8333H3.33203L9.9987 32.5L16.6654 25.8333H11.6654V14.1667C11.6654 12.3333 13.1654 10.8333 14.9987 10.8333C16.832 10.8333 18.332 12.3333 18.332 14.1667V25.8333C18.332 29.5167 21.3154 32.5 24.9987 32.5C28.682 32.5 31.6654 29.5167 31.6654 25.8333V14.1667H36.6654L29.9987 7.5Z" />
             </svg>
           </button>
 
-          <button className={tool == TOOL_TYPES.DELETE ? 'tool active' : 'tool'} type="button" onClick={() => this.deleteNode()}>
+          <button className={tool === TOOL_TYPES.DELETE ? 'tool active' : 'tool'} type="button" onClick={() => this.deleteNode()}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM19 4H15.5L14.5 3H9.5L8.5 4H5V6H19V4Z" />
             </svg>
           </button>
-          <button className={tool == TOOL_TYPES.IMPORT ? 'tool active' : 'tool'} type="button" onClick={() => this.toggleTool(TOOL_TYPES.IMPORT, true)}>
+          <button className={tool === TOOL_TYPES.IMPORT ? 'tool active' : 'tool'} type="button" onClick={() => this.toggleTool(TOOL_TYPES.IMPORT, true)}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
               <path d="M4 5V3H20V5H4ZM11 11H8L12 7L16 11H13V21H11V11Z" />
             </svg>
@@ -493,7 +489,7 @@ class IokEdit extends Component {
             </svg>
           </button>
           <div className="toolbar-bottom">
-            <button className={tool == TOOL_TYPES.OPEN ? 'tool active' : 'tool'} type="button" onClick={() => this.toggleTool(TOOL_TYPES.OPEN, true)}>
+            <button className={tool === TOOL_TYPES.OPEN ? 'tool active' : 'tool'} type="button" onClick={() => this.toggleTool(TOOL_TYPES.OPEN, true)}>
               <svg width="24" height="24" viewBox="0 0 36 36" fill="currentColor">
                 <path d="M15 6H6C4.35 6 3.015 7.35 3.015 9L3 27C3 28.65 4.35 30 6 30H30C31.65 30 33 28.65 33 27V12C33 10.35 31.65 9 30 9H18L15 6Z" />
               </svg>
@@ -516,7 +512,7 @@ class IokEdit extends Component {
             stylesheet={IokStyle(zoom)}
           />
           <NodeProperties title="Hello node" node={selected} ref={this.nodeProps} submit={submitFunc} editing={submitFunc === this.editNode} cancel={this.clearTool} />
-          {tool == TOOL_TYPES.MERGE ? (
+          {tool === TOOL_TYPES.MERGE ? (
             <div className="dialog">
               <h2>Merge Node</h2>
               <p> Select a node to combine with your currently selected node.</p>
@@ -524,7 +520,7 @@ class IokEdit extends Component {
               <button type="button" className="button filledButton" disabled={selected === null} onClick={() => this.confirmMerge()}>Confirm Merge</button>
             </div>
           ) : ''}
-          {tool == TOOL_TYPES.CONNECT ? (
+          {tool === TOOL_TYPES.CONNECT ? (
             <div className="dialog">
               <h2>Connect Node</h2>
               <p>Choose a new parent for your currently selected node.</p>
@@ -532,8 +528,8 @@ class IokEdit extends Component {
               <button type="button" className="button filledButton" disabled={selected === null} onClick={() => this.confirmConnect()}>Confirm Connect</button>
             </div>
           ) : <div />}
-          {tool == TOOL_TYPES.IMPORT ? this.importDialog(importGraph) : ''}
-          {tool == TOOL_TYPES.OPEN ? this.importDialog(uploadGraph) : ''}
+          {tool === TOOL_TYPES.IMPORT ? this.importDialog(importGraph) : ''}
+          {tool === TOOL_TYPES.OPEN ? this.importDialog(uploadGraph) : ''}
 
         </div>
       </div>
@@ -552,6 +548,7 @@ IokEdit.propTypes = {
   uploadGraph: PropTypes.func.isRequired,
   selectNode: PropTypes.func.isRequired,
   selectPrevNode: PropTypes.func.isRequired,
+  connectNode: PropTypes.func.isRequired,
   selected: PropTypes.object, // eslint-disable-line
   prevNode: PropTypes.object, // eslint-disable-line
 };

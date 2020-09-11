@@ -10,7 +10,7 @@ class NodeProperties extends Component {
       id: undefined,
       nodeType: null,
       resourceType: null,
-      nodePair: [],
+      // nodePair: [],
       resourceData: {},
     });
   }
@@ -33,10 +33,10 @@ class NodeProperties extends Component {
   }
 
   setNodeType(evt, newValue) {
-    console.log(newValue[0], newValue[1]);
-    this.setState({
-      nodePair: evt.target.value, nodeType: newValue[0], resourceType: newValue[1],
-    });
+    console.log(newValue[0], newValue[1], evt.target.value, this);
+    // this.setState({
+    //   nodePair: evt.target.value, nodeType: newValue[0], resourceType: newValue[1],
+    // });
   }
 
   handleSubmit() {
@@ -57,7 +57,6 @@ class NodeProperties extends Component {
 
   addOrEdit() {
     const { node, editing } = this.props;
-    const { nodeType } = this.state;
     if (editing) {
       if (!node) return <span />;
       return (
@@ -139,6 +138,7 @@ class NodeProperties extends Component {
         </div>
       );
     }
+    return <></>;
   }
 
   descOrLink() {
@@ -224,12 +224,14 @@ class NodeProperties extends Component {
 NodeProperties.defaultProps = {
   node: null,
   submit: null,
+  cancel: null,
 };
 
 NodeProperties.propTypes = {
   editing: PropTypes.bool.isRequired,
   node: PropTypes.object, // eslint-disable-line
   submit: PropTypes.func,
+  cancel: PropTypes.func,
 };
 
 export default NodeProperties;
