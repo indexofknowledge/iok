@@ -126,10 +126,13 @@ class KnowledgeGraph:
         resource_type: Optional[ResourceType] = ResourceType.DESCRIPTION,
     ) -> str:
         if not id:
-            m = hashlib.sha256()
-            m.update(text.encode())
-            m.update(link.encode())
-            id = m.hexdigest()
+            # HACK!!! Calculates a dummy ID (uuid) for now, and then require
+            #         ./utils/iok.sh to format it. Use the right CID hash alg ideally
+            # m = hashlib.sha256()
+            # m.update(text.encode())
+            # m.update(link.encode())
+            # id = m.hexdigest()
+            id = str(uuid.uuid1())
         data = {"text": text, "link": link}
         return self._add_knowledge_node(
             NodeType.RESOURCE, id=id, data=data, resource_type=resource_type

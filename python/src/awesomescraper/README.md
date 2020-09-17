@@ -41,4 +41,12 @@ This list might come in handy when we're compiling a list of IoKs to feature on 
 ```
 name,cid
 awesome-audio-visualization-willianjusten,bafyreiclcwvhztauvmhaya5lzv2jj32cdxbz6rioosarpc4ffciagchemi
+awesome-coq-coq-community,bafyreia23vsvjmewtrxh3ugk2heqyclxtcy3p4iy7bkeoty66kfhl4n42e
+awesome-agriculture-beaorn,bafyreifvngplta5xyfppzonm3ug4ejsyi5tjwqp3ydr75hkybgqjj2sbr4
+awesome-jquery-petk,bafyreid7fx65nqzfy3yas4mgbbcaev32sf5y2uxtjogs4lgubyvbh2rede
 ```
+
+### TODO (bugs)
+
+* Scrape fails for MD links with no text following. e.g. `^\[.*\]\(.*\)$`
+* There's something wrong with awesome-c (in clean_awesomes) that prevents it from working with `./utils/iok.sh` tools. Perhaps some weird escape character
