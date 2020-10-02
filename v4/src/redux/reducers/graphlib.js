@@ -81,6 +81,20 @@ function merge(from, to, cy) {
   return newNode;
 }
 
+function isConnected(root, newParent) {
+  const children = incomers(root);
+  if (root === newParent) {
+    return true;
+  } if (children.length < 1) {
+    return false;
+  }
+  let childConnected = false;
+  children.forEach((node) => {
+    childConnected = childConnected || isConnected(node, newParent);
+  });
+  return childConnected;
+}
+
 function deleteNodeHelper(node, cy) {
   // recursively send in a node, if theres no incomers, delete it
   const nodes = incomers(node);
@@ -120,5 +134,5 @@ export {
   nodeId, createNode,
   edgeId, createEdge, updateEdges,
   merge, deleteNodeHelper, graphHelper,
-  calcCurrentNode,
+  calcCurrentNode, isConnected,
 };

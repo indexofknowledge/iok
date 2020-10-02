@@ -2,10 +2,12 @@ import Cytoscape from 'cytoscape';
 import { ACTION_TYPES } from '../actions';
 import {
   createNode, createEdge, updateEdges, merge, deleteNodeHelper, graphHelper,
-  outgoers, calcCurrentNode,
+  outgoers, calcCurrentNode, isConnected,
 } from './graphlib';
 
-const DEFAULT_STATE = { graph: { elements: {} }, selected: null, mergingNode: null, traversed: new Set() };
+const DEFAULT_STATE = {
+  graph: { elements: {} }, selected: null, prevNode: null, traversed: new Set(),
+};
 
 function graphToElements(graph) {
   let elements = [];
@@ -15,7 +17,9 @@ function graphToElements(graph) {
 }
 
 export default function reducer(state = DEFAULT_STATE, action) {
-  let { graph, selected, mergingNode, traversed } = state;
+  let {
+    graph, selected, prevNode, traversed,
+  } = state;
   const elements = graphToElements(state.graph);
   const cy = Cytoscape({ elements });
 
@@ -49,11 +53,23 @@ export default function reducer(state = DEFAULT_STATE, action) {
       const from = cy.getElementById(action.fromId);
       const to = cy.getElementById(action.toId);
       const parent = outgoers(to)[0];
-      console.log(parent);
       const newNode = merge(from, to, cy);
-      if (parent) cy.add(createEdge(newNode, parent));
+      if (parent && parent !== from) cy.add(createEdge(newNode, parent));
       selected = calcCurrentNode(newNode);
-      mergingNode = null;
+      prevNode = null;
+      graph = graphHelper(cy);
+      break;
+    }
+    case ACTION_TYPES.CONNECT_NODE: {
+      const child = cy.getElementById(action.childId);
+      const newParent = cy.getElementById(action.newParentId);
+      if (child && newParent && isConnected(child, newParent) === false) {
+        const oldEdge = child.outgoers((el) => el.isEdge())[0];
+        if (oldEdge) cy.remove(oldEdge);
+        cy.add(createEdge(child, newParent));
+      }
+      selected = newParent;
+      prevNode = null;
       graph = graphHelper(cy);
       break;
     }
@@ -80,7 +96,8 @@ export default function reducer(state = DEFAULT_STATE, action) {
       break;
     }
     case ACTION_TYPES.SELECT_MERGE_NODE: {
-      mergingNode = calcCurrentNode(cy.getElementById(action.nodeId));
+      prevNode = calcCurrentNode(cy.getElementById(action.nodeId));
+      selected = null;
       break;
     }
     default:
@@ -89,7 +106,7 @@ export default function reducer(state = DEFAULT_STATE, action) {
   return {
     graph,
     selected,
-    mergingNode,
+    prevNode,
     traversed,
   };
 }

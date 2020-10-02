@@ -3,11 +3,13 @@ export const ACTION_TYPES = {
   EDIT_NODE: 'EDIT_NODE',
   DELETE_NODE: 'DELETE_NODE',
   MERGE_NODE: 'MERGE_NODE',
+  CONNECT_NODE: 'CONNECT_NODE',
   SELECT_NODE: 'SELECT_NODE',
   SELECT_MERGE_NODE: 'SELECT_MERGE_NODE',
   TOGGLE_NODE_TRAVERSED: 'TOGGLE_NODE_TRAVERSED',
   UPLOAD_GRAPH: 'UPLOAD_GRAPH',
   IMPORT_GRAPH: 'IMPORT_GRAPH',
+
 };
 
 export const addNode = (parentId, props) => ({
@@ -33,12 +35,18 @@ export const mergeNode = (fromId, toId) => ({
   toId,
 });
 
+export const connectNode = (childId, newParentId) => ({
+  type: ACTION_TYPES.CONNECT_NODE,
+  childId,
+  newParentId,
+});
+
 export const selectNode = (nodeId) => ({
   type: ACTION_TYPES.SELECT_NODE,
   nodeId,
 });
 
-export const selectMergeNode = (nodeId) => ({
+export const selectPrevNode = (nodeId) => ({
   type: ACTION_TYPES.SELECT_MERGE_NODE,
   nodeId,
 });

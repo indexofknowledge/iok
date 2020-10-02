@@ -23,7 +23,7 @@ function IokText({ node, traversed, toggleNodeTraversed }) {
   const descList = [];
   const linkList = [];
   const traversedNodes = [];
-  
+
   // eslint-disable-next-line no-restricted-syntax
   for (const neighbor of neighbors) {
     if (neighbor.node_type === NTYPE.TOPIC) { // topic is dep
@@ -43,14 +43,14 @@ function IokText({ node, traversed, toggleNodeTraversed }) {
   }
 
   // list the traversed nodes for debugging
-  traversed.forEach(el => {
-    traversedNodes.push(<li className="nodeid" key={el}>{el}</li>)
-  })
+  traversed.forEach((el) => {
+    traversedNodes.push(<li className="nodeid" key={el}>{el}</li>);
+  });
 
-  let toggleBtnText = "Mark as learned";
+  let toggleBtnText = 'Mark as learned';
   if (data.id) {
     if (traversed.has(data.id)) {
-      toggleBtnText = "You learned this";
+      toggleBtnText = 'You learned this';
     }
   }
 
@@ -59,19 +59,20 @@ function IokText({ node, traversed, toggleNodeTraversed }) {
     <div className="sidebar">
       <div>
         <h2 className="nodetitle">{data.name}</h2>
-        <p className="byline">
+        <div><p /></div>
+        {/* <p className="byline">
           From
           {' '}
           <a href="http://localhost:3000/">Rustie&apos;s IoK</a>
           {' '}
           by Rustie
-        </p>
-        <div className="circles">
+        </p> */}
+        {/* <div className="circles">
           <div className="circle" style={{ backgroundColor: '#51B9C8' }}>#</div>
           <div className="circle" style={{ backgroundColor: '#CAB467' }}>@</div>
           <div className="circle" style={{ backgroundColor: '#CD6052' }}>!</div>
           <div className="circle">[?]</div>
-        </div>
+        </div> */}
         {/* <p id="nodesubtitle">{subtitle}</p> */}
         {
           depList.length !== 0 && (
@@ -120,10 +121,16 @@ function IokText({ node, traversed, toggleNodeTraversed }) {
             {' '}
             <h3 className="heading">Debugging</h3>
             <p className="nodeid">{data.id}</p>
-            <button type="button" className="tool filledButton" onClick={() => {
-              Log.info(`Toggling nodde traversed: ${data.id}`)
-              toggleNodeTraversed(data.id);
-            }}>{toggleBtnText}</button>
+            <button
+              type="button"
+              className="tool filledButton"
+              onClick={() => {
+                Log.info(`Toggling nodde traversed: ${data.id}`);
+                toggleNodeTraversed(data.id);
+              }}
+            >
+              {toggleBtnText}
+            </button>
             <div className="section linksection">
               <ul id="travsednodes">
                 {traversedNodes}
@@ -142,7 +149,9 @@ IokText.defaultProps = {
 };
 
 IokText.propTypes = {
-  node: PropTypes.object, // eslint-disable-line
+    node: PropTypes.object, // eslint-disable-line
+  traversed: PropTypes.arrayOf(PropTypes.string).isRequired,
+  toggleNodeTraversed: PropTypes.func.isRequired,
 };
 
 export default IokText;
