@@ -172,3 +172,15 @@ float: right;
  } */
  
  
+
+ /* tooltips */
+ .tooltip {
+   background-color: var(--side-color);
+   color: var(--sub-highlight);
+   padding-left: 25px;
+   padding-right: 25px;
+   padding-top:5px;
+   padding-bottom: 5px;
+   border-radius: 10px;
+
+ }
