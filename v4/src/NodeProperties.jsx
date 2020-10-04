@@ -34,9 +34,9 @@ class NodeProperties extends Component {
 
   setNodeType(evt, newValue) {
     console.log(newValue[0], newValue[1], evt.target.value, this);
-    // this.setState({
-    //   nodePair: evt.target.value, nodeType: newValue[0], resourceType: newValue[1],
-    // });
+    this.setState({
+      nodePair: evt.target.value, nodeType: newValue[0], resourceType: newValue[1],
+    });
   }
 
   handleSubmit() {

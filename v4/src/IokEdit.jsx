@@ -297,6 +297,10 @@ class IokEdit extends Component {
     this.setState({ tool: null });
   }
 
+  setImportType = (evt) => {
+    this.setState({ importType: evt.target.value });
+  }
+
   saveIpfs() {
     const { graph } = this.props;
     // saveCache(graph, storage, options);
